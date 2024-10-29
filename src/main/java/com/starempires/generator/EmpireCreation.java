@@ -1,6 +1,5 @@
 package com.starempires.generator;
 
-import com.starempires.objects.Empire;
 import lombok.Builder;
 import lombok.Getter;
 

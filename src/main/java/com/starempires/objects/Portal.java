@@ -20,8 +20,8 @@ public class Portal extends MappableObject {
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean collapsed;
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> connections = new HashSet<>();
 
     @Builder

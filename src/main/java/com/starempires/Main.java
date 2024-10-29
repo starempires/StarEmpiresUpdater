@@ -1,9 +1,7 @@
 package com.starempires;
 
-import com.starempires.constants.Constants;
+import com.starempires.updater.Updater;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Log4j2
 public class Main {

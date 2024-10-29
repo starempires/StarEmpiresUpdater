@@ -1,6 +1,5 @@
 package com.starempires.generator;
 
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
@@ -8,10 +7,29 @@ import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.dao.JsonStarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
-import com.starempires.objects.*;
+import com.starempires.objects.Coordinate;
+import com.starempires.objects.Empire;
+import com.starempires.objects.EmpireType;
+import com.starempires.objects.FrameOfReference;
+import com.starempires.objects.HexDirection;
+import com.starempires.objects.HullParameters;
+import com.starempires.objects.MappableObject;
+import com.starempires.objects.Portal;
+import com.starempires.objects.ScanData;
+import com.starempires.objects.ScanStatus;
+import com.starempires.objects.Ship;
+import com.starempires.objects.ShipClass;
+import com.starempires.objects.Storm;
+import com.starempires.objects.World;
 import com.starempires.util.PropertiesUtil;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -31,20 +49,17 @@ public class SessionCreator {
     private static final String TEXT_EXTENSION = ".txt";
     private static final String JSON_EXTENSION = ".json";
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    {
-//        MAPPER.disable(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature());
-    }
 
     private String sessionName;
     private String dataDir;
+    private String outputDir;
     private String configFile;
     private String empireFile;
     private String shipClassFile;
     private String hullParametersFile;
 
-//    private StarEmpiresDAO dao;
+    private StarEmpiresDAO dao;
     private PropertiesUtil galaxyProperties;
-//    private final List<Empire> empires = Lists.newArrayList();
 
     public List<String> loadItems(final String file) throws IOException {
         final Path path = FileSystems.getDefault().getPath(dataDir, file);
@@ -58,6 +73,7 @@ public class SessionCreator {
             options.addOption(Option.builder("s").argName("session name").longOpt("session").hasArg().desc("session name").required().build());
             options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
             options.addOption(Option.builder("d").argName("data dir").longOpt("datadir").hasArg().desc("data dir").required().build());
+            options.addOption(Option.builder("o").argName("output dir").longOpt("outputdir").hasArg().desc("output dir").required().build());
             options.addOption(Option.builder("e").argName("empires data").longOpt("empiredata").hasArg().desc("empire data").required().build());
             options.addOption(Option.builder("sc").argName("ship classes").longOpt("shipclasses").hasArg().desc("ship classes").required().build());
             options.addOption(Option.builder("hp").argName("hull parameters").longOpt("hullparameters").hasArg().desc("hull parameters").required().build());
@@ -67,6 +83,7 @@ public class SessionCreator {
             // Parse command-line arguments
             sessionName = cmd.getOptionValue("session");
             dataDir = cmd.getOptionValue("datadir");
+            outputDir = cmd.getOptionValue("outputdir");
             configFile = cmd.getOptionValue("config");
             empireFile = cmd.getOptionValue("empiredata");
             shipClassFile = cmd.getOptionValue("shipclasses");
@@ -80,7 +97,7 @@ public class SessionCreator {
 
     public SessionCreator(final String[] args) throws ParseException, IOException {
         extractCommandLineOptions(args);
-//        dao = new FileStarEmpiresDAO(dataDir);
+        dao = new JsonStarEmpiresDAO(outputDir);
     }
 
     public TurnData createSession() throws IOException {
@@ -217,12 +234,10 @@ public class SessionCreator {
     }
 
     private TurnData loadSession(final String session, final int turnNumber) throws Exception {
-        StarEmpiresDAO dao = JsonStarEmpiresDAO.builder().dataDir(dataDir).build();
         return dao.loadData(session, turnNumber);
     }
 
     private void saveSession(final TurnData turndata) throws Exception {
-        StarEmpiresDAO dao = JsonStarEmpiresDAO.builder().dataDir(dataDir).build();
         dao.saveData(turndata);
     }
 

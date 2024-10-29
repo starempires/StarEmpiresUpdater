@@ -24,8 +24,6 @@ public class ScanRecord {
 
     /**
      * Replace this record's scan status with the given status if it is more visible
-     * 
-     * @param newStatus
      */
     public void mergeScanStatus(final ScanStatus newStatus) {
         if (newStatus.isMoreVisible(scanStatus)) {

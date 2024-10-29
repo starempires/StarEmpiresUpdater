@@ -1,15 +1,15 @@
 package com.starempires.objects;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-
 import com.starempires.constants.Constants;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Getter
@@ -31,58 +32,58 @@ public class Empire extends IdentifiableObject {
     private final FrameOfReference frameOfReference;
     /** ids of empires known to this one */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> knownEmpires = Sets.newHashSet();
     /** ids of ship classes known to this one */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<ShipClass> knownShipClasses = Sets.newHashSet();
     /** map of worlds currently known by this empire to the corresponding last turn scanned */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<World> knownWorlds = Sets.newHashSet();
     /** map of portals currently known by this empire to the corresponding last turn scanned */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> knownPortals = Sets.newHashSet();
     /** map of storms currently known by this empire to the corresponding last turn scanned */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Storm> knownStorms = Sets.newHashSet();
     /** portals which this empire traversed this turn */
     @JsonIgnore
     private final Set<Portal> portalsTraversed = Sets.newHashSet();
     /** portals for which this empire currently has nav data */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> portalNavData = Sets.newHashSet();
     /** collected and shared scan data for this empire */
     private final ScanData scanData = new ScanData();
     /** map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = CoordinateMultimapSerializer.class)
-    @JsonDeserialize(using = DeferredCoordinateMultimapDeserializer.class)
+    @JsonSerialize(using = Coordinate.CoordinateMultimapSerializer.class)
+    @JsonDeserialize(using = Coordinate.DeferredCoordinateMultimapDeserializer.class)
     private final Multimap<Empire, RadialCoordinate> shareCoordinates = HashMultimap.create();
     /** map of empires to sets of Ships for which scan access has been authorized */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectMultimapSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectMultimapDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
     private final Multimap<Empire, Ship> shareShips = HashMultimap.create();
     /** set of empires which are authorized to receive all scan data */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> shareEmpires = Sets.newHashSet();
     /** map of empires to Sets of ShipClasses for which scan access has been * authorized */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObjectMultimapSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectMultimapDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
     private final Multimap<Empire, ShipClass> shareShipClasses = HashMultimap.create();
     @JsonIgnore
     private final Fleet fleet = new Fleet();

@@ -1,5 +1,6 @@
-package com.starempires;
+package com.starempires.updater;
 
+import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.dao.StarEmpiresDAO;
 import lombok.extern.log4j.Log4j2;
@@ -10,8 +11,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.ParseException;
-
-import java.sql.SQLException;
 
 
 @Log4j2

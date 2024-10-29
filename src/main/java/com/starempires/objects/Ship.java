@@ -33,7 +33,7 @@ public class Ship extends OwnableObject {
     /** carrier ship */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonSerialize(using = IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = DeferredIdentifiableObjectDeserializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Ship carrier;
     /** cargo ships loaded onto this one */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

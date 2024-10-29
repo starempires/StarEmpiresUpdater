@@ -2,15 +2,22 @@ package com.starempires.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.KeyDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
-import com.starempires.objects.*;
-import lombok.Builder;
+import com.starempires.objects.Coordinate;
+import com.starempires.objects.Empire;
+import com.starempires.objects.HullParameters;
+import com.starempires.objects.Portal;
+import com.starempires.objects.RadialCoordinate;
+import com.starempires.objects.Ship;
+import com.starempires.objects.ShipClass;
+import com.starempires.objects.Storm;
+import com.starempires.objects.World;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -23,7 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
-@Builder
+@RequiredArgsConstructor
 public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final String dataDir;
@@ -48,7 +55,6 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
 
     @Override
     public TurnData loadData(final String session, final int turnNumber) throws Exception {
-
         final Path path = constructTurnDataPath(session, turnNumber);
         final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() {
         });

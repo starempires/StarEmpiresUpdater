@@ -3,7 +3,15 @@ package com.starempires.objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,8 +19,10 @@ import lombok.NonNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +35,30 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 public class Coordinate implements Comparable<Coordinate> {
+
+    static class CoordinateMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends Coordinate>> {
+        @Override
+        public void serialize(Multimap<Empire, ? extends Coordinate> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
+            final Map<Empire, List<? extends Coordinate>> map = objects.asMap().entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> List.copyOf(entry.getValue()) // Convert Collection to List
+                    ));
+            gen.writeObject(map);
+        }
+
+        @Override
+        public boolean isEmpty(SerializerProvider provider, Multimap<Empire, ? extends Coordinate> value) {
+            return (value == null || value.isEmpty());
+        }
+    }
+
+    static class DeferredCoordinateMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends Coordinate>> {
+        @Override
+        public Multimap<Empire, ? extends Coordinate> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
+            return HashMultimap.create();
+        }
+    }
 
     /** oblique (northwest-southeast) value for this coordinate */
     @JsonInclude(Include.ALWAYS)
