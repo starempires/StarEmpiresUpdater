@@ -1,0 +1,110 @@
+[
+  {
+    "name": "starbase",
+    "guns": 150,
+    "dp": 200,
+    "engines": 0,
+    "scan": 2,
+    "racks": 10,
+    "tonnage": 999,
+    "cost": 999,
+    "ar": 15,
+    "hullType": "orbital"
+  },
+  {
+    "name": "capital ship",
+    "guns": 35,
+    "dp": 40,
+    "engines": 2,
+    "scan": 1,
+    "racks": 2,
+    "tonnage": 30,
+    "cost": 28,
+    "ar": 16,
+    "hullType": "capital ship"
+  },
+  {
+    "name": "scout",
+    "guns": 1,
+    "dp": 1,
+    "engines": 3,
+    "scan": 3,
+    "racks": 0,
+    "tonnage": 2,
+    "cost": 2,
+    "ar": 0,
+    "hullType": "scout"
+  },
+  {
+    "name": "transport",
+    "guns": 2,
+    "dp": 10,
+    "engines": 2,
+    "scan": 1,
+    "racks": 5,
+    "tonnage": 15,
+    "cost": 10,
+    "ar": 1,
+    "hullType": "transport"
+  },
+  {
+    "name": "orbital",
+    "guns": 30,
+    "dp": 40,
+    "engines": 0,
+    "scan": 1,
+    "racks": 2,
+    "tonnage": 20,
+    "cost": 25,
+    "ar": 16,
+    "hullType": "orbital"
+  },
+  {
+    "name": "gunship",
+    "guns": 20,
+    "dp": 15,
+    "engines": 2,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 10,
+    "cost": 15,
+    "ar": 3,
+    "hullType": "gunship"
+  },
+  {
+    "name": "wing",
+    "guns": 5,
+    "dp": 5,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 1,
+    "ar": 1,
+    "hullType": "wing"
+  },
+  {
+    "name": "device",
+    "guns": 0,
+    "dp": 1,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 1,
+    "ar": 0,
+    "hullType": "device"
+  },
+  {
+    "name": "missile",
+    "guns": 0,
+    "dp": 1,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 1,
+    "ar": 0,
+    "hullType": "missile"
+  }
+]

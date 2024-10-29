@@ -1,0 +1,10 @@
+name,guns,dp,engines,scan,racks,tonnage,cost,ar,hull,public
+starbase,150,200,0,2,10,999,999,15,orbital,1
+capital ship,35,40,2,1,2,30,28,16,capital ship,1
+scout,1,1,3,3,0,2,2,0,scout,1
+transport,2,10,2,1,5,15,10,1,transport,1
+orbital,30,40,0,1,2,20,25,16,orbital,1
+gunship,20,15,2,0,0,10,15,3,gunship,1
+wing,5,5,0,0,0,1,1,1,wing,1
+device,0,1,0,0,0,1,1,0,device,1
+missile,0,1,0,0,0,1,1,0,missile,1
