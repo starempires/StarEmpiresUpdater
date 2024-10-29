@@ -52,14 +52,13 @@ public class SessionCreator {
 
     private String sessionName;
     private String dataDir;
-    private String outputDir;
+    private String sessionDir;
     private String configFile;
     private String empireFile;
     private String shipClassFile;
     private String hullParametersFile;
 
-    private StarEmpiresDAO dao;
-    private PropertiesUtil galaxyProperties;
+    private final StarEmpiresDAO dao;
 
     public List<String> loadItems(final String file) throws IOException {
         final Path path = FileSystems.getDefault().getPath(dataDir, file);
@@ -73,8 +72,8 @@ public class SessionCreator {
             options.addOption(Option.builder("s").argName("session name").longOpt("session").hasArg().desc("session name").required().build());
             options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
             options.addOption(Option.builder("d").argName("data dir").longOpt("datadir").hasArg().desc("data dir").required().build());
-            options.addOption(Option.builder("o").argName("output dir").longOpt("outputdir").hasArg().desc("output dir").required().build());
-            options.addOption(Option.builder("e").argName("empires data").longOpt("empiredata").hasArg().desc("empire data").required().build());
+            options.addOption(Option.builder("sd").argName("session dir").longOpt("sessiondir").hasArg().desc("session dir").required().build());
+            options.addOption(Option.builder("e").argName("empire data").longOpt("empires").hasArg().desc("empire data").required().build());
             options.addOption(Option.builder("sc").argName("ship classes").longOpt("shipclasses").hasArg().desc("ship classes").required().build());
             options.addOption(Option.builder("hp").argName("hull parameters").longOpt("hullparameters").hasArg().desc("hull parameters").required().build());
 
@@ -83,9 +82,9 @@ public class SessionCreator {
             // Parse command-line arguments
             sessionName = cmd.getOptionValue("session");
             dataDir = cmd.getOptionValue("datadir");
-            outputDir = cmd.getOptionValue("outputdir");
+            sessionDir = cmd.getOptionValue("sessiondir");
             configFile = cmd.getOptionValue("config");
-            empireFile = cmd.getOptionValue("empiredata");
+            empireFile = cmd.getOptionValue("empires");
             shipClassFile = cmd.getOptionValue("shipclasses");
             hullParametersFile = cmd.getOptionValue("hullparameters");
         } catch (ParseException e) {
@@ -97,7 +96,7 @@ public class SessionCreator {
 
     public SessionCreator(final String[] args) throws ParseException, IOException {
         extractCommandLineOptions(args);
-        dao = new JsonStarEmpiresDAO(outputDir);
+        dao = new JsonStarEmpiresDAO(sessionDir);
     }
 
     public TurnData createSession() throws IOException {
@@ -225,20 +224,20 @@ public class SessionCreator {
         try {
             final SessionCreator creator = new SessionCreator(args);
             final TurnData turnData = creator.createSession();
-            creator.saveSession(turnData);
-            final TurnData turnData2 = creator.loadSession(turnData.getSession(), turnData.getTurnNumber());
+            creator.saveTurnData(turnData);
+            final TurnData turnData2 = creator.loadTurnData(turnData.getSession(), turnData.getTurnNumber());
             log.info("Loaded turnData " + turnData2);
         } catch (Exception exception) {
             log.error("Session creation failed", exception);
         }
     }
 
-    private TurnData loadSession(final String session, final int turnNumber) throws Exception {
-        return dao.loadData(session, turnNumber);
+    private TurnData loadTurnData(final String session, final int turnNumber) throws Exception {
+        return dao.loadTurnData(session, turnNumber);
     }
 
-    private void saveSession(final TurnData turndata) throws Exception {
-        dao.saveData(turndata);
+    private void saveTurnData(final TurnData turndata) throws Exception {
+        dao.saveTurnData(turndata);
     }
 
     private Galaxy generateGalaxy(final PropertiesUtil galaxyProperties, final Map<Empire, EmpireCreation> empireCreations) throws IOException {

@@ -1,9 +1,0 @@
-hull_type,base_guns,base_dp,base_engines,base_scan,base_racks,base_tonnage,base_cost,max_guns,max_dp,max_engines,max_scan,max_racks,cost_guns,cost_dp,cost_engines,cost_scan,cost_racks,tonnage_guns,tonnage_dp,tonnage_engines,tonnage_scan,tonnage_racks,arMultiplier
-capital ship,35,40,2,1,2,30,28,-1,-1,-1,-1,-1,15,15,1.5,1.5,1.5,20,20,5,5,2,4
-scout,1,1,3,3,0,2,2,5,5,-1,-1,1,5,5,3,3,1.5,5,5,5,5,2,1
-transport,5,10,2,1,2,15,10,-1,-1,-1,-1,1,5,10,3,1.5,3,5,10,5,5,2,1
-orbital,30,40,0,1,2,20,25,-1,-1,0,-1,1,10,15,1,2,3,10,20,1,5,2,4
-gunship,20,15,2,0,0,10,15,-1,-1,-1,-1,1,15,10,2,1.5,1.5,20,10,5,5,2,2
-wing,5,5,0,0,0,1,1,15,15,0,0,0,15,15,1,1,1,20,20,1,1,1,1
-device,0,1,0,0,0,1,1,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1
-missile,0,1,0,0,0,1,1,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1

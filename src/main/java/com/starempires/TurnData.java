@@ -1,7 +1,6 @@
 package com.starempires;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
@@ -27,7 +26,10 @@ import com.starempires.objects.SitRep;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
 import com.starempires.phases.Phase;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;

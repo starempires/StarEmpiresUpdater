@@ -54,7 +54,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
-    public TurnData loadData(final String session, final int turnNumber) throws Exception {
+    public TurnData loadTurnData(final String session, final int turnNumber) throws Exception {
         final Path path = constructTurnDataPath(session, turnNumber);
         final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() {
         });
@@ -279,7 +279,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
-    public void saveData(TurnData turnData) throws Exception {
+    public void saveTurnData(final TurnData turnData) throws Exception {
         final String json = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(turnData);
         final Path path = constructTurnDataPath(turnData.getSession(), turnData.getTurnNumber());
         MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), turnData);
