@@ -3,6 +3,7 @@ package com.starempires.objects;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -14,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -32,20 +34,28 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Data
 @NoArgsConstructor(force = true)
+@SuperBuilder
 public abstract class IdentifiableObject implements Comparable<IdentifiableObject> {
 
+    /**
+     * Serialize IdentifiableObject as just its name
+     */
     static class IdentifiableObjectSerializer extends JsonSerializer<IdentifiableObject> {
         @Override
         public void serialize(IdentifiableObject object, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
             gen.writeString(object.getName());
         }
     }
+    /**
+     * Serialize Collection of IdentifiableObject as a collection of their names
+     */
     static class IdentifiableObjectCollectionSerializer extends JsonSerializer<Collection<? extends IdentifiableObject>> {
         @Override
         public void serialize(Collection<? extends IdentifiableObject> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
+            final List<String> names = objects.stream().map(IdentifiableObject::getName).sorted().toList();
             gen.writeStartArray();
-            for (IdentifiableObject object : objects) {
-                gen.writeString(object.getName());
+            for (String name : names) {
+                gen.writeString(name);
             }
             gen.writeEndArray();
         }
@@ -56,6 +66,9 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
         }
     }
 
+    /**
+     * Serialize Multimap of IdentifiableObject as a collection of their names
+     */
     static class IdentifiableObjectMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends IdentifiableObject>> {
         @Override
         public void serialize(Multimap<Empire, ? extends IdentifiableObject> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
@@ -75,6 +88,9 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
         }
     }
 
+    /**
+     * Deserialize IdentifiableObject as null, which will be replaced later
+     */
     static class DeferredIdentifiableObjectDeserializer extends JsonDeserializer<IdentifiableObject> {
         @Override
         public IdentifiableObject deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
@@ -82,16 +98,30 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
         }
     }
 
+    /**
+     * Deserialize Array of IdentifiableObject as empty Set, which will be replaced later
+     */
     static class DeferredIdentifiableObjectCollectionDeserializer extends JsonDeserializer<Set<? extends IdentifiableObject>> {
         @Override
-        public Set<IdentifiableObject> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
+        public Set<? extends IdentifiableObject> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
+            JsonToken token = p.nextToken();
+            while (token != JsonToken.END_ARRAY) {
+                token = p.nextToken();
+            }
             return Sets.newHashSet();
         }
     }
 
+    /**
+     * Deserialize Array of IdentifiableObject as empty Multimap, which will be replaced later
+     */
     static class DeferredIdentifiableObjectMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends IdentifiableObject>> {
         @Override
         public Multimap<Empire, IdentifiableObject> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
+            JsonToken token = p.nextToken();
+            while (token != JsonToken.END_ARRAY) {
+                token = p.nextToken();
+            }
             return HashMultimap.create();
         }
     }

@@ -3,7 +3,9 @@ package com.starempires.objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -12,6 +14,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author john
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ScanRecord {
 
     /** current ScanStatus */
@@ -20,7 +24,7 @@ public class ScanRecord {
     private int lastTurnScanned;
     /** Map of ScanStatus to empires that have shared that ScanStatus */
     @JsonIgnore
-    private Multimap<ScanStatus, Empire> shares = HashMultimap.create();
+    private final Multimap<ScanStatus, Empire> shares = HashMultimap.create();
 
     /**
      * Replace this record's scan status with the given status if it is more visible
@@ -47,5 +51,10 @@ public class ScanRecord {
                 .append("scan status", scanStatus)
                 .append("last scanned turn", lastTurnScanned)
                 .toString();
+    }
+
+    @JsonIgnore
+    public boolean isAnyKnownStatus() {
+        return scanStatus.isMoreVisible(ScanStatus.UNKNOWN);
     }
 }

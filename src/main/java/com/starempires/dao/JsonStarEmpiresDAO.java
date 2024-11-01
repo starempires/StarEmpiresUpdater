@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
@@ -36,9 +36,8 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     private final String dataDir;
 
     static {
-        final SimpleModule module = new SimpleModule();
-        module.addKeyDeserializer(Coordinate.class, new CoordinateKeyDeserializer());
-        MAPPER.registerModule(module);
+        MAPPER.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        MAPPER.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
     }
 
     static class CoordinateKeyDeserializer extends KeyDeserializer {

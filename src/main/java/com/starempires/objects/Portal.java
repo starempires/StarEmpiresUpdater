@@ -5,24 +5,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Sets;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
-@NoArgsConstructor
+@Setter
 public class Portal extends MappableObject {
-
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean collapsed;
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
-    private final Set<Portal> connections = new HashSet<>();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Set<Portal> connections = Sets.newHashSet();
 
     @Builder
     private Portal(final String name, final Coordinate coordinate, final boolean collapsed) {

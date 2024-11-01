@@ -11,13 +11,19 @@ import java.util.Collection;
 @Getter
 public abstract class PhaseUpdater {
 
+    static enum MapObject {
+        PORTAL,
+        SHIP,
+        STORM,
+        WORLD;
+    }
+
     protected final Phase phase;
     protected final TurnData turnData;
 
     public PhaseUpdater(final Phase phase, final TurnData turnData) { //}, final PropertiesUtil properties) {
         this.phase = phase;
         this.turnData = turnData;
-//        properties_ = properties;
     }
 
     public abstract void update();
@@ -28,6 +34,10 @@ public abstract class PhaseUpdater {
 
     public void postUpdate() {
         turnData.addNewsFooter(phase);
+    }
+
+    protected void addNewsResult(final Order order, final String text) {
+        turnData.addNews(phase, order.getEmpire(), text);
     }
 
     protected void addNewsResult(final Order order, final Empire empire, final String text) {

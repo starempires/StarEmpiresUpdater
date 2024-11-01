@@ -2,6 +2,7 @@ package com.starempires;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
@@ -29,6 +30,7 @@ import com.starempires.phases.Phase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -40,8 +42,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//@Getter
 @ToString
+@JsonPropertyOrder({"session", "turnNumber", "radius",
+        "empires", "ships", "worlds", "portals", "storms", "hullParameters", "shipClasses"})
 public class TurnData {
 
     @Getter
@@ -50,7 +53,8 @@ public class TurnData {
      * turn number this data is for
      */
     @Getter
-    private final int turnNumber;
+    @Setter
+    private int turnNumber;
     @Getter
     private final int radius;
     /**
@@ -87,6 +91,7 @@ public class TurnData {
      * map of Coordinates to Sets of Storms
      */
     @JsonIgnore
+    @Getter
     private final Multimap<Coordinate, Storm> stormCoordinates = HashMultimap.create();
     /**
      * map of Coordinate to set of Ships
@@ -122,6 +127,7 @@ public class TurnData {
      * set of destroyed ships that are potentially salvageable
      */
     @JsonIgnore
+    @Getter
     private final Set<Ship> possibleSalvages = Sets.newHashSet();
     /**
      * map of Empires to home Worlds

@@ -2,6 +2,7 @@ package com.starempires.generator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
@@ -197,10 +198,6 @@ public class SessionCreator {
                 log.info("Initialized {} scan coordinates for {}", scanCoordinates.size(), empire);
             });
 
-            // init know empires
-            empire.addKnownEmpire(empire);
-            empire.addKnownEmpire(gm);
-
             // init known ship classes
             shipClasses.forEach(empire::addKnownShipClass);
 
@@ -225,6 +222,7 @@ public class SessionCreator {
             final SessionCreator creator = new SessionCreator(args);
             final TurnData turnData = creator.createSession();
             creator.saveTurnData(turnData);
+            // reload turn data to confirm it's valid
             final TurnData turnData2 = creator.loadTurnData(turnData.getSession(), turnData.getTurnNumber());
             log.info("Loaded turnData " + turnData2);
         } catch (Exception exception) {

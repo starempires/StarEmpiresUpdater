@@ -44,8 +44,7 @@ public class Constants {
     public static final String TOKEN_EXCEPT = "except";
     public static final String TOKEN_SECTOR = "sector";
     public static final String TOKEN_SHIP = "ship";
-    public static final String TOKEN_WORLD = "world";
-    public static final String TOKEN_STORM = "storm";
+
     public static final String TOKEN_PRODUCTION = "production";
     public static final String TOKEN_OWNER = "owner";
     public static final String TOKEN_CONNECT = "connect";

@@ -1,13 +1,17 @@
 package com.starempires.objects;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.Serial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,22 +23,90 @@ import java.util.Set;
  * 
  * @author john
  */
-//@JsonSerialize(keyUsing = ScanData.CoordinateSerializer.class)
-@JsonSerialize(using = ScanData.CoordinateSerializer.class)
+@JsonSerialize(using = ScanData.ScanDataSerializer.class)
+@JsonDeserialize(using = ScanData.ScanDataDeserializer.class)
 public class ScanData extends HashMap<Coordinate, ScanRecord> {
 
-    @Serial
-    private static final long serialVersionUID = 6189455626661977070L;
+    static class ScanDataSerializer extends JsonSerializer<Map<Coordinate, ScanRecord>> {
 
-    static class CoordinateSerializer extends JsonSerializer<Map<Coordinate, ScanRecord>> {
         @Override
         public void serialize(Map<Coordinate, ScanRecord> map, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeStartObject(); // Start the JSON object
+            gen.writeStartArray(); // Start an array to hold each combined object
+
             for (Map.Entry<Coordinate, ScanRecord> entry : map.entrySet()) {
-                String key = entry.getKey().getName();
-                gen.writeObjectField(key, entry.getValue());
+                final Coordinate coord = entry.getKey();
+                final ScanRecord record = entry.getValue();
+
+                gen.writeStartObject(); // Start an object for each map entry
+                gen.writeFieldName("oblique"); // Add coordinate fields
+                gen.writeNumber(coord.getOblique());
+                gen.writeFieldName("y");
+                gen.writeNumber(coord.getY());
+
+                gen.writeFieldName("status"); // Add record status field
+                gen.writeString(record.getScanStatus().toString());
+                gen.writeFieldName("lastTurnScanned"); // Add record status field
+                gen.writeNumber(record.getLastTurnScanned());
+
+                gen.writeEndObject(); // End the object for this entry
             }
-            gen.writeEndObject(); // End the JSON object
+
+            gen.writeEndArray(); // End the array of entries
+        }
+    }
+
+    static class ScanDataDeserializer extends JsonDeserializer<Map<Coordinate, ScanRecord>> {
+
+        @Override
+        public ScanData deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+            final ScanData scanData = new ScanData();
+
+            // Expect an array start token
+            if (parser.currentToken() != JsonToken.START_ARRAY) {
+                ctxt.reportInputMismatch(this.getClass(), "Expected an array");
+            }
+            parser.nextToken();
+
+            // Process each object in the array
+            while (parser.currentToken() == JsonToken.START_OBJECT) {
+                int oblique = 0, y = 0;
+                int lastTurnScanned = 0;
+                String status = ScanStatus.UNKNOWN.toString();
+
+                // Parse fields in each JSON object
+                while (parser.nextToken() != JsonToken.END_OBJECT) {
+                    final String fieldName = parser.currentName();
+                    parser.nextToken();
+
+                    switch (fieldName) {
+                        case "oblique":
+                            oblique = parser.getIntValue();
+                            break;
+                        case "y":
+                            y = parser.getIntValue();
+                            break;
+                        case "status":
+                            status = parser.getText();
+                            break;
+                        case "lastTurnScanned":
+                            lastTurnScanned = parser.getIntValue();
+                            break;
+                        default:
+                            ctxt.handleUnexpectedToken(Coordinate.class, parser);
+                    }
+                }
+
+                // Create Coordinate and Record objects from parsed values
+                final Coordinate coord = new Coordinate(oblique, y);
+                final ScanRecord record = new ScanRecord(ScanStatus.valueOf(status.toUpperCase()), lastTurnScanned);
+
+                // Add to the map
+                scanData.put(coord, record);
+
+                parser.nextToken(); // Move to the next array element or end
+            }
+
+            return scanData;
         }
     }
 
@@ -74,8 +146,8 @@ public class ScanData extends HashMap<Coordinate, ScanRecord> {
         mergeScanStatus(coordinate, record.getScanStatus());
     }
 
-    public int mergeScanStatusAndShare(final Empire empire, final ScanData scan) {
-        return mergeScanStatusAndShare(empire, scan, scan.getCoordinates());
+    public void mergeScanStatusAndShare(final Empire empire, final ScanData scan) {
+        mergeScanStatusAndShare(empire, scan, scan.getCoordinates());
     }
 
     public int mergeScanStatusAndShare(final Empire empire, final ScanData scan,

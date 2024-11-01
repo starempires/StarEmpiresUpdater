@@ -6,16 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
 @Getter
-//@Setter
+@Setter
 public class Storm extends MappableObject {
 
     /** current storm rating */
-    private final int rating;
+    private int rating;
     /** rating fluctuations for this storm */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<Integer> fluctuations = Lists.newArrayList();

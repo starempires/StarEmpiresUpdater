@@ -3,13 +3,11 @@ package com.starempires.objects;
 import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Data
 @Builder
 public class Order {
@@ -39,8 +37,16 @@ public class Order {
         return Integer.parseInt(parameters.get(index));
     }
 
+    public String getStringParameter(final int index) {
+        return parameters.get(index);
+    }
+
     public List<String> getParameterSubList(final int startIndex) {
-        return parameters.subList(startIndex, parameters.size());
+        return getParameterSubList(startIndex, parameters.size());
+    }
+
+    public List<String> getParameterSubList(final int startIndex, final int endIndex) {
+        return parameters.subList(startIndex, endIndex);
     }
 
     public boolean getBooleanParameter(final int index) {
@@ -50,5 +56,9 @@ public class Order {
     @Override
     public String toString() {
         return orderType + " " + StringUtils.join(parameters, " ");
+    }
+
+    public int indexOfIgnoreCase(final String token) {
+        return parameters.indexOf(StringUtils.lowerCase(token));
     }
 }

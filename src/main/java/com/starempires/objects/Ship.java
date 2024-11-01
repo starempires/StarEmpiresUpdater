@@ -110,6 +110,10 @@ public class Ship extends OwnableObject {
         conditions.add(condition);
     }
 
+    public boolean hasCondition(final ShipCondition condition) {
+        return conditions.contains(condition);
+    }
+
     public void unloadCargo(final Ship ship) {
         if (cargo.remove(ship)) {
             addCondition(ShipCondition.UNLOADED_CARGO);

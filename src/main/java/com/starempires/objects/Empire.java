@@ -115,12 +115,26 @@ public class Empire extends IdentifiableObject {
         knownEmpires.add(empire);
     }
 
+    public void addKnownEmpires(final Set<Empire> empires) {
+        empires.forEach(this::addKnownEmpire);
+    }
+
     public void addKnownWorld(final World world) {
         knownWorlds.add(world);
     }
 
     public void addKnownPortal(final Portal portal) {
         knownPortals.add(portal);
+    }
+
+    public void addKnownPortal(final Portal portal, final boolean hasNavData) {
+        knownPortals.add(portal);
+        if (hasNavData) {
+            portalNavData.add(portal);
+        }
+        else {
+            portalNavData.remove(portal);
+        }
     }
 
     public void addKnownStorm(final Storm storm) {

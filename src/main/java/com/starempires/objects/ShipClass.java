@@ -4,13 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @JsonInclude(Include.NON_DEFAULT)
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true)
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 public class ShipClass extends IdentifiableObject {
 
