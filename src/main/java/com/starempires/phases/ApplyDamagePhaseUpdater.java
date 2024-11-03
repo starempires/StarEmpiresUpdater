@@ -8,23 +8,22 @@ import java.util.List;
 
 public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
 
-    private final ShipCondition destroyedCondition_;
+    private final ShipCondition destroyedCondition;
 
-    protected ApplyDamagePhaseUpdater(final ShipCondition destroyedCondition, final Phase phase,
-            final TurnData turnData) {
+    protected ApplyDamagePhaseUpdater(final ShipCondition destroyedCondition, final Phase phase, final TurnData turnData) {
         super(phase, turnData);
-        destroyedCondition_ = destroyedCondition;
+        this.destroyedCondition = destroyedCondition;
     }
 
     @Override
     public void update() {
-        List<Ship> damagedShips = turnData.shipsDamagedThisTurn();
+        final List<Ship> damagedShips = turnData.shipsDamagedThisTurn();
         damagedShips.forEach(ship -> {
             ship.applyDamageAccrued(ShipCondition.DESTROYED_IN_COMBAT);
             if (!ship.isOneShot()) {
                 final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;
                 addNews(ship.getOwner(), String.format("Ship %s now at %f%% OR ", ship, opRating));
-                ship.applyDamageAccrued(destroyedCondition_);
+                ship.applyDamageAccrued(destroyedCondition);
             }
         });
     }

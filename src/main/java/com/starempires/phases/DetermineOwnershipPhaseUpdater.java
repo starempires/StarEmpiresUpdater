@@ -8,6 +8,7 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.World;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,34 +33,28 @@ public abstract class DetermineOwnershipPhaseUpdater extends PhaseUpdater {
             empires.addAll(conqueringEmpires);
 
             final Empire newOwner;
-            if (empires.isEmpty()) {
+            if (empires.isEmpty()) { // no conquering ships -- no owner
                 newOwner = null;
             }
-            else if (empires.size() == 1) {
+            else if (empires.size() == 1) { // lone empire present becomes new owner
                 newOwner = empires.stream().findFirst().get();
             }
-            else if (empires.contains(currentOwner)) {
+            else if (empires.contains(currentOwner)) { // current owner among many empires retains ownership
                 newOwner = currentOwner;
             }
-            else {
+            else { // current owner not among empires present, so no clear owner
                 newOwner = null;
             }
 
-            if (newOwner != currentOwner) {
+            if (!Objects.equals(newOwner, currentOwner)) {
                 final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(world);
                 final String descriptor = world.isHomeworld() ? "Homeworld" : "World";
+
                 if (newOwner == null) {
-                    addNews(currentOwner, "You have lost possession of " + descriptor.toLowerCase() + " " + world);
                     addNews(newsEmpires, descriptor + " " + world + " is now unowned");
                 }
                 else {
-                    newsEmpires.remove(currentOwner);
-                    newsEmpires.remove(newOwner);
-                    addNews(currentOwner, descriptor + " " + world + " has been taken from you by " + newOwner);
-                    addNews(newOwner,
-                            "You have taken " + descriptor.toLowerCase() + " " + world + " from " + currentOwner);
-                    addNews(newsEmpires,
-                            descriptor + " " + world + " has been taken from " + currentOwner + " by " + newOwner);
+                    addNews(newsEmpires, descriptor + " " + world + " is now owned by " + newOwner);
                 }
                 world.setOwner(newOwner);
                 world.setHomeworld(false);

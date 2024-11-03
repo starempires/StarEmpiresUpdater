@@ -9,6 +9,8 @@ import com.starempires.objects.Ship;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * parameters:
@@ -16,11 +18,15 @@ import java.util.List;
  */
 public class UnloadShipPhaseUpdater extends PhaseUpdater {
 
+    final private String SHIPS_GROUP = "ships";
+    final private String PARAMETERS_REGEX = "^(<" + SHIPS_GROUP + ">)$";
+    final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
+
     public UnloadShipPhaseUpdater(final TurnData turnData) {
         super(Phase.UNLOAD_SHIPS, turnData);
     }
 
-    protected void createUnloadOrders(final Empire empire, final List<String> shipHandles) {
+    private void createUnloadOrders(final Empire empire, final List<String> shipHandles) {
         final List<Ship> ships = empire.getShips(shipHandles);
         ships.forEach(ship -> {
             if (ship.isLoaded()) {
@@ -36,7 +42,7 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
         });
     }
 
-    protected void createDeployAutoUnloadOrders() {
+    private void createDeployAutoUnloadOrders() {
         List<Order> orders = turnData.getOrders(OrderType.DEPLOY);
         orders.forEach(order -> {
             final List<String> deviceHandles = order.getParameters();
@@ -49,18 +55,21 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
         createDeployAutoUnloadOrders();
         final List<Order> orders = turnData.getOrders(OrderType.UNLOAD);
         orders.forEach(order -> {
-            final List<String> shipNames = order.getParameters();
-            // parameters are a list of empire:ship handles to unload
-            for (String shipName : shipNames) {
-                final Ship ship = turnData.getShip(shipName);
-                final Ship carrier = ship.getCarrier();
-                if (carrier == null) {
-                    addNewsResult(order, order.getEmpire(), "Ship " + ship + " is not loaded");
-                }
-                else {
-                    carrier.unloadCargo(ship);
-                    final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
-                    addNewsResult(order, newsEmpires, "Ship " + ship + " unloaded from carrier " + carrier);
+            final Matcher matcher = PATTERN.matcher(order.getParametersAsString());
+            if (matcher.matches()) {
+                final List<String> shipNames = Lists.newArrayList(matcher.group(SHIPS_GROUP).split(" "));
+                // parameters are a list of empire:ship handles to unload
+                for (String shipName : shipNames) {
+                    final Ship ship = turnData.getShip(shipName);
+                    final Ship carrier = ship.getCarrier();
+                    if (carrier == null) {
+                        addNewsResult(order, "Ship " + ship + " is not loaded");
+                    }
+                    else {
+                        carrier.unloadCargo(ship);
+                        final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
+                        addNewsResult(order, newsEmpires, "Ship " + ship + " unloaded from carrier " + carrier);
+                    }
                 }
             }
         });

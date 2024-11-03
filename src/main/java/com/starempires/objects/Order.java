@@ -53,6 +53,10 @@ public class Order {
         return Boolean.parseBoolean(parameters.get(index));
     }
 
+    public String getParametersAsString() {
+        return StringUtils.join(parameters, " ").trim();
+    }
+
     @Override
     public String toString() {
         return orderType + " " + StringUtils.join(parameters, " ");

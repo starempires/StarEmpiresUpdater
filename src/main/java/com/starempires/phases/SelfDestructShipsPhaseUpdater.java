@@ -1,6 +1,7 @@
 package com.starempires.phases;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
@@ -12,11 +13,16 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SelfDestructShipsPhaseUpdater extends PhaseUpdater {
+
+    final private String SHIPS_GROUP = "ships";
+    final private String PARAMETERS_REGEX = "^destruct (<" + SHIPS_GROUP + ">)$";
+    final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public SelfDestructShipsPhaseUpdater(final TurnData turnData) {
         super(Phase.SELF_DESTRUCT_SHIPS, turnData);
@@ -31,35 +37,19 @@ public class SelfDestructShipsPhaseUpdater extends PhaseUpdater {
         shipsInSector.forEach(ship -> {
             if (!ship.hasCondition(ShipCondition.SELF_DESTRUCTED)) {
                 ship.inflictCombatDamage(damage);
-                Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
+                final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
                 addNews(newsEmpires, "Ship " + ship + " receives " + damage + " collateral damage.");
             }
         });
     }
 
     private void destructShips(final Multimap<Coordinate, Ship> selfDestructs) {
-        selfDestructs.asMap().entrySet().forEach(entry -> {
+        selfDestructs.asMap().forEach((coordinate, destructedShips) -> {
             // for each sector where self-destruction occurs, apply collateral damage
-            int collateralTonnage = 0;
-            final Coordinate coordinate = entry.getKey();
-            final Collection<Ship> destructedShips = entry.getValue();
-            final Set<Ship> cargos = new HashSet<Ship>();
             final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(coordinate);
             // count collateral damage from destroyed ships, note their cargo
-            collateralTonnage += destructedShips.stream().map(Ship::getTonnage).mapToInt(i -> i).sum();
-            destructedShips.forEach(ship -> {
-                cargos.addAll(ship.getCargo());
-                ship.destruct();
-            });
-
-            // destroy and count collateral damage from destroyed cargo
-            collateralTonnage += cargos.stream().map(Ship::getTonnage).mapToInt(i -> i).sum();
-            cargos.forEach(ship -> {
-                addNews(newsEmpires,
-                        "Loaded cargo " + ship + " (" + plural(ship.getTonnage(), "tonne") + ") was destroyed.");
-                int dpRemaining = ship.getDpRemaining();
-                ship.inflictCombatDamage(dpRemaining);
-            });
+            final int collateralTonnage = destructedShips.stream().map(Ship::getTonnage).mapToInt(i -> i).sum();
+            destructedShips.forEach(Ship::destruct);
             applyCollateralDamage(coordinate, collateralTonnage);
         });
     }
@@ -70,24 +60,36 @@ public class SelfDestructShipsPhaseUpdater extends PhaseUpdater {
         final Multimap<Coordinate, Ship> selfDestructs = HashMultimap.create();
         orders.forEach(order -> {
             final Empire empire = order.getEmpire();
-            final List<String> handles = order.getParameters();
-            handles.forEach(handle -> {
+            final Matcher matcher = PATTERN.matcher(order.getParametersAsString());
+            final String[] handles = matcher.group(SHIPS_GROUP).split(" ");
+            for (String handle: handles) {
                 final Ship ship = empire.getShip(handle);
                 if (ship == null) {
-                    addNewsResult(order, empire, "You do not own ship " + handle);
+                    addNewsResult(order, "You do not own ship " + handle);
                 }
                 else if (ship.isStarbase()) {
-                    addNewsResult(order, empire, "Starbase " + ship + " cannot be self-destructed.");
+                    addNewsResult(order, "Starbase " + ship + " cannot be self-destructed.");
+                }
+                else if (ship.isLoaded()) {
+                    addNewsResult(order, "Ship %s is loaded onto carrier %s and cannot be self-destructed.".formatted(ship, ship.getCarrier().getHandle()));
                 }
                 else {
                     final Coordinate coordinate = ship.getCoordinate();
-                    selfDestructs.put(coordinate, ship);
                     final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(coordinate);
                     addNewsResult(order, newsEmpires,
                             "Ship " + ship + " (" + plural(ship.getTonnage(), "tonne") + ") self-destructed.");
 
+                    selfDestructs.put(coordinate, ship);
+
+                    final List<Ship> cargos = Lists.newArrayList(ship.getCargo());
+                    cargos.sort(Comparator.comparing(Ship::getHandle));
+                    for (Ship cargo: cargos) {
+                        selfDestructs.put(coordinate, cargo);
+                        addNewsResult(order, newsEmpires,
+                                "Loaded cargo " + cargo + " (" + plural(cargo.getTonnage(), "tonne") + ") self-destructed.");
+                    }
                 }
-            });
+            };
         });
         destructShips(selfDestructs);
     }
