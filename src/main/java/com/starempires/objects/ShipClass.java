@@ -75,16 +75,6 @@ public class ShipClass extends IdentifiableObject {
     }
 
     @JsonIgnore
-    public boolean isIonGenerator() {
-        return isDeviceOfType(DeviceType.ION_GENERATOR);
-    }
-
-    @JsonIgnore
-    public boolean isPollutionBomb() {
-        return isDeviceOfType(DeviceType.POLLUTION_BOMB);
-    }
-
-    @JsonIgnore
     public boolean isStarbase() {
         return "starbase".equalsIgnoreCase(name);
     }

@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,15 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(force = true)
 @SuperBuilder
 public abstract class IdentifiableObject implements Comparable<IdentifiableObject> {
+
+    public static final IdentifiableObjectComparator IDENTIFIABLE_NAME_COMPARATOR = new IdentifiableObjectComparator();
+
+    public static class IdentifiableObjectComparator implements Comparator<IdentifiableObject> {
+        @Override
+        public int compare(@NonNull final IdentifiableObject o1, @NonNull final IdentifiableObject o2) {
+            return StringUtils.compare(o1.getName(), o2.getName());
+        }
+    }
 
     /**
      * Serialize IdentifiableObject as just its name

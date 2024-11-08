@@ -9,47 +9,55 @@ import com.starempires.objects.OrderType;
 import com.starempires.objects.Portal;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
+
+    // TRANSMIT portal1 [portal2 ...] TO empire1 [empire2 ...]
+    final private String PORTALS_GROUP = "portals";
+    final private String RECIPIENT_GROUP = "recipients";
+    final private String PARAMETERS_REGEX = "^transmit (?<" + PORTALS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*$";
+    final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public TransmitPortalNavDataPhaseUpdater(final TurnData turnData) {
         super(Phase.TRANSMIT_PORTAL_NAV_DATA, turnData);
     }
 
-    private List<Empire> getRecipients(final Order order, final List<String> empireNames) {
+    private List<Empire> getRecipients(final Order order, final String[] empireNames) {
         final Empire empire = order.getEmpire();
         final List<Empire> recipients = Lists.newArrayList();
-        empireNames.forEach(empireName -> {
+        for (final String empireName: empireNames) {
             final Empire recipient = turnData.getEmpire(empireName);
             if (recipient == null) {
-                addNewsResult(order, empire, "Unknown empire " + empireName);
+                addNewsResult(order, empire, "Unknown recipient %s".formatted(empireName));
             }
             else if (empire.isKnownEmpire(recipient)) {
                 recipients.add(empire);
             }
             else {
-                addNewsResult(order, empire, "You are not in message contact with empire " + empire);
+                addNewsResult(order, empire, "You are not in message contact with empire %s".formatted(recipient));
             }
-        });
+        }
         return recipients;
     }
 
-    private List<Portal> getPortals(final Order order, final List<String> portalNames) {
+    private List<Portal> getPortals(final Order order, final String[] portalNames) {
         final Empire empire = order.getEmpire();
         final List<Portal> portals = Lists.newArrayList();
 
-        portalNames.forEach(portalName -> {
+        for (final String portalName: portalNames) {
             final Portal portal = turnData.getPortal(portalName);
             if (portal == null) {
-                addNewsResult(order, empire, "Unknown portal " + portalName);
+                addNewsResult(order, empire, "Unknown portal %s".formatted(portalName));
             }
             else if (empire.hasNavData(portal)) {
                 portals.add(portal);
             }
             else {
-                addNewsResult(order, empire, "You do not have navigation data for portal " + portal);
+                addNewsResult(order, empire, "You do not have navigation data for portal %s".formatted(portal));
             }
-        });
+        }
         return portals;
     }
 
@@ -57,24 +65,24 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
     public void update() {
         turnData.getOrders(OrderType.TRANSMIT).forEach(order -> {
             final Empire empire = order.getEmpire();
+            Matcher matcher = PATTERN.matcher(order.getParametersAsString());
+            if (matcher.matches()) {
+                final String[] portalNames = matcher.group(PORTALS_GROUP).split(" ");
+                final String[] recipientNames = matcher.group(RECIPIENT_GROUP).split(" ");
 
-            final int index = order.indexOfIgnoreCase(Constants.TOKEN_TO);
+                final List<Empire> recipients = getRecipients(order, recipientNames);
+                final List<Portal> portals = getPortals(order, portalNames);
 
-            final List<String> portalNames = order.getParameterSubList(0, index);
-            final List<String> empireNames = order.getParameterSubList(index + 1);
-
-            final List<Empire> recipients = getRecipients(order, empireNames);
-            final List<Portal> portals = getPortals(order, portalNames);
-
-            portals.forEach(portal -> {
-                recipients.forEach(recipient -> {
-                    recipient.addKnownPortal(portal);
-                    recipient.addNavData(portal);
-                    addNewsResult(order, empire,
-                            "Navigation data for portal " + portal + " given to " + recipient);
-                    addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
+                portals.forEach(portal -> {
+                    recipients.forEach(recipient -> {
+                        recipient.addKnownPortal(portal);
+                        recipient.addNavData(portal);
+                        addNewsResult(order, empire,
+                                "Navigation data for portal " + portal + " given to " + recipient);
+                        addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
+                    });
                 });
-            });
+            };
         });
     }
 }

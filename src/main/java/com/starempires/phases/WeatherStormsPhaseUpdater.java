@@ -1,7 +1,9 @@
 package com.starempires.phases;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AtomicLongMap;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
@@ -9,7 +11,6 @@ import com.starempires.objects.DeviceType;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.objects.Storm;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,17 +18,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class WeatherStormsPhaseUpdater extends PhaseUpdater {
 
+    private static final int STARBASE_PROTECTION_RANGE = 1;
+
     static class ShieldComparator implements Comparator<Ship> {
-        private static final Random random_ = new Random();
+        private static final Random random = ThreadLocalRandom.current();
 
         @Override
         public int compare(final Ship ship1, final Ship ship2) {
             int rv = ship1.getDpRemaining() - ship2.getDpRemaining();
             if (rv == 0) {
-                rv = random_.nextInt() - random_.nextInt();
+                rv = random.nextInt() - random.nextInt();
             }
             return rv;
         }
@@ -37,8 +41,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         super(Phase.WEATHER_STORMS, turnData);
     }
 
-    protected int degradeShields(final Collection<Ship> shields, final int totalRating,
-            final Collection<Empire> empires) {
+    protected int degradeShields(final Collection<Ship> shields, final int totalRating, final Collection<Empire> empires) {
         if (shields.isEmpty()) {
             return totalRating;
         }
@@ -64,37 +67,48 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         return unshieldedDamage;
     }
 
+    private void partitionShipsByEmpire(final Collection<Ship> ships, final Multimap<Empire, Ship> shipsByEmpire) {
+    }
+
     @Override
     public void update() {
         final Multimap<Coordinate, Storm> stormCoordinates = turnData.getStormCoordinates();
-        for (Map.Entry<Coordinate, Collection<Storm>> entry : stormCoordinates.asMap().entrySet()) {
+        for (final Map.Entry<Coordinate, Collection<Storm>> entry : stormCoordinates.asMap().entrySet()) {
             final Coordinate coordinate = entry.getKey();
             final Collection<Storm> storms = entry.getValue();
             final int totalRating = storms.stream().mapToInt(Storm::getRating).sum();
             if (totalRating > 0) {
-                final Set<Ship> starbases = turnData.getStarbases(coordinate);
+                // get starbases within
+                final Set<Coordinate> surroundingCoordinates = Coordinate.getSurroundingCoordinates(coordinate, STARBASE_PROTECTION_RANGE);
+                final Set<Ship> starbases = Sets.newHashSet();
+                surroundingCoordinates.forEach(c -> starbases.addAll(turnData.getStarbases(c)));
                 final Collection<Empire> empires = turnData.getEmpiresPresent(coordinate);
                 final Collection<Ship> ships = turnData.getLiveShips(coordinate);
-                if (CollectionUtils.isEmpty(starbases)) {
-                    final Collection<Ship> shields = turnData.getDeployedDevices(coordinate, DeviceType.ION_SHIELD);
-                    shields.removeIf(Ship::hasAccruedDamageExceededRemainingDp);
-                    final int unshieldedStormRating = degradeShields(shields, totalRating, empires);
+                ships.removeAll(starbases);
+
+                final Multimap<Empire, Ship> shipsByEmpire = HashMultimap.create();
+                ships.forEach(ship -> shipsByEmpire.put(ship.getOwner(), ship));
+
+                starbases.forEach(s -> {
+                    addNews(empires, "Starbase %s protects %s ships".formatted(s, s.getOwner()));
+                    shipsByEmpire.removeAll(s.getOwner());
+                });
+
+                final Collection<Ship> allShields = turnData.getDeployedDevices(coordinate, DeviceType.ION_SHIELD);
+                allShields.removeIf(Ship::hasAccruedDamageExceededRemainingDp);
+                final Multimap<Empire, Ship> shieldsByEmpire = HashMultimap.create();
+                allShields.forEach(shield -> shieldsByEmpire.put(shield.getOwner(), shield));
+
+                shipsByEmpire.asMap().forEach((empire, shipList) -> {
+                    final Collection<Ship> empireShields = shieldsByEmpire.get(empire);
+                    final int unshieldedStormRating = degradeShields(empireShields, totalRating, empires);
                     if (unshieldedStormRating > 0) {
-                        ships.forEach(ship -> {
-                            addNews(empires,
-                                    "Ship " + ship + " suffered " + unshieldedStormRating + " ion storm damage");
+                        shipList.forEach(ship -> {
+                            addNews(empires, "Ship " + ship + " suffered " + unshieldedStormRating + " ion storm damage");
                             ship.inflictStormDamage(unshieldedStormRating);
                         });
                     }
-                }
-                else {
-                    ships.removeAll(starbases);
-                    ships.forEach(ship -> {
-                        addNews(empires, "Ship " + ship
-                                + " is protected from ion storm damage by starbase "
-                                + starbases.stream().findAny().get());
-                    });
-                }
+                });
             }
         }
     }

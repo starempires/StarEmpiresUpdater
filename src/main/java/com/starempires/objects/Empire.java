@@ -18,6 +18,7 @@ import lombok.NonNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -328,7 +329,7 @@ public class Empire extends IdentifiableObject {
     }
 
     public List<Ship> getShips(final @NonNull Collection<String> handles) {
-        return handles.stream().map(this::getShip).collect(Collectors.toList());
+        return handles.stream().map(this::getShip).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public Collection<Ship> getShips(final ShipClass shipClass) {

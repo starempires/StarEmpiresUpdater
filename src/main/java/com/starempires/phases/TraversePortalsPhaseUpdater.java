@@ -1,17 +1,26 @@
 package com.starempires.phases;
 
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
-import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Order;
 import com.starempires.objects.OrderType;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TraversePortalsPhaseUpdater extends PhaseUpdater {
+
+    private static final String SHIPS_GROUP = "ships";
+    private static final String ENTRANCE_GROUP = "entrance";
+    private static final String EXIT_GROUP = "exit";
+    private static final String TRAVERSE_REGEX = "^TRAVERSE\\s+(?<" + SHIPS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)\\s+THROUGH\\s+(?<" + ENTRANCE_GROUP + ">[\\w]+)(?:\\s+(?<" + EXIT_GROUP + ">[\\w-]+))?$";
+    private static final Pattern TRAVERSE_PATTERN = Pattern.compile(TRAVERSE_REGEX, Pattern.CASE_INSENSITIVE);
 
     public TraversePortalsPhaseUpdater(final TurnData turnData) {
         super(Phase.TRAVERSE_PORTALS, turnData);
@@ -41,49 +50,67 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.TRAVERSE);
         orders.forEach(order -> {
-            final Empire empire = order.getEmpire();
-            final int index = order.indexOfIgnoreCase(Constants.TOKEN_PORTAL);
+            final Matcher traverseMatcher = TRAVERSE_PATTERN.matcher(order.getParametersAsString());
+            if (traverseMatcher.matches()) {
+                final Empire empire = order.getEmpire();
+                final List<String> shipNames = Arrays.asList(traverseMatcher.group(SHIPS_GROUP).split(" "));
+                final List<Ship> traversers = Lists.newArrayList();
+                for (final String shipName: shipNames) {
+                    final Ship ship = empire.getShip(shipName);
+                    if (ship == null) {
+                        addNewsResult(order, "Omitting unknown ship " + shipName);
+                        shipNames.remove(shipName);
+                    }
+                    else if (!ship.isAlive()) {
+                        addNewsResult(order, "Omitting destroyed ship " + ship);
+                        shipNames.remove(shipName);
+                    }
+                    else if (ship.isLoaded()) {
+                        order.addResult("Omitting loaded ship %s".formatted(ship));
+                    }
+                    else if (ship.getGunsActuallyFired() > 0) {
+                        order.addResult("Omitting attacking ship %s".formatted(ship));
+                    }
 
-            final List<String> shipHandles = order.getParameterSubList(0, index);
-            final List<Ship> ships = empire.getShips(shipHandles);
-            final String entranceName = order.getStringParameter(index + 1);
-            final String exitName = order.getStringParameter(index + 2);
-            final Portal entrance = turnData.getPortal(entranceName);
-            if (entrance == null) {
-                addNewsResult(order, empire, "No entrance portal " + entranceName + " found in sector "
-                        + ships.stream().findAny().get().getCoordinate());
-            }
-            else if (entrance.isCollapsed()) {
-                addNewsResult(order, empire, "Entrance portal " + entranceName + " is collapsed; no entry possible");
-            }
-            else {
-                final Portal exit;
-                if (exitName.equalsIgnoreCase(Constants.TOKEN_RANDOM)) {
-                    exit = entrance.selectRandomConnection();
-                    if (exit == null) {
-                        addNewsResult(order, empire, "No valid exit portal found for entrance portal " + entrance);
-                    }
-                    else {
-                        traversePortal(order, entrance, exit, ships);
-                    }
+                    traversers.add(ship);
                 }
-                else {
+                if (traversers.isEmpty()) {
+                    addNewsResult(order, "No valid movers found");
+                    return;
+                }
+
+                final String entranceName = traverseMatcher.group(ENTRANCE_GROUP);
+                final String exitName = traverseMatcher.group(EXIT_GROUP);
+
+                final Portal entrance = turnData.getPortal(entranceName);
+                if (entrance == null) {
+                    addNewsResult(order, "No entrance portal " + entranceName + " found");
+                    return;
+                }
+                if (entrance.isCollapsed()) {
+                    addNewsResult(order, "Entrance portal " + entranceName + " is collapsed; no entry possible");
+                    return;
+                }
+
+                Portal exit = null;
+                if (exitName != null ) {
                     exit = turnData.getPortal(exitName);
                     if (exit == null) {
-                        addNewsResult(order, empire,
-                                "No exit portal " + exitName + " found for entrance portal " + entrance);
+                        addNewsResult(order, "No exit portal " + exitName + " found");
+                        return;
                     }
-                    else if (exit.isCollapsed()) {
-                        addNewsResult(order, empire,
-                                "Exit portal " + exit + " is collapsed; no wormnet traversal possible");
+                    if (exit.isCollapsed()) {
+                        addNewsResult(order, "Exit portal " + exit + " is collapsed; no wormnet traversal possible");
+                        return;
                     }
-                    else if (entrance.isConnectedTo(exit)) {
-                        traversePortal(order, entrance, exit, ships);
-                    }
-                    else {
+                    if (!entrance.isConnectedTo(exit)) {
                         addNewsResult(order, empire, "Disjoint wormnet portals " + entrance + " and " + exit);
                     }
                 }
+                else {
+                    exit = entrance.selectRandomConnection();
+                }
+                traversePortal(order, entrance, exit, traversers);
             }
         });
     }

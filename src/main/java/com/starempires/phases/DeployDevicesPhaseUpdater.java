@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class DeployDevicesPhaseUpdater extends PhaseUpdater {
 
     final private String DEVICES_GROUP = "devices";
-    final private String PARAMETERS_REGEX = "^(<" + DEVICES_GROUP + ">)$";
+    final private String PARAMETERS_REGEX = "^deploy (?<" + DEVICES_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public DeployDevicesPhaseUpdater(final TurnData turnData) {

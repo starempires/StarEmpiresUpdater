@@ -1,7 +1,6 @@
 package com.starempires.phases;
 
 import com.starempires.TurnData;
-import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.HullType;
@@ -12,19 +11,34 @@ import com.starempires.objects.World;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CreateDesignsPhaseUpdater extends PhaseUpdater {
+
+    private static final String NAME_GROUP = "name";
+    private static final String WORLD_GROUP = "world";
+    private static final String HULL_TYPE_GROUP = "hulltype";
+    private static final String GUNS_GROUP = "guns";
+    private static final String ENGINES_GROUP = "engines";
+    private static final String SCAN_GROUP = "scan";
+    private static final String DP_GROUP = "dp";
+    private static final String RACKS_GROUP = "racks";
+    private static final String TONNAGE_GROUP = "tonnage";
+    private static final String DESIGN_MISSILE_REGEX = "^design\\s+(?<" + NAME_GROUP + ">\\w+)\\s++(?<" + GUNS_GROUP + ">\\d+)\\s+(?<" + TONNAGE_GROUP + ">\\d+)\\s+";
+    private static final String DESIGN_SHIP_REGEX = "^design\\s+(?<" + NAME_GROUP + ">\\w+)\\s+(?<" + WORLD_GROUP + ">\\w+)\\s+(?<" + HULL_TYPE_GROUP + ">\\w+)\\s+(?<" + GUNS_GROUP + ">\\d+)\\s+(?<"+ DP_GROUP + ">\\d+)\\s+(?<"+ ENGINES_GROUP + ">\\d+)\\s+(?<"+ SCAN_GROUP + ">\\d+)\\s+(?<"+ RACKS_GROUP + ">\\d+)$";
+    private static final Pattern DESIGN_MISSILE_PATTERN = Pattern.compile(DESIGN_MISSILE_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final Pattern DESIGN_SHIP_PATTERN = Pattern.compile(DESIGN_SHIP_REGEX, Pattern.CASE_INSENSITIVE);
+
+    public static final float DESIGN_MULTIPLIER = 0.5f;
 
     public CreateDesignsPhaseUpdater(final TurnData turnData) {
         super(Phase.CREATE_DESIGNS, turnData);
     }
 
     private void designMissile(final Order order, final String className, final int guns, final int tonnage) {
-        final double tonnageCost = turnData.getDoubleParameter(Constants.PARAMETER_MISSILE_TONNAGE_COST,
-                Constants.DEFAULT_MISSILE_TONNAGE_COST);
-
         final HullParameters hdp = turnData.getHullParameters(HullType.MISSILE);
-        final int cost = hdp.getCost(guns, tonnage, tonnageCost);
+        final int cost = hdp.getCost(guns, tonnage);
         final Empire empire = order.getEmpire();
 
         final ShipClass shipClass = ShipClass.builder()
@@ -40,33 +54,38 @@ public class CreateDesignsPhaseUpdater extends PhaseUpdater {
                 .hullType(HullType.MISSILE)
                 .build();
         turnData.addShipClass(shipClass);
-
         empire.addKnownShipClass(shipClass);
-        addNewsResult(order, empire, "You have designed new missile class " + className);
+        addNewsResult(order, "You have designed new missile class " + className);
     }
 
     private void designShip(final Order order, final String className, final String worldName,
-            final String hullTypeName, final int guns, final int dp,
-            final int engines, final int scan, final int racks) {
+                            final String hullTypeName, final int guns, final int dp,
+                            final int engines, final int scan, final int racks) {
         final HullType hullType = EnumUtils.getEnum(HullType.class, hullTypeName.toUpperCase());
         final HullParameters hdp = turnData.getHullParameters(hullType);
         final int cost = hdp.getCost(guns, dp, engines, scan, racks);
         final int tonnage = hdp.getTonnage(guns, dp, engines, scan, racks);
         final double arMultiplier = hdp.getArMultiplier();
         final int ar = (int) Math.ceil(dp * arMultiplier);
-
-        final double designMultiplier = turnData.getDoubleParameter(Constants.PARAMETER_DESIGN_MULTIPLIER,
-                Constants.DEFAULT_DESIGN_MULTIPLIER);
-        final int fee = (int) Math.ceil(cost * designMultiplier);
+        final int fee = (int) Math.ceil(cost * DESIGN_MULTIPLIER);
 
         final World world = turnData.getWorld(worldName);
         final Empire empire = order.getEmpire();
-        if (world.getOwner().equals(empire)) {
-            if (!world.isInterdicted()) {
-                int stockpile = world.getStockpile();
-                if (fee <= stockpile) {
+        if (!world.isOwnedBy(empire)) {
+            addNewsResult(order, empire, "You do not own world " + worldName);
+            return;
+        }
+        if (world.isInterdicted()) {
+            addNewsResult(order, empire, "World " + worldName + " is interdicted; no designs possible.");
+        }
 
-                    final ShipClass shipClass = ShipClass.builder()
+        int stockpile = world.getStockpile();
+        if (fee <= stockpile) {
+            addNewsResult(order, "World " + worldName + " has insufficient stockpile to pay design fee " + fee + " RU.");
+            return;
+        }
+
+        final ShipClass shipClass = ShipClass.builder()
                             .name(className)
                             .guns(guns)
                             .dp(dp)
@@ -79,48 +98,36 @@ public class CreateDesignsPhaseUpdater extends PhaseUpdater {
                             .hullType(HullType.MISSILE)
                             .build();
 
-                    empire.addKnownShipClass(shipClass);
-                    stockpile = world.adjustStockpile(-fee);
-                    addNewsResult(order, empire, "You have designed new " + hullTypeName + " class " + className
+        turnData.addShipClass(shipClass);
+        empire.addKnownShipClass(shipClass);
+        stockpile = world.adjustStockpile(-fee);
+        addNewsResult(order, "You have designed new " + hullTypeName + " class " + className
                             + " (" + fee + " fee; " + stockpile + " RU remaining).");
-                }
-                else {
-                    addNewsResult(order, empire,
-                            "World " + worldName + " has insufficient stockpile to pay design fee " + fee + " RU.");
-                }
-            }
-            else {
-                addNewsResult(order, empire, "World " + worldName + " is interdicted; no designs possible.");
-            }
-        }
-        else {
-            addNewsResult(order, empire, "You do not own world " + worldName);
-        }
     }
 
     @Override
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.DESIGN);
         orders.forEach(order -> {
-            final String designType = order.getStringParameter(0);
-            if (designType.equalsIgnoreCase(Constants.TOKEN_MISSILE)) {
-                final String className = order.getStringParameter(1);
-                final int guns = order.getIntParameter(2);
-                final int tonnage = order.getIntParameter(3);
+            final Matcher missileMatcher = DESIGN_MISSILE_PATTERN.matcher(order.getParametersAsString());
+            final Matcher shipMatcher = DESIGN_SHIP_PATTERN.matcher(order.getParametersAsString());;
+            if (missileMatcher.matches()) {
+                final String className = missileMatcher.group(NAME_GROUP);
+                final int guns = Integer.parseInt(missileMatcher.group(GUNS_GROUP));
+                final int tonnage = Integer.parseInt(missileMatcher.group(TONNAGE_GROUP));
                 designMissile(order, className, guns, tonnage);
-            }
-            else {
-                final String className = order.getStringParameter(1);
-                final String worldName = order.getStringParameter(2);
-                final String hullTypeName = order.getStringParameter(3);
-                final int guns = order.getIntParameter(4);
-                final int dp = order.getIntParameter(5);
-                final int engines = order.getIntParameter(6);
-                final int scan = order.getIntParameter(7);
-                final int racks = order.getIntParameter(8);
+            } else if (shipMatcher.matches()) {
+                final String className = shipMatcher.group(NAME_GROUP);
+                final String worldName = shipMatcher.group(WORLD_GROUP);
+                final String hullTypeName = shipMatcher.group(HULL_TYPE_GROUP);
+                final int guns = Integer.parseInt(shipMatcher.group(GUNS_GROUP));
+                final int dp = Integer.parseInt(shipMatcher.group(DP_GROUP));
+                final int engines = Integer.parseInt(shipMatcher.group(ENGINES_GROUP));
+                final int scan = Integer.parseInt(shipMatcher.group(SCAN_GROUP));
+                final int racks = Integer.parseInt(shipMatcher.group(RACKS_GROUP));
                 designShip(order, className, worldName, hullTypeName, guns, dp, engines, scan, racks);
             }
+            // TODO unknown orders
         });
     }
-
 }

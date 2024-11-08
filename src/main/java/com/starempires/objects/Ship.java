@@ -365,11 +365,6 @@ public class Ship extends OwnableObject {
         return shipClass.isPortalHammer();
     }
 
-    @JsonIgnore
-    public boolean isIonGenerator() {
-        return shipClass.isIonGenerator();
-    }
-
     public boolean hasReceivedDamage() {
         return damageAccrued > 0;
     }

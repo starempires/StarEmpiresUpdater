@@ -11,12 +11,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
 
     static final class HomeworldComparator implements Comparator<World> {
 
-        private static final Random RANDOM = new Random();
+        private static final Random RANDOM = ThreadLocalRandom.current();
         private final TurnData turnData;
         private final Empire empire;
 
@@ -45,7 +46,6 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
             }
             return rv;
         }
-
     }
 
     public RelocateHomeworldsPhaseUpdater(final TurnData turnData) {
@@ -62,11 +62,11 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
             ownedWorlds.sort(new HomeworldComparator(empire, turnData));
             final World homeworld = ownedWorlds.get(0);
             turnData.setHomeworld(empire, homeworld);
-            homeworld.setProductionMultiplier(2.0);
+            homeworld.setProductionMultiplier(2.0); // TODO need to reset this the following turn after production
             final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(homeworld);
             newsEmpires.remove(empire);
             addNews(empire, "You have relocated your homeworld to " + homeworld);
-            addNews(newsEmpires, "World " + homeworld + " is now the new homeworld for " + empire.getName());
+            addNews(newsEmpires, "World %s is now the %s homeworld".formatted(homeworld, empire.getName()));
         }
     }
 

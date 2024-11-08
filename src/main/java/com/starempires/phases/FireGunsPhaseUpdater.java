@@ -14,7 +14,6 @@ import com.starempires.objects.Ship;
 import lombok.NonNull;
 import org.apache.commons.lang3.EnumUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,15 +33,17 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
     final static private String LOCATION_GROUP = "location";
 
     // parameters are FIRE [ascending|descending] (oblique,y) AT empire1 [empire2 ...]
-    final static private String COORDINATE_PARAMETERS_REGEX = "^fire\\s*(?<" + TARGET_ORDER_GROUP + ">asc|desc)?\\s*(?<" + COORDINATE_GROUP + ">\\(?-?[0-9]+,\\s*-?[0-9]+\\)?)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
-    // parameters are FIRE [ascending|descending] location AT empire1 [empire2 ...]
-    final static private String LOCATION_PARAMETERS_REGEX = "^fire\\s*(?<" + TARGET_ORDER_GROUP + ">asc|desc)?\\s*(?<" + LOCATION_GROUP + ">\\w+)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
+    final static private String COORDINATE_PARAMETERS_REGEX = "^fire\\s+(?<" + COORDINATE_GROUP + ">\\(?-?[0-9]+,\\s*-?[0-9]+\\)?)\\s+(asc|desc)?\\s+at";
+    // parameters are FIRE [ascending|descending] @location AT empire1 [empire2 ...]
+    final static private String LOCATION_PARAMETERS_REGEX = "^fire\\s+@(?<" + LOCATION_GROUP + ">\\w+)\\s+(asc|desc)?\\s+at";
     // parameters are FIRE [ascending|descending] ship1 [ship2 ...] AT empire1 [empire2 ...]
-    final static private String SHIPS_PARAMETERS_REGEX = "^fire\\s*(?<" + TARGET_ORDER_GROUP + ">asc|desc)?\\s*(?<" + SHIPS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
+    final static private String SHIPS_PARAMETERS_REGEX = "^fire\\s+(?<" + SHIPS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)\\s+(asc|desc)?\\s+at";
+    final static private String TARGET_PARAMETERS_REGEX = "^(?<" + TARGET_ORDER_GROUP + ">asc|desc)?\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\\\w]+(?:\\\\s+[\\\\w]+)*)$";
 
     final static private Pattern COORDINATE_PATTERN = Pattern.compile(COORDINATE_PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
     final static private Pattern LOCATION_PATTERN = Pattern.compile(LOCATION_PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
     final static private Pattern SHIPS_PATTERN = Pattern.compile(SHIPS_PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
+    final static private Pattern TARGET_PATTERN = Pattern.compile(TARGET_PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     static enum TargetOrder {
         ASCENDING,
@@ -50,10 +51,10 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
     }
 
     static class TargetComparator implements Comparator<Ship> {
-        private final TargetOrder targetOrder_;
+        private final TargetOrder targetOrder;
 
         public TargetComparator(@NonNull final TargetOrder targetOrder) {
-            targetOrder_ = targetOrder;
+            this.targetOrder = targetOrder;
         }
 
         @Override
@@ -63,17 +64,17 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                 rv = Boolean.compare(ship1.isMissile(), ship2.isMissile());
                 if (rv == 0) {
                     rv = ship1.getDpRemaining() - ship2.getDpRemaining();
-                    if (targetOrder_ == TargetOrder.DESCENDING) {
+                    if (targetOrder == TargetOrder.DESCENDING) {
                         rv = -rv;
                     }
                     if (rv == 0) {
                         rv = Double.compare(ship1.getOperationRating(), ship2.getOperationRating());
-                        if (targetOrder_ == TargetOrder.DESCENDING) {
+                        if (targetOrder == TargetOrder.DESCENDING) {
                             rv = -rv;
                         }
                         if (rv == 0) {
                             rv = ship1.getTonnage() - ship2.getTonnage();
-                            if (targetOrder_ == TargetOrder.DESCENDING) {
+                            if (targetOrder == TargetOrder.DESCENDING) {
                                 rv = -rv;
                             }
                             if (rv == 0) {
@@ -125,7 +126,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
      *            The attacker in handle:guns-to-fire format
      * @return Attacking Ship object with guns readied to fire
      */
-    protected Ship getAttacker(final Order order, final String attackerGun) {
+    private Ship getAttacker(final Order order, final String attackerGun) {
         final String[] tokens = attackerGun.split(":");
         final String handle;
         final int gunsToFire;
@@ -162,7 +163,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         }
     }
 
-    Ship getNextGunship(final List<Ship> gunships) {
+    private Ship getNextGunship(final List<Ship> gunships) {
         Ship rv = null;
         boolean done = false;
         while (!done) {
@@ -198,7 +199,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         return missile;
     }
 
-    public void resolveCombat(final Order order, final List<Ship> gunships, TreeMultimap<Integer, Ship> missiles,
+    private void resolveCombat(final Order order, final List<Ship> gunships, TreeMultimap<Integer, Ship> missiles,
             final List<Ship> targets) {
         int totalUnfiredGuns = gunships.stream().map(Ship::getUnfiredGuns).mapToInt(i -> i).sum();
 
@@ -230,11 +231,11 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         }
     }
 
-    private List<Ship> gatherValidTargets(final Order order, final List<String> targetNames, final Coordinate coordinate) {
-        return targetNames.stream().flatMap(targetName -> {
-            final Empire empire = turnData.getEmpire(targetName);
+    private List<Ship> gatherValidTargets(final Order order, final List<String> empireNames, final Coordinate coordinate) {
+        return empireNames.stream().flatMap(empireName -> {
+            final Empire empire = turnData.getEmpire(empireName);
             if (empire == null) {
-                order.addResult("Skipping unknown target empire %s".formatted(targetName));
+                order.addResult("Skipping unknown target empire %s".formatted(empireName));
                 return Stream.of();
             }
             else {
@@ -247,7 +248,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
 
     private List<Ship> gatherValidAttackers(final Order order, final List<Ship> possibleAttackers) {
         final Empire empire = order.getEmpire();
-        List<Ship> validAttackers = Lists.newArrayList();
+        final List<Ship> validAttackers = Lists.newArrayList();
         for (final Ship attacker: possibleAttackers) {
             if (!attacker.isAlive()) {
                 order.addResult("Omitting destroyed attacker %s".formatted(attacker));
@@ -271,71 +272,85 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         return validAttackers;
     }
 
+    private List<Ship> getValidAttackers(@NonNull final Order order) {
+        // parse the order according to its format
+        final Matcher coordinateMatcher = COORDINATE_PATTERN.matcher(order.getParametersAsString());
+        final Matcher locationMatcher = LOCATION_PATTERN.matcher(order.getParametersAsString());
+        final Matcher shipsMatcher = SHIPS_PATTERN.matcher(order.getParametersAsString());
+
+        List<Ship> possibleAttackers = Lists.newArrayList();
+        Empire empire = order.getEmpire();
+        if (coordinateMatcher.matches()) {
+            String coordinateText = coordinateMatcher.group(COORDINATE_GROUP);
+            Coordinate coordinate = Coordinate.parse(coordinateText);
+            possibleAttackers.addAll(empire.getLiveShips(coordinate));
+        } else if (locationMatcher.matches()) {
+            String location = locationMatcher.group(LOCATION_GROUP);
+            MappableObject mapObject = turnData.getWorld(location);
+            if (mapObject == null) {
+                mapObject = turnData.getPortal(location);
+                if (mapObject == null) {
+                    mapObject = turnData.getStorm(location);
+                }
+            }
+            if (mapObject == null) {
+                addNewsResult(order, "Unknown location %s".formatted(location));
+            } else {
+                possibleAttackers.addAll(empire.getLiveShips(mapObject.getCoordinate()));
+            }
+        } else if (shipsMatcher.matches()) {
+            final String attackerNames = shipsMatcher.group(SHIPS_GROUP);
+            for (String attackerName : attackerNames.split(" ")) {
+                Ship ship = empire.getShip(attackerName);
+                if (ship == null) {
+                    order.addResult("Omitting unknown attacker %s".formatted(attackerName));
+                } else {
+                    possibleAttackers.add(ship);
+                }
+            }
+        }
+
+        return gatherValidAttackers(order, possibleAttackers);
+    }
+
+    private List<Ship> getSortedValidTargets(@NonNull final Order order, final Coordinate coordinate) {
+        final Matcher targetMatcher = TARGET_PATTERN.matcher(order.getParametersAsString());
+
+        List<Ship> validTargets = Lists.newArrayList();
+        if (!targetMatcher.matches()) {
+            String[] targetEmpires = targetMatcher.group(TARGETS_GROUP).split(" ");
+            String targetOrderText = targetMatcher.group(TARGET_ORDER_GROUP);
+            final TargetOrder targetOrder = EnumUtils.getEnum(TargetOrder.class, targetOrderText.toUpperCase().trim(), TargetOrder.ASCENDING);
+            final TargetComparator targetComparator = new TargetComparator(targetOrder);
+            for (final String targetEmpire: targetEmpires) {
+                final Empire empire = turnData.getEmpire(targetEmpire);
+                if (empire == null) {
+                    order.addResult("Skipping unknown target empire %s".formatted(targetEmpire));
+                }
+                else {
+                    final List<Ship> empireTargets = Lists.newArrayList(empire.getShips(coordinate));
+                    order.addResult("Found %d targets for empire %s".formatted(empireTargets.size(), empire));
+                    empireTargets.sort(targetComparator);
+                    validTargets.addAll(empireTargets);
+                }
+            }
+        }
+        return validTargets;
+    }
+
     @Override
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.FIRE);
         orders.forEach(order -> {
-            // parse the order according to its format
-            final Matcher coordinateMatcher = COORDINATE_PATTERN.matcher(order.getParametersAsString());
-            final Matcher locationMatcher = LOCATION_PATTERN.matcher(order.getParametersAsString());
-            final Matcher shipsMatcher = SHIPS_PATTERN.matcher(order.getParametersAsString());
-
-            String targetOrderText = TargetOrder.ASCENDING.toString();
-            List<String> targetNames = Lists.newArrayList();
-            List<Ship> possibleAttackers = Lists.newArrayList();
-            List<Ship> validAttackers = Lists.newArrayList();
-            Empire empire = order.getEmpire();
-            if (coordinateMatcher.matches()) {
-                targetOrderText = coordinateMatcher.group(TARGET_ORDER_GROUP);
-                String coordinateText = coordinateMatcher.group(COORDINATE_GROUP);
-                targetNames = Arrays.asList(coordinateMatcher.group(TARGETS_GROUP).split(" "));
-                Coordinate coordinate = Coordinate.parse(coordinateText);
-                possibleAttackers.addAll(empire.getLiveShips(coordinate));
-            }
-            else if (locationMatcher.matches()) {
-                targetOrderText = locationMatcher.group(TARGET_ORDER_GROUP);
-                String location = locationMatcher.group(LOCATION_GROUP);
-                targetNames = Arrays.asList(locationMatcher.group(TARGETS_GROUP).split(" "));
-                MappableObject mapObject = turnData.getWorld(location);
-                if (mapObject == null) {
-                    mapObject = turnData.getPortal(location);
-                    if (mapObject == null) {
-                        mapObject = turnData.getStorm(location);
-                    }
-                }
-                if (mapObject == null) {
-                    addNewsResult(order, "Unknown location %s".formatted(location));
-                }
-                else {
-                    possibleAttackers.addAll(empire.getLiveShips(mapObject.getCoordinate()));
-                }
-            }
-            else if (shipsMatcher.matches()) {
-                targetOrderText = shipsMatcher.group(TARGET_ORDER_GROUP);
-                final String attackerNames = shipsMatcher.group(SHIPS_GROUP);
-                targetNames = Arrays.asList(shipsMatcher.group(TARGETS_GROUP).split(" "));
-                for (String attackerName: attackerNames.split(" ")) {
-                    Ship ship = empire.getShip(attackerName);
-                    if (ship == null) {
-                        order.addResult("Omitting unknown attacker %s".formatted(attackerName));
-                    }
-                    else {
-                        possibleAttackers.add(ship);
-                    }
-                }
-            }
-            validAttackers.addAll(gatherValidAttackers(order, possibleAttackers));
-
+            List<Ship> validAttackers = getValidAttackers(order);
             if (validAttackers.isEmpty()) {
                 order.addResult("No valid attackers found");
                 return;
             }
 
-            TargetOrder targetOrder = EnumUtils.getEnum(TargetOrder.class, targetOrderText.toUpperCase().trim(), TargetOrder.ASCENDING);
-
-            final Coordinate coordinate = validAttackers.stream().findAny().get().getCoordinate();
-            final List<Ship> targets = gatherValidTargets(order, targetNames, coordinate);
-            if (targets.isEmpty()) {
+            final Coordinate coordinate = validAttackers.stream().findAny().map(Ship::getCoordinate).get();
+            List<Ship> validTargets = getSortedValidTargets(order, coordinate);
+            if (validTargets.isEmpty()) {
                 order.addResult("No valid targets found");
                 return;
             }
@@ -344,11 +359,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
             final TreeMultimap<Integer, Ship> missiles = TreeMultimap.create(Ordering.natural(), ATTACKER_COMPARATOR);
             partitionAttackers(order, validAttackers, gunships, missiles);
             validAttackers.sort(ATTACKER_COMPARATOR);
-
-            final List<Ship> sortedTargets = Lists.newArrayList(targets);
-            final TargetComparator targetComparator = new TargetComparator(targetOrder);
-            sortedTargets.sort(targetComparator);
-            resolveCombat(order, gunships, missiles, sortedTargets);
+            resolveCombat(order, gunships, missiles, validTargets);
         });
     }
 }

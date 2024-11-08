@@ -15,9 +15,7 @@ public class Constants {
     public static final String PARAMETER_SELF_DESTRUCT_TONNAGE_INTERVAL = "selfDestructTonnageInterval";
 
     /* default values for session parameters */
-    public static final float DEFAULT_BLOCKADE_THRESHOLD = 2.0f;
     public static final float DEFAULT_DESIGN_MULTIPLIER = 0.5f;
-    public static final int DEFAULT_GENERATED_STORM_RATING = 7;
     public static final float DEFAULT_INTERDICTION_THRESHOLD = 3.0f;
     public static final float DEFAULT_MISSILE_TONNAGE_COST = 13.5f;
     public static final float DEFAULT_ORBITAL_REPAIR_DP_PER_RU = 3.0f;

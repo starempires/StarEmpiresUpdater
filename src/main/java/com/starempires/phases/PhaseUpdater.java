@@ -2,9 +2,12 @@ package com.starempires.phases;
 
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
+import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.MappableObject;
 import com.starempires.objects.Order;
 import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
 
@@ -72,5 +75,16 @@ public abstract class PhaseUpdater {
             rv += suffix;
         }
         return rv;
+    }
+
+    protected Coordinate getCoordinateFromLocation(final String location) {
+        final MappableObject mapObject = ObjectUtils.firstNonNull(turnData.getWorld(location),turnData.getPortal(location),
+                turnData.getStorm(location));
+        if (mapObject == null) {
+            return null;
+        }
+        else {
+            return mapObject.getCoordinate();
+        }
     }
 }

@@ -20,7 +20,7 @@ public class LoadShipPhaseUpdater extends PhaseUpdater {
 
     final private String CARGO_GROUP = "cargo";
     final private String CARRIER_GROUP = "carrier";
-    final private Pattern PATTERN = Pattern.compile("^load (<"+ CARGO_GROUP+ ">) onto (<" + CARRIER_GROUP + ">)$", Pattern.CASE_INSENSITIVE);
+    final private Pattern PATTERN = Pattern.compile("^load (?<"+ CARGO_GROUP + ">[\\w]+(?:\\s+[\\w]+)*) onto (?<" + CARRIER_GROUP + ">([\\w]+)$", Pattern.CASE_INSENSITIVE);
 
     public LoadShipPhaseUpdater(final TurnData turnData) {
         super(Phase.LOAD_SHIPS, turnData);

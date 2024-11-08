@@ -1,13 +1,14 @@
 package com.starempires.phases;
 
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
-import com.starempires.objects.DeviceType;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Ship;
 import com.starempires.objects.World;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+
+import static com.starempires.objects.IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR;
 
 public class ProduceResourceUnitsPhaseUpdater extends PhaseUpdater {
 
@@ -17,30 +18,20 @@ public class ProduceResourceUnitsPhaseUpdater extends PhaseUpdater {
 
     @Override
     public void update() {
-        final Collection<World> worlds = turnData.getAllWorlds();
+        final List<World> worlds = Lists.newArrayList(turnData.getAllWorlds());
+        worlds.sort(IDENTIFIABLE_NAME_COMPARATOR);
         worlds.stream().filter(World::isOwned).forEach(world -> {
             final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(world);
-            final Collection<Ship> devices = turnData.getDeployedDevices(world, DeviceType.POLLUTION_BOMB);
             final double multiplier = world.getProductionMultiplier();
             final int production = world.getProduction();
-            final AtomicInteger amount = new AtomicInteger();
-            amount.set((int) Math.ceil(production * multiplier));
+            final int amount = (int) Math.ceil(production * multiplier);
             String text = "World " + world + " produced " + amount + " RU";
             if (multiplier != 1.0) {
                 text += " (" + production + " x " + multiplier + ")";
             }
             addNews(newsEmpires, text);
-            devices.forEach(device -> {
-                if (world.isHomeworld()) {
-                    addNews(newsEmpires, "Pollution bomb " + device + " has no effect on homeworld " + world);
-                }
-                else {
-                    addNews(newsEmpires, "Pollution bomb " + device + " reduces production of world " +
-                            world + " by " + device.getGuns());
-                    amount.addAndGet(-device.getGuns());
-                }
-            });
-            world.adjustStockpile(Math.max(amount.get(), 0));
+            world.adjustStockpile(Math.max(amount, 0));
+            world.setProductionMultiplier(1.0); // reset any production modifiers after production
         });
     }
 }

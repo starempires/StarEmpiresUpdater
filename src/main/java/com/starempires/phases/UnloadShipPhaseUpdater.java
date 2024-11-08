@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class UnloadShipPhaseUpdater extends PhaseUpdater {
 
     final private String SHIPS_GROUP = "ships";
-    final private String PARAMETERS_REGEX = "^(<" + SHIPS_GROUP + ">)$";
+    final private String PARAMETERS_REGEX = "^unload\\s*(?<" + SHIPS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public UnloadShipPhaseUpdater(final TurnData turnData) {

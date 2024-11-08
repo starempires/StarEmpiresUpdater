@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.jetbrains.annotations.NotNull;
 
 public enum DeviceType {
-    ION_GENERATOR,
     ION_SHIELD,
-    POLLUTION_BOMB,
     PORTAL_HAMMER;
 
     @JsonValue

@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class HullParameters {
+
+    public static final float MISSILE_TONNAGE_COST = 13.5f;
 
     private final HullType hullType;
     private final double arMultiplier;
@@ -40,8 +44,8 @@ public class HullParameters {
         return (int) Math.ceil(Math.exp(value / divisor));
     }
 
-    public int getCost(final int guns, final int tonnage, final double tonnageCost) {
-        return (int) Math.round(Math.exp(guns / (tonnageCost * tonnage)));
+    public int getCost(final int guns, final int tonnage) {
+        return (int) Math.round(Math.exp(guns / MISSILE_TONNAGE_COST * tonnage));
     }
 
     public int getCost(final int guns, final int dp, final int engines, final int scan, final int racks) {
@@ -62,6 +66,6 @@ public class HullParameters {
 
     @Override
     public String toString() {
-        return hullType.toString();
+        return Objects.toString(hullType);
     }
 }

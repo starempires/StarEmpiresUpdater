@@ -31,7 +31,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
         }).filter(Objects::nonNull).collect(Collectors.toList());
         recipients.forEach(recipient -> {
             empire.removeCoordinateScanAccess(recipient, coordinates);
-            addNewsResult(order, empire, "You have denied empire " + recipient + " access to "
+            addNewsResult(order, "You have denied empire " + recipient + " access to "
                     + plural(coordinates.size(), "sector") + " of scan data");
         });
     }
@@ -42,7 +42,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.removeShipScanAccess(recipient, ships);
-            addNewsResult(order, empire, "You have denied empire " + recipient
+            addNewsResult(order, "You have denied empire " + recipient
                     + " access to scan data from " + plural(ships.size(), "ship"));
         });
     }
@@ -53,8 +53,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.removeShipClassScanAccess(recipient, shipClasses);
-            addNewsResult(order, empire,
-                    "You have denied empire " + recipient + " access to scan data from "
+            addNewsResult(order, "You have denied empire " + recipient + " access to scan data from "
                             + plural(shipClasses.size(), "ship class", Constants.SUFFIX_ES));
         });
     }

@@ -5,14 +5,36 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public abstract class OwnableObject extends MappableObject {
+
+    public static final ObjectOwnerComparator OWNER_COMPARATOR =new ObjectOwnerComparator();
+
+    public static class ObjectOwnerComparator implements Comparator<OwnableObject> {
+        @Override
+        public int compare(@NonNull final OwnableObject o1, @NonNull final OwnableObject o2) {
+            return Objects.compare(o1.getOwner(), o2.getOwner(), (e1, e2) -> {
+                if (e1 == null) {
+                    return e2 == null ? 0 : -1;
+                }
+                else if (e2 == null) {
+                    return 1;
+                }
+                else {
+                    return StringUtils.compare(e1.getName(), e2.getName());
+                }
+            });
+        }
+    }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonSerialize(using = IdentifiableObjectSerializer.class)
