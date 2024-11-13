@@ -1,18 +1,24 @@
 package com.starempires.phases;
 
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.MappableObject;
 import com.starempires.objects.Order;
+import com.starempires.objects.Ship;
+import com.starempires.objects.ShipClass;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 public abstract class PhaseUpdater {
+
+    protected static final String ALL_SHIPS_TOKEN = "all";
 
     static enum MapObject {
         PORTAL,
@@ -86,5 +92,39 @@ public abstract class PhaseUpdater {
         else {
             return mapObject.getCoordinate();
         }
+    }
+
+    protected List<Ship> getShipsByHandle(final Order order, final List<String> shipHandles) {
+        final Empire empire = order.getEmpire();
+        final List<Ship> validShips = Lists.newArrayList();
+        if (shipHandles.contains(ALL_SHIPS_TOKEN)) {
+            validShips.addAll(empire.getLiveShips());
+        }
+        else {
+            shipHandles.forEach(shipHandle -> {
+                if (shipHandle.startsWith("@")) { //ship class
+                    final String shipClassName = shipHandle.substring(1);
+                    final ShipClass shipClass = turnData.getShipClass(shipClassName);
+                    if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
+                        addNewsResult(order, "You have no information about ship class " + shipClassName);
+                    }
+                    else {
+                        final Collection<Ship> shipsOfClass = empire.getShips(shipClass).stream().filter(Ship::isAlive).toList();
+                        validShips.addAll(shipsOfClass);
+                    }
+                }
+                else {
+                    final Ship ship = empire.getShip(shipHandle);
+                    if (ship == null) {
+                        addNewsResult(order, "You do not own ship " + shipHandle);
+                    } else if (!ship.isAlive()) {
+                        addNewsResult(order, "Ship " + ship + " is destroyed");
+                    } else {
+                        validShips.add(ship);
+                    }
+                }
+            });
+        }
+        return validShips;
     }
 }

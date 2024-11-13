@@ -346,6 +346,12 @@ public class Empire extends IdentifiableObject {
                 .collect(Collectors.toSet());
     }
 
+    public Set<Ship> getLiveShips() {
+        return getShips().stream()
+                .filter(Ship::isAlive)
+                .collect(Collectors.toSet());
+    }
+
     public Ship getStarbase(final Coordinate coordinate) {
         return getShips(coordinate).stream()
                 .filter(Ship::isStarbase)
