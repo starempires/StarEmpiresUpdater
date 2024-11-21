@@ -134,6 +134,10 @@ public class Ship extends OwnableObject {
         return carrier != null;
     }
 
+    public boolean hasLoadedCargo() {
+        return !cargo.isEmpty();
+    }
+
     public boolean wasJustUnloaded() {
         return conditions.contains(ShipCondition.UNLOADED_FROM_CARRIER);
     }
@@ -417,6 +421,10 @@ public class Ship extends OwnableObject {
     @JsonIgnore
     public int getEmptyRacks() {
         return getRacks() - cargo.stream().mapToInt(Ship::getTonnage).sum();
+    }
+
+    public boolean canLoadCargo(final Ship ship) {
+        return getEmptyRacks() >= ship.getTonnage();
     }
 
     public void toggleTransponder(final boolean state) {

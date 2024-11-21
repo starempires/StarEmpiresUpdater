@@ -17,14 +17,14 @@ public class Fleet {
     private final Map<String, Ship> shipsBySerialNumber = Maps.newHashMap();
 
     public void addShip(final Ship ship) {
-        shipsByName.put(ship.getHandle(), ship);
-        shipsBySerialNumber.put(ship.getSerialNumber(), ship);
+        shipsByName.put(ship.getHandle().toLowerCase(), ship);
+        shipsBySerialNumber.put(ship.getSerialNumber().toLowerCase(), ship);
         shipsByClass.put(ship.getShipClass(), ship);
         shipsByCoordinate.put(ship.getCoordinate(), ship);
     }
 
     public Ship getShipByHandle(final String handle) {
-        return shipsByName.getOrDefault(handle, shipsBySerialNumber.get(handle));
+        return shipsByName.getOrDefault(handle.toLowerCase(), shipsBySerialNumber.get(handle.toLowerCase()));
     }
 
     public Collection<Ship> getShipsByClass(final ShipClass shipClass) {
@@ -62,8 +62,8 @@ public class Fleet {
     public void removeShip(final Ship ship) {
         shipsByClass.remove(ship.getShipClass(), ship);
         shipsByCoordinate.remove(ship.getCoordinate(), ship);
-        shipsByName.remove(ship.getName());
-        shipsBySerialNumber.remove(ship.getSerialNumber());
+        shipsByName.remove(ship.getName().toLowerCase());
+        shipsBySerialNumber.remove(ship.getSerialNumber().toLowerCase());
     }
 
     public boolean serialNumberExists(final String serialNumber) {

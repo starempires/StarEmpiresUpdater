@@ -50,7 +50,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Serialize IdentifiableObject as just its name
      */
-    static class IdentifiableObjectSerializer extends JsonSerializer<IdentifiableObject> {
+    public static class IdentifiableObjectSerializer extends JsonSerializer<IdentifiableObject> {
         @Override
         public void serialize(IdentifiableObject object, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
             gen.writeString(object.getName());
@@ -59,7 +59,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Serialize Collection of IdentifiableObject as a collection of their names
      */
-    static class IdentifiableObjectCollectionSerializer extends JsonSerializer<Collection<? extends IdentifiableObject>> {
+    public static class IdentifiableObjectCollectionSerializer extends JsonSerializer<Collection<? extends IdentifiableObject>> {
         @Override
         public void serialize(Collection<? extends IdentifiableObject> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
             final List<String> names = objects.stream().map(IdentifiableObject::getName).sorted().toList();
@@ -79,7 +79,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Serialize Multimap of IdentifiableObject as a collection of their names
      */
-    static class IdentifiableObjectMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends IdentifiableObject>> {
+    public static class IdentifiableObjectMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends IdentifiableObject>> {
         @Override
         public void serialize(Multimap<Empire, ? extends IdentifiableObject> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
             final Map<Empire, List<String>> map = objects.asMap().entrySet().stream()
@@ -101,7 +101,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Deserialize IdentifiableObject as null, which will be replaced later
      */
-    static class DeferredIdentifiableObjectDeserializer extends JsonDeserializer<IdentifiableObject> {
+    public static class DeferredIdentifiableObjectDeserializer extends JsonDeserializer<IdentifiableObject> {
         @Override
         public IdentifiableObject deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
             return null;
@@ -111,7 +111,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Deserialize Array of IdentifiableObject as empty Set, which will be replaced later
      */
-    static class DeferredIdentifiableObjectCollectionDeserializer extends JsonDeserializer<Set<? extends IdentifiableObject>> {
+    public static class DeferredIdentifiableObjectCollectionDeserializer extends JsonDeserializer<Set<? extends IdentifiableObject>> {
         @Override
         public Set<? extends IdentifiableObject> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
             JsonToken token = p.nextToken();
@@ -125,7 +125,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     /**
      * Deserialize Array of IdentifiableObject as empty Multimap, which will be replaced later
      */
-    static class DeferredIdentifiableObjectMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends IdentifiableObject>> {
+    public static class DeferredIdentifiableObjectMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends IdentifiableObject>> {
         @Override
         public Multimap<Empire, IdentifiableObject> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
             JsonToken token = p.nextToken();

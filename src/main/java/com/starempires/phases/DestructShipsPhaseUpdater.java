@@ -7,24 +7,24 @@ import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Order;
-import com.starempires.objects.OrderType;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
+import com.starempires.orders.DestructOrder;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SelfDestructShipsPhaseUpdater extends PhaseUpdater {
+public class DestructShipsPhaseUpdater extends PhaseUpdater {
 
     final private String SHIPS_GROUP = "ships";
     final private String PARAMETERS_REGEX = "^destruct (?<" + SHIPS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
-    public SelfDestructShipsPhaseUpdater(final TurnData turnData) {
+    public DestructShipsPhaseUpdater(final TurnData turnData) {
         super(Phase.SELF_DESTRUCT_SHIPS, turnData);
     }
 
@@ -58,16 +58,11 @@ public class SelfDestructShipsPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.DESTRUCT);
         final Multimap<Coordinate, Ship> selfDestructs = HashMultimap.create();
-        orders.forEach(order -> {
+        orders.forEach(o -> {
+            final DestructOrder order = (DestructOrder) o;
             final Empire empire = order.getEmpire();
-            final Matcher matcher = PATTERN.matcher(order.getParametersAsString());
-            final String[] handles = matcher.group(SHIPS_GROUP).split(" ");
-            for (String handle: handles) {
-                final Ship ship = empire.getShip(handle);
-                if (ship == null) {
-                    addNewsResult(order, "You do not own ship " + handle);
-                }
-                else if (ship.isStarbase()) {
+            for (Ship ship: order.getShips()) {
+                if (ship.isStarbase()) {
                     addNewsResult(order, "Starbase " + ship + " cannot be self-destructed.");
                 }
                 else if (ship.isLoaded()) {

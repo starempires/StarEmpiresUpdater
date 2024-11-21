@@ -3,8 +3,8 @@ package com.starempires.phases;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Order;
-import com.starempires.objects.OrderType;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
@@ -72,35 +72,35 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.AUTHORIZE);
         orders.forEach(order -> {
-            final Empire empire = order.getEmpire();
-            final int index = order.indexOfIgnoreCase(Constants.TOKEN_TO);
-            final String authorizeType = order.getStringParameter(0);
-            final List<String> recipientNames = order.getParameterSubList(index + 1);
-            final List<Empire> recipients = recipientNames.stream()
-                    .map(recipientName -> {
-                        Empire recipient = turnData.getEmpire(recipientName);
-                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
-                            addNewsResult(order, empire, "Unknown empire " + recipientName);
-                            return null;
-                        }
-                        return recipient;
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
-
-            if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SECTOR)) {
-                final List<String> sectors = order.getParameterSubList(1, index);
-                authorizeSectorData(order, recipients, sectors);
-            }
-            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SHIP)) {
-                final List<String> shipHandles = order.getParameterSubList(1, index);
-                authorizeShipData(order, recipients, shipHandles);
-            }
-            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_CLASS)) {
-                final List<String> shipClassNames = order.getParameterSubList(1, index);
-                authorizeShipClassData(order, recipients, shipClassNames);
-            }
-            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_ALLDATA)) {
-                authorizeAllData(order, recipients);
-            }
+//            final Empire empire = order.getEmpire();
+//            final int index = order.indexOfIgnoreCase(Constants.TOKEN_TO);
+//            final String authorizeType = order.getStringParameter(0);
+//            final List<String> recipientNames = order.getParameterSubList(index + 1);
+//            final List<Empire> recipients = recipientNames.stream()
+//                    .map(recipientName -> {
+//                        Empire recipient = turnData.getEmpire(recipientName);
+//                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
+//                            addNewsResult(order, empire, "Unknown empire " + recipientName);
+//                            return null;
+//                        }
+//                        return recipient;
+//                    }).filter(Objects::nonNull).collect(Collectors.toList());
+//
+//            if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SECTOR)) {
+//                final List<String> sectors = order.getParameterSubList(1, index);
+//                authorizeSectorData(order, recipients, sectors);
+//            }
+//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SHIP)) {
+//                final List<String> shipHandles = order.getParameterSubList(1, index);
+//                authorizeShipData(order, recipients, shipHandles);
+//            }
+//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_CLASS)) {
+//                final List<String> shipClassNames = order.getParameterSubList(1, index);
+//                authorizeShipClassData(order, recipients, shipClassNames);
+//            }
+//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_ALLDATA)) {
+//                authorizeAllData(order, recipients);
+//            }
         });
     }
 }

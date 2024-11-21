@@ -2,8 +2,8 @@ package com.starempires.phases;
 
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Order;
-import com.starempires.objects.OrderType;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 import com.starempires.objects.Ship;
 import com.starempires.objects.World;
 

@@ -17,8 +17,10 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
+import com.starempires.orders.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private final String dataDir;
+    private final String sessionDir;
 
     static {
         MAPPER.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
@@ -47,16 +49,14 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         }
     }
 
-    private Path constructTurnDataPath(final String session, final int turnNumber) {
-        final String filename = session + turnNumber + ".json";
-        return FileSystems.getDefault().getPath(dataDir, filename);
+    private Path constructPath(final String... args) {
+        return FileSystems.getDefault().getPath(sessionDir, StringUtils.join(args, "."));
     }
 
     @Override
     public TurnData loadTurnData(final String session, final int turnNumber) throws Exception {
-        final Path path = constructTurnDataPath(session, turnNumber);
-        final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() {
-        });
+        final Path path = constructPath(session, "turndata", Integer.toString(turnNumber), "json");
+        final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() { });
         log.info("Loaded data\n" + jsonData);
 
         int radius = (int) jsonData.get("radius");
@@ -279,9 +279,21 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
 
     @Override
     public void saveTurnData(final TurnData turnData) throws Exception {
-        final String json = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(turnData);
-        final Path path = constructTurnDataPath(turnData.getSession(), turnData.getTurnNumber());
+        final Path path = constructPath(turnData.getSession(), "turndata", Integer.toString(turnData.getTurnNumber()), "json");
         MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), turnData);
-        log.info("Wrote turn {} JSON to {}", turnData.getTurnNumber(), path);
+        log.info("Wrote {} turn {} data to {}", turnData.getSession(), turnData.getTurnNumber(), path);
+    }
+
+    @Override
+    public List<? extends Order> loadReadyOrders(final String session, final String empire, final int turnNumber) throws Exception {
+        final Path path = constructPath(session, empire, "ready-orders", Integer.toString(turnNumber), "txt");
+        return Lists.newArrayList();
+    }
+
+    @Override
+    public void saveReadyOrders(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
+        final Path path = constructPath(session, empire, "ready-orders", Integer.toString(turnNumber), "json");
+        MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), orders);
+        log.info("Wrote {} orders for empire {} turn {} to {}", orders.size(), empire, turnNumber, path);
     }
 }

@@ -6,7 +6,7 @@ import com.starempires.constants.Constants;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.MappableObject;
-import com.starempires.objects.Order;
+import com.starempires.orders.Order;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import lombok.Getter;

@@ -1,19 +1,16 @@
 package com.starempires.phases;
 
-import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Order;
-import com.starempires.objects.OrderType;
 import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -88,61 +85,61 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.DENY);
         orders.forEach(order -> {
-            final Empire empire = order.getEmpire();
-            final Matcher coordinateMatcher = DENY_SECTOR_PATTERN.matcher(order.getParametersAsString());
-            final Matcher itemsMatcher = DENY_ITEMS_PATTERN.matcher(order.getParametersAsString());
-            final List<String> recipientNames = Lists.newArrayList();
-
-            if (coordinateMatcher.matches()) {
-                final String coordinateString = coordinateMatcher.group(COORDINATE_GROUP);
-                final RadialCoordinate coordinate = RadialCoordinate.parseRadial(coordinateString);
-                recipientNames.addAll(Arrays.asList(coordinateMatcher.group(EMPIRES_GROUP).split(" ")));
-                recipients.forEach(recipient -> {
-                    empire.denyCoordinateScanAccess(recipient, coordinate, radius);
-                    addNewsResult(order, "You have denied empire " + recipient
-                            + " access to scan data from sector " + coordinateString + " of radius " + radius);
-                });
-                return;
-            }
-            else if (itemsMatcher.matches()) {
-            }
-
-            final List<Empire> recipients = recipientNames.stream()
-                    .map(recipientName -> {
-                        final Empire recipient = turnData.getEmpire(recipientName);
-                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
-                            addNewsResult(order, empire, "Unknown empire " + recipientName);
-                            return null;
-                        }
-                        return recipient;
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
-            final String denyType = order.getStringParameter(0);
-            final List<String> recipientNames = order.getParameterSubList(index + 1);
-            final List<Empire> recipients = recipientNames.stream()
-                    .map(recipientName -> {
-                        Empire recipient = turnData.getEmpire(recipientName);
-                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
-                            addNewsResult(order, empire, "Unknown empire " + recipientName);
-                            return null;
-                        }
-                        return recipient;
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
-
-            if (denyType.equalsIgnoreCase(Constants.TOKEN_SECTOR)) {
-                final List<String> sectors = order.getParameterSubList(1, index);
-                denySectorData(order, recipients, sectors);
-            }
-            else if (denyType.equalsIgnoreCase(Constants.TOKEN_SHIP)) {
-                final List<String> shipHandles = order.getParameterSubList(1, index);
-                denyShipData(order, recipients, shipHandles);
-            }
-            else if (denyType.equalsIgnoreCase(Constants.TOKEN_CLASS)) {
-                final List<String> shipClassNames = order.getParameterSubList(1, index);
-                denyShipClassData(order, recipients, shipClassNames);
-            }
-            else if (denyType.equalsIgnoreCase(Constants.TOKEN_ALLDATA)) {
-                denyAllData(order, recipients);
-            }
+//            final Empire empire = order.getEmpire();
+//            final Matcher coordinateMatcher = DENY_SECTOR_PATTERN.matcher(order.getParametersAsString());
+//            final Matcher itemsMatcher = DENY_ITEMS_PATTERN.matcher(order.getParametersAsString());
+//            final List<String> recipientNames = Lists.newArrayList();
+//
+//            if (coordinateMatcher.matches()) {
+//                final String coordinateString = coordinateMatcher.group(COORDINATE_GROUP);
+//                final RadialCoordinate coordinate = RadialCoordinate.parseRadial(coordinateString);
+//                recipientNames.addAll(Arrays.asList(coordinateMatcher.group(EMPIRES_GROUP).split(" ")));
+//                recipients.forEach(recipient -> {
+//                    empire.denyCoordinateScanAccess(recipient, coordinate, radius);
+//                    addNewsResult(order, "You have denied empire " + recipient
+//                            + " access to scan data from sector " + coordinateString + " of radius " + radius);
+//                });
+//                return;
+//            }
+//            else if (itemsMatcher.matches()) {
+//            }
+//
+//            final List<Empire> recipients = recipientNames.stream()
+//                    .map(recipientName -> {
+//                        final Empire recipient = turnData.getEmpire(recipientName);
+//                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
+//                            addNewsResult(order, empire, "Unknown empire " + recipientName);
+//                            return null;
+//                        }
+//                        return recipient;
+//                    }).filter(Objects::nonNull).collect(Collectors.toList());
+//            final String denyType = order.getStringParameter(0);
+//            final List<String> recipientNames = order.getParameterSubList(index + 1);
+//            final List<Empire> recipients = recipientNames.stream()
+//                    .map(recipientName -> {
+//                        Empire recipient = turnData.getEmpire(recipientName);
+//                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
+//                            addNewsResult(order, empire, "Unknown empire " + recipientName);
+//                            return null;
+//                        }
+//                        return recipient;
+//                    }).filter(Objects::nonNull).collect(Collectors.toList());
+//
+//            if (denyType.equalsIgnoreCase(Constants.TOKEN_SECTOR)) {
+//                final List<String> sectors = order.getParameterSubList(1, index);
+//                denySectorData(order, recipients, sectors);
+//            }
+//            else if (denyType.equalsIgnoreCase(Constants.TOKEN_SHIP)) {
+//                final List<String> shipHandles = order.getParameterSubList(1, index);
+//                denyShipData(order, recipients, shipHandles);
+//            }
+//            else if (denyType.equalsIgnoreCase(Constants.TOKEN_CLASS)) {
+//                final List<String> shipClassNames = order.getParameterSubList(1, index);
+//                denyShipClassData(order, recipients, shipClassNames);
+//            }
+//            else if (denyType.equalsIgnoreCase(Constants.TOKEN_ALLDATA)) {
+//                denyAllData(order, recipients);
+//            }
         });
     }
 }

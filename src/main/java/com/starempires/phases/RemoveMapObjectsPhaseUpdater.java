@@ -3,8 +3,8 @@ package com.starempires.phases;
 import com.google.common.collect.Sets;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Order;
-import com.starempires.objects.OrderType;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
 import com.starempires.objects.Storm;
@@ -76,20 +76,20 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
         // TODO createSyntheticRemovalsFromMoveOrder
         final List<Order> orders = turnData.getOrders(OrderType.MAPREMOVE);
         for (final Order order : orders) {
-
-            final String objectType = order.getStringParameter(0);
-            final List<String> tokens = order.getParameterSubList(1);
-            switch (MapObject.valueOf(objectType.toUpperCase())) {
-                case WORLD -> removeWorlds(order, tokens);
-                case PORTAL -> removePortals(order, tokens);
-                case STORM -> removeStorms(order, tokens);
-                case SHIP -> {
-                    String empireName = tokens.get(0);
-                    List<String> handles = tokens.subList(1, tokens.size());
-                    removeShips(order, empireName, handles);
-                }
-                default -> addNewsResult(order, order.getEmpire(), "Unknown map object type: " + objectType);
-            }
+//
+//            final String objectType = order.getStringParameter(0);
+//            final List<String> tokens = order.getParameterSubList(1);
+//            switch (MapObject.valueOf(objectType.toUpperCase())) {
+//                case WORLD -> removeWorlds(order, tokens);
+//                case PORTAL -> removePortals(order, tokens);
+//                case STORM -> removeStorms(order, tokens);
+//                case SHIP -> {
+//                    String empireName = tokens.get(0);
+//                    List<String> handles = tokens.subList(1, tokens.size());
+//                    removeShips(order, empireName, handles);
+//                }
+//                default -> addNewsResult(order, order.getEmpire(), "Unknown map object type: " + objectType);
+//            }
         }
     }
 }
