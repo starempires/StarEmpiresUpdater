@@ -25,63 +25,93 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Empire extends IdentifiableObject {
-    /** two-letter abbreviation of this empire */
+    /**
+     * two-letter abbreviation of this empire
+     */
     private final String abbreviation;
-    /** type for this empire */
+    /**
+     * type for this empire
+     */
     private final EmpireType empireType;
-    /** frame of reference for this empire */
+    /**
+     * frame of reference for this empire
+     */
     private final FrameOfReference frameOfReference;
-    /** ids of empires known to this one */
+    /**
+     * ids of empires known to this one
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> knownEmpires = Sets.newHashSet();
-    /** ids of ship classes known to this one */
+    /**
+     * ids of ship classes known to this one
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<ShipClass> knownShipClasses = Sets.newHashSet();
-    /** map of worlds currently known by this empire to the corresponding last turn scanned */
+    /**
+     * map of worlds currently known by this empire to the corresponding last turn scanned
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<World> knownWorlds = Sets.newHashSet();
-    /** map of portals currently known by this empire to the corresponding last turn scanned */
+    /**
+     * map of portals currently known by this empire to the corresponding last turn scanned
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> knownPortals = Sets.newHashSet();
-    /** map of storms currently known by this empire to the corresponding last turn scanned */
+    /**
+     * map of storms currently known by this empire to the corresponding last turn scanned
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Storm> knownStorms = Sets.newHashSet();
-    /** portals which this empire traversed this turn */
+    /**
+     * portals which this empire traversed this turn
+     */
     @JsonIgnore
     private final Set<Portal> portalsTraversed = Sets.newHashSet();
-    /** portals for which this empire currently has nav data */
+    /**
+     * portals for which this empire currently has nav data
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> portalNavData = Sets.newHashSet();
-    /** collected and shared scan data for this empire */
+    /**
+     * collected and shared scan data for this empire
+     */
     private final ScanData scanData = new ScanData();
-    /** map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized */
+    /**
+     * map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = Coordinate.CoordinateMultimapSerializer.class)
     @JsonDeserialize(using = Coordinate.DeferredCoordinateMultimapDeserializer.class)
     private final Multimap<Empire, RadialCoordinate> shareCoordinates = HashMultimap.create();
-    /** map of empires to sets of Ships for which scan access has been authorized */
+    /**
+     * map of empires to sets of Ships for which scan access has been authorized
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
     private final Multimap<Empire, Ship> shareShips = HashMultimap.create();
-    /** set of empires which are authorized to receive all scan data */
+    /**
+     * set of empires which are authorized to receive all scan data
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> shareEmpires = Sets.newHashSet();
-    /** map of empires to Sets of ShipClasses for which scan access has been * authorized */
+    /**
+     * map of empires to Sets of ShipClasses for which scan access has been * authorized
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
@@ -132,8 +162,7 @@ public class Empire extends IdentifiableObject {
         knownPortals.add(portal);
         if (hasNavData) {
             portalNavData.add(portal);
-        }
-        else {
+        } else {
             portalNavData.remove(portal);
         }
     }
@@ -261,7 +290,7 @@ public class Empire extends IdentifiableObject {
 
     /**
      * Get all scan coordinates for this empire
-     * 
+     *
      * @return Collection of coordinates scanned by this empire
      */
     @JsonIgnore
@@ -413,5 +442,25 @@ public class Empire extends IdentifiableObject {
     @JsonIgnore
     public World getHomeworld() {
         return knownWorlds.stream().filter(World::isHomeworld).findFirst().orElse(null);
+    }
+
+    @JsonIgnore
+    public boolean isGM() {
+        return empireType == EmpireType.GM;
+    }
+
+    @JsonIgnore
+    public boolean isObserver() {
+        return empireType == EmpireType.OBSERVER;
+    }
+
+    @JsonIgnore
+    public boolean isActive() {
+        return empireType == EmpireType.ACTIVE;
+    }
+
+    @JsonIgnore
+    public int getLargestBasenameNumber(final String basename) {
+        return fleet.getLargestBasenameNumber(basename);
     }
 }

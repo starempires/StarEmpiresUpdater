@@ -22,8 +22,8 @@ public class LoadOrder extends ShipBasedOrder {
 
     private static final String CARGO_GROUP = "cargo";
     private static final String CARRIER_GROUP = "carrier";
-    private static final String LOAD_REGEX = "(?<" + CARGO_GROUP + ">\\w+(?:\\s+\\w+)*)\\s+onto\\s+(?<" + CARRIER_GROUP + ">(\\w+))\\s*$";
-    private static final Pattern LOAD_PATTERN = Pattern.compile(LOAD_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final String REGEX = "(?<" + CARGO_GROUP + ">\\w+(?:\\s+\\w+)*)\\s+onto\\s+(?<" + CARRIER_GROUP + ">(\\w+))\\s*$";
+    private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
@@ -36,7 +36,7 @@ public class LoadOrder extends ShipBasedOrder {
                 .orderType(OrderType.LOAD)
                 .parameters(parameters)
                 .build();
-        final Matcher matcher = LOAD_PATTERN.matcher(parameters);
+        final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String carrierName = matcher.group(CARRIER_GROUP);
             final Ship carrier = empire.getShip(carrierName);

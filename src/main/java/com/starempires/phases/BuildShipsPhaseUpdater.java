@@ -2,43 +2,42 @@ package com.starempires.phases;
 
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
-import com.starempires.orders.Order;
-import com.starempires.orders.OrderType;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.World;
-import org.apache.commons.lang3.ObjectUtils;
+import com.starempires.orders.BuildOrder;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BuildShipsPhaseUpdater extends PhaseUpdater {
-
-    // build [count] ship-class world [name]
-    final static private String COUNT_GROUP = "count";
-    final static private String SHIPCLASS_GROUP = "shipclass";
-    final static private String WORLD_GROUP = "world";
-    final static private String NAME_GROUP = "name";
-    final static private String BUILD_REGEX = "^build\\s+(?<" + COUNT_GROUP + ">\\d+)?\\s*(?<" + SHIPCLASS_GROUP + ">\\w+)\\s+(?<" + WORLD_GROUP + ">\\w+)(?:\\s+(?<" + NAME_GROUP + ">\\w+))?$";
-
-    final static private Pattern BUILD_PATTERN = Pattern.compile(BUILD_REGEX, Pattern.CASE_INSENSITIVE);
 
     public BuildShipsPhaseUpdater(final TurnData turnData) {
         super(Phase.BUILD_SHIPS, turnData);
     }
 
-    private void buildShips(final Order order, final ShipClass shipClass, final World world, final String shipName, int count) {
+    private void buildShips(final BuildOrder order) {
         final Empire empire = order.getEmpire();
-        final Collection<Ship> ships = empire.getShips();
-        final long existingNameCount = ships.stream().filter(ship -> ship.getName().startsWith(shipName)).count();
+        final ShipClass shipClass = order.getShipClass();
+        final World world = order.getWorld();
+        final int startingNumber = empire.getLargestBasenameNumber(order.getBasename());
+        final int count = order.getCount();
         final int cost = shipClass.getCost();
-        for (int i = 1; i <= count; ++i) {
+        final String basename = order.getBasename();
+        final List<String> names = order.getNames();
+        for (int i = 0; i < count; ++i) {
             final int stockpile = world.getStockpile();
             if (cost <= stockpile) {
-                int remaining = world.adjustStockpile(-cost);
-                final Ship ship = empire.buildShip(shipClass, world, shipName, turnData.getTurnNumber());
+                final int remaining = world.adjustStockpile(-cost);
+                String name = null;
+                if (basename != null) {
+                    name = basename + (startingNumber + i);
+                }
+                else if (count < names.size()) {
+                    name = names.get(i);
+                }
+                final Ship ship = empire.buildShip(shipClass, world, name, turnData.getTurnNumber());
                 addNewsResult(order, "You built " + shipClass + " ship " + ship + " at world "
                         + world + " (cost " + cost + "; " + remaining + " RU remaining)");
             } else {
@@ -52,30 +51,21 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
     @Override
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.BUILD);
-        orders.forEach(order -> {
-            final Matcher matcher = BUILD_PATTERN.matcher(order.getParametersAsString());
-            if (matcher.matches()) {
-                final Empire empire = order.getEmpire();
-                final String countText = matcher.group(COUNT_GROUP);
-                final String shipClassName = matcher.group(SHIPCLASS_GROUP);
-                final String worldName = matcher.group(WORLD_GROUP);
-                final String shipName = ObjectUtils.firstNonNull(matcher.group(NAME_GROUP), shipClassName);
-                final int count = Integer.parseInt(ObjectUtils.firstNonNull(countText, "1"));
+        orders.forEach(o -> {
+            final BuildOrder order = (BuildOrder) o;
+            final Empire empire = order.getEmpire();
+            final ShipClass shipClass = order.getShipClass();
+            final World world = order.getWorld();
 
-                final ShipClass shipClass = turnData.getShipClass(shipClassName);
-                if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
-                    addNewsResult(order, "You have no design information for ship class " + shipClassName);
+            if (!empire.isKnownShipClass(shipClass)) {
+                addNewsResult(order, "You have no design information for ship class " + shipClass);
+            } else {
+                if (!world.isOwnedBy(empire)) {
+                    addNewsResult(order, "You do not own world " + world);
+                } else if (world.isInterdicted()) {
+                    addNewsResult(order, "World " + world + " is interdicted; no builds possible.");
                 } else {
-                    final World world = turnData.getWorld(worldName);
-                    if (world == null) {
-                        addNewsResult(order, "Unknown world " + worldName);
-                    } else if (!world.isOwnedBy(empire)) {
-                        addNewsResult(order, "You do not own world " + worldName);
-                    } else if (world.isInterdicted()) {
-                        addNewsResult(order, "World " + world + " is interdicted; no builds possible.");
-                    } else {
-                        buildShips(order, shipClass, world, shipName, count);
-                    }
+                    buildShips(order);
                 }
             }
         });

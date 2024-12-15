@@ -5,6 +5,7 @@ import com.starempires.TurnData;
 import com.starempires.dao.JsonStarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Empire;
+import com.starempires.objects.HullParameters;
 import com.starempires.orders.LoadOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
@@ -71,6 +72,12 @@ public class OrderParser {
         return turnData;
     }
 
+    private List<HullParameters> loadHullParameters() throws Exception {
+        final List<HullParameters> hullParameters = dao.loadHullParameters(sessionName);
+        log.info("Loaded hull parameters for session {}", sessionName);
+        return hullParameters;
+    }
+
 
     private List<String> loadOrdersText() throws Exception {
         final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", sessionName, empireName, turnNumber, "orders", "txt"));
@@ -128,8 +135,10 @@ public class OrderParser {
 
     public static void main(final String[] args) {
         try {
-            final  OrderParser parser = new OrderParser(args);
+            final OrderParser parser = new OrderParser(args);
             final TurnData turnData = parser.loadTurnData();
+            final List<HullParameters> hullParameters = parser.loadHullParameters();
+            turnData.addHullParameters(hullParameters);
             final Empire empire = turnData.getEmpire(parser.empireName);
             if (empire == null) {
                 final String message = "Session %s does not contain empire %s".formatted(parser.sessionName, parser.empireName);

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Fleet {
 
@@ -68,5 +69,15 @@ public class Fleet {
 
     public boolean serialNumberExists(final String serialNumber) {
         return shipsBySerialNumber.containsKey(serialNumber);
+    }
+
+    public int getLargestBasenameNumber(final String basename) {
+        final Pattern pattern = Pattern.compile(basename + "\\d+", Pattern.CASE_INSENSITIVE);
+        return shipsByName.keySet().stream()
+                .filter(s -> pattern.matcher(s).matches())
+                .map(s -> s.substring(basename.length()))
+                .mapToInt(Integer::parseInt)
+                .max()
+                .orElse(0);
     }
 }

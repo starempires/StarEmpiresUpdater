@@ -294,6 +294,11 @@ public class TurnData {
         return shipClassNames.get(name.toLowerCase());
     }
 
+    @JsonIgnore
+    public boolean isExistingShipClassName(final String name) {
+        return shipClassNames.containsKey(name.toLowerCase());
+    }
+
     public void addHullParameters(final Collection<HullParameters> parameters) {
         parameters.forEach(p -> hullParameters.put(p.getHullType(), p));
     }

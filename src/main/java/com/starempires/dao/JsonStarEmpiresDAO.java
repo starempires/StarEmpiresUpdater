@@ -296,4 +296,16 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), orders);
         log.info("Wrote {} orders for empire {} turn {} to {}", orders.size(), empire, turnNumber, path);
     }
+
+    @Override
+    public List<HullParameters> loadHullParameters(final String session) throws Exception {
+        final Path path = constructPath(session, "hull-parameters", "json");
+        final List<HullParameters> hullParameters = Lists.newArrayList();
+        for (Map<String, Object> data : MAPPER.readValue(path.toFile(), new TypeReference<List<Map<String, Object>>>() {})) {
+            final HullParameters parameters = MAPPER.convertValue(data, new TypeReference<HullParameters>() {});
+            log.info("Loaded hull parameters {}", parameters);
+            hullParameters.add(parameters);
+        }
+        return hullParameters;
+    }
 }

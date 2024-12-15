@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public abstract class MappableObject extends IdentifiableObject {
 
     @JsonIgnore
+    @Setter
     protected Coordinate coordinate;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     protected final List<HexDirection> drift = Lists.newArrayList();

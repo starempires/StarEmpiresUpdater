@@ -2,7 +2,7 @@ package com.starempires.orders;
 
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Portal;
+import com.starempires.objects.ShipClass;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -12,60 +12,57 @@ import java.util.regex.Pattern;
 
 @Getter
 @SuperBuilder
-public class TransmitOrder extends EmpireBasedOrder {
+public class GiveOrder extends EmpireBasedOrder {
 
-    // TRANSMIT portal1 [portal2 ...] TO empire1 [empire2 ...]
-    private static final String PORTALS_GROUP = "portals";
+    // GIVE shipclass1 [shipclass2 ...] TO empire1 [empire2 ...]
+    private static final String CLASSES_GROUP = "classes";
     private static final String RECIPIENT_GROUP = "recipients";
-    private static final String PARAMETERS_REGEX = "(?<" + PORTALS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
+    private static final String PARAMETERS_REGEX = "(?<" + CLASSES_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     private static final Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
-    final List<Portal> portals;
+    final List<ShipClass> shipClasses;
     final List<Empire> recipients;
 
-    public static TransmitOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
-        final TransmitOrder order = TransmitOrder.builder()
+    public static GiveOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
+        final GiveOrder order = GiveOrder.builder()
                 .empire(empire)
-                .orderType(OrderType.TRANSMIT)
+                .orderType(OrderType.GIVE)
                 .parameters(parameters)
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String[] portalNames = matcher.group(PORTALS_GROUP).split("\\s+");
+            final String[] shipClassNames = matcher.group(CLASSES_GROUP).split("\\s+");
             final String[] recipientNames = matcher.group(RECIPIENT_GROUP).split("\\s+");
-            for (String portalName: portalNames) {
-                final Portal portal = turnData.getPortal(portalName);
-                if (empire.isKnownPortal(portal)) {
-                    order.addError("Unknown portal: " + portalName);
-                } else if (!empire.hasNavData(portal)) {
-                    order.addError("You do not have navigation data for portal: " + portal);
+            for (String shipClassName: shipClassNames) {
+                final ShipClass shipClass = turnData.getShipClass(shipClassName);
+                if (empire.isKnownShipClass(shipClass)) {
+                    order.addError("Unknown ship class: " + shipClassName);
                 } else {
-                    order.portals.add(portal);
+                    order.shipClasses.add(shipClass);
                 }
             }
 
-            if (order.portals.isEmpty()) {
-                order.addError("No valid portals to transmit");
+            if (order.shipClasses.isEmpty()) {
+                order.addError("No valid ship classes to give");
                 order.setReady(false);
                 return order;
             }
 
-            final List<String> validPortalNames = order.portals.stream().map(Portal::getName).toList();
+            final List<String> validNames = order.shipClasses.stream().map(ShipClass::getName).toList();
 
             for (String recipientName: recipientNames) {
                 final Empire recipient = turnData.getEmpire(recipientName);
                 if (empire.isKnownEmpire(recipient)) {
                     order.addError("You are not in message contact with empire %s".formatted(recipientName));
                 } else if (empire.equals(recipient)) {
-                    order.addError("No need to transmit portal nav data to yourself");
+                    order.addError("No need to give ship classes to yourself");
                 } else if (empire.isGM()) {
                     order.addError("The GM politely declines your offer");
                 } else {
                     order.recipients.add(recipient);
-                    for (Portal portal: order.portals) {
-                        recipient.addKnownPortal(portal);
-                        recipient.addNavData(portal);
-                        order.addOKResult(portal + " to " + recipientName);
+                    for (ShipClass shipClass: order.shipClasses) {
+                        recipient.addKnownShipClass(shipClass);
+                        order.addOKResult(shipClass + " to " + recipientName);
                     }
                 }
             }
@@ -76,7 +73,7 @@ public class TransmitOrder extends EmpireBasedOrder {
             }
             return order;
         } else {
-            order.addError("Invalid TRANSMIT order: " + parameters);
+            order.addError("Invalid GIVE order: " + parameters);
             order.setReady(false);
         }
         return order;

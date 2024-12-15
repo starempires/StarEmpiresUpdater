@@ -62,7 +62,7 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
             ownedWorlds.sort(new HomeworldComparator(empire, turnData));
             final World homeworld = ownedWorlds.get(0);
             turnData.setHomeworld(empire, homeworld);
-            homeworld.setProductionMultiplier(2.0); // TODO need to reset this the following turn after production
+            homeworld.setProductionMultiplier(2.0); //
             final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(homeworld);
             newsEmpires.remove(empire);
             addNews(empire, "You have relocated your homeworld to " + homeworld);

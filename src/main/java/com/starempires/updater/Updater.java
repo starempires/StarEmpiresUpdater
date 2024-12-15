@@ -3,29 +3,47 @@ package com.starempires.updater;
 import com.starempires.TurnData;
 import com.starempires.dao.JsonStarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
+import com.starempires.phases.AcquireNavDataPhaseUpdater;
 import com.starempires.phases.AddKnownItemsPhaseUpdater;
 import com.starempires.phases.AddMapObjectsPhaseUpdater;
 import com.starempires.phases.ApplyCombatDamagePhaseUpdater;
+import com.starempires.phases.ApplyStormDamagePhaseUpdater;
 import com.starempires.phases.AutoRepairShipsPhaseUpdater;
+import com.starempires.phases.BuildShipsPhaseUpdater;
 import com.starempires.phases.CollapsePortalsPhaseUpdater;
+import com.starempires.phases.CollectScanDataPhaseUpdater;
 import com.starempires.phases.DeployDevicesPhaseUpdater;
+import com.starempires.phases.DesignShipsPhaseUpdater;
 import com.starempires.phases.DestructShipsPhaseUpdater;
+import com.starempires.phases.DetermineOwnershipIIPhaseUpdater;
 import com.starempires.phases.DetermineOwnershipIPhaseUpdater;
 import com.starempires.phases.DissipateNebulaePhaseUpdater;
 import com.starempires.phases.DissipateStormsPhaseUpdater;
 import com.starempires.phases.DriftMapObjectsPhaseUpdater;
+import com.starempires.phases.EstablishProhibitionsPhaseUpdater;
 import com.starempires.phases.FireGunsPhaseUpdater;
 import com.starempires.phases.FluctuateStormsPhaseUpdater;
+import com.starempires.phases.GiveDesignsPhaseUpdater;
 import com.starempires.phases.LoadShipPhaseUpdater;
 import com.starempires.phases.ModifyMapObjectsPhaseUpdater;
 import com.starempires.phases.MoveMapObjectsPhaseUpdater;
+import com.starempires.phases.MoveShipsPhaseUpdater;
 import com.starempires.phases.PhaseUpdater;
+import com.starempires.phases.ProduceResourceUnitsPhaseUpdater;
+import com.starempires.phases.RecordNewMapObjectsPhaseUpdater;
+import com.starempires.phases.RelocateHomeworldsPhaseUpdater;
+import com.starempires.phases.RemoveDestroyedShipsIIPhaseUpdater;
 import com.starempires.phases.RemoveDestroyedShipsIPhaseUpdater;
 import com.starempires.phases.RemoveKnownItemsPhaseUpdater;
 import com.starempires.phases.RemoveMapObjectsPhaseUpdater;
+import com.starempires.phases.RepairShipsPhaseUpdater;
+import com.starempires.phases.SalvageDesignsPhaseUpdater;
+import com.starempires.phases.ShareScanDataPhaseUpdater;
 import com.starempires.phases.StabilizePortalsPhaseUpdater;
 import com.starempires.phases.TransmitPortalNavDataPhaseUpdater;
+import com.starempires.phases.TraversePortalsPhaseUpdater;
 import com.starempires.phases.UnloadShipPhaseUpdater;
+import com.starempires.phases.WeatherStormsPhaseUpdater;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -134,39 +152,39 @@ public class Updater {
 
         // Movement phases
         processPhase(new TransmitPortalNavDataPhaseUpdater(turnData));
-//        processPhase(new MoveShipsPhaseUpdater(turnData));
-//        processPhase(new TraversePortalsPhaseUpdater(turnData));
-//        processPhase(new AcquireNavDataPhaseUpdater(turnData));
-//        processPhase(new WeatherStormsPhaseUpdater(turnData));
-//        processPhase(new ApplyStormDamagePhaseUpdater(turnData));
-//        processPhase(new RemoveDestroyedShipsIIPhaseUpdater(turnData));
-//        processPhase(new DetermineOwnershipIIPhaseUpdater(turnData));
-//        processPhase(new RelocateHomeworldsPhaseUpdater(turnData));
-//        processPhase(new EstablishProhibitionsPhaseUpdater(turnData));
-//
-//        // Research phases
-//        processPhase(new SalvageDesignsPhaseUpdater(turnData));
-//        processPhase(new CreateDesignsPhaseUpdater(turnData));
-//        processPhase(new GiveDesignsPhaseUpdater(turnData));
-//
-//        // Maintenance phases
-//        processPhase(new BuildShipsPhaseUpdater(turnData));
-//        processPhase(new RepairShipsPhaseUpdater(turnData));
+        processPhase(new MoveShipsPhaseUpdater(turnData));
+        processPhase(new TraversePortalsPhaseUpdater(turnData));
+        processPhase(new AcquireNavDataPhaseUpdater(turnData));
+        processPhase(new WeatherStormsPhaseUpdater(turnData));
+        processPhase(new ApplyStormDamagePhaseUpdater(turnData));
+        processPhase(new RemoveDestroyedShipsIIPhaseUpdater(turnData));
+        processPhase(new DetermineOwnershipIIPhaseUpdater(turnData));
+        processPhase(new RelocateHomeworldsPhaseUpdater(turnData));
+        processPhase(new EstablishProhibitionsPhaseUpdater(turnData));
+
+        // Research phases
+        processPhase(new SalvageDesignsPhaseUpdater(turnData));
+        processPhase(new DesignShipsPhaseUpdater(turnData));
+        processPhase(new GiveDesignsPhaseUpdater(turnData));
+
+        // Maintenance phases
+        processPhase(new BuildShipsPhaseUpdater(turnData));
+        processPhase(new RepairShipsPhaseUpdater(turnData));
 //        processPhase(new ToggleTransponderModesPhaseUpdater(turnData));
 //        processPhase(new ConcealShipsPhaseUpdater(turnData));
 //        processPhase(new IdentifyShipsPhaseUpdater(turnData));
 //
 //        // Income phases
-//        processPhase(new ProduceResourceUnitsPhaseUpdater(turnData));
+        processPhase(new ProduceResourceUnitsPhaseUpdater(turnData));
 //        processPhase(new PoolResourceUnitsPhaseUpdater(turnData));
 //        processPhase(new TransferResourceUnitsPhaseUpdater(turnData));
 //
 //        // Scanning phases
 //        processPhase(new DenyScanDataPhaseUpdater(turnData));
 //        processPhase(new AuthorizeScanDataPhaseUpdater(turnData));
-//        processPhase(new CollectScanDataPhaseUpdater(turnData));
-//        processPhase(new ShareScanDataPhaseUpdater(turnData));
-//        processPhase(new RecordNewMapObjectsPhaseUpdater(turnData));
+        processPhase(new CollectScanDataPhaseUpdater(turnData));
+        processPhase(new ShareScanDataPhaseUpdater(turnData));
+        processPhase(new RecordNewMapObjectsPhaseUpdater(turnData));
         log.info("Processed all phases for session {}", sessionName);
     }
 

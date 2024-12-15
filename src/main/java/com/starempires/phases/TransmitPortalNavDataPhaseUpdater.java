@@ -3,21 +3,14 @@ package com.starempires.phases;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.Portal;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
-import com.starempires.objects.Portal;
+import com.starempires.orders.TransmitOrder;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
-
-    // TRANSMIT portal1 [portal2 ...] TO empire1 [empire2 ...]
-    final private String PORTALS_GROUP = "portals";
-    final private String RECIPIENT_GROUP = "recipients";
-    final private String PARAMETERS_REGEX = "^transmit (?<" + PORTALS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*$";
-    final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public TransmitPortalNavDataPhaseUpdater(final TurnData turnData) {
         super(Phase.TRANSMIT_PORTAL_NAV_DATA, turnData);
@@ -28,10 +21,7 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
         final List<Empire> recipients = Lists.newArrayList();
         for (final String empireName: empireNames) {
             final Empire recipient = turnData.getEmpire(empireName);
-            if (recipient == null) {
-                addNewsResult(order, empire, "Unknown recipient %s".formatted(empireName));
-            }
-            else if (empire.isKnownEmpire(recipient)) {
+            if (empire.isKnownEmpire(recipient)) {
                 recipients.add(empire);
             }
             else {
@@ -62,26 +52,29 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
 
     @Override
     public void update() {
-        turnData.getOrders(OrderType.TRANSMIT).forEach(order -> {
+        final List<Order> orders = turnData.getOrders(OrderType.TRANSMIT);
+        orders.forEach(o -> {
+            final TransmitOrder order = (TransmitOrder) o;
             final Empire empire = order.getEmpire();
-            Matcher matcher = PATTERN.matcher(order.getParametersAsString());
-            if (matcher.matches()) {
-                final String[] portalNames = matcher.group(PORTALS_GROUP).split(" ");
-                final String[] recipientNames = matcher.group(RECIPIENT_GROUP).split(" ");
-
-                final List<Empire> recipients = getRecipients(order, recipientNames);
-                final List<Portal> portals = getPortals(order, portalNames);
-
-                portals.forEach(portal -> {
-                    recipients.forEach(recipient -> {
-                        recipient.addKnownPortal(portal);
-                        recipient.addNavData(portal);
-                        addNewsResult(order, empire,
-                                "Navigation data for portal " + portal + " given to " + recipient);
-                        addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
+            for (Portal portal: order.getPortals()) {
+                if (empire.hasNavData(portal)) {
+                    order.getRecipients().forEach(recipient -> {
+                        if (empire.isKnownEmpire(recipient)) {
+                            recipient.addKnownPortal(portal);
+                            recipient.addNavData(portal);
+                            addNewsResult(order, empire,
+                                    "Navigation data for portal " + portal + " given to " + recipient);
+                            addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
+                        }
+                        else {
+                            addNewsResult(order, empire, "You are not in message contact with %s".formatted(recipient));
+                        }
                     });
-                });
-            };
+                }
+                else {
+                    addNewsResult(order, "You do not have navigation data for portal " + portal);
+                }
+            }
         });
     }
 }

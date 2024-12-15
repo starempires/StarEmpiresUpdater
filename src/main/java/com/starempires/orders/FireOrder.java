@@ -27,7 +27,7 @@ public class FireOrder extends ShipBasedOrder {
     // parameters are FIRE [asc|desc] (oblique,y) AT empire1 [empire2 ...]
     // parameters are FIRE [asc|desc] @location AT empire1 [empire2 ...]
     // parameters are FIRE [asc|desc] ship1 [ship2 ...] AT empire1 [empire2 ...]
-    final static private String FIRE_REGEX = "^(?:(?<" + TARGET_ORDER_GROUP + ">asc|desc)\\s+)?(?<" + ATTACKERS_GROUP + ">\\.+)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
+    final static private String FIRE_REGEX = "(?:(?<" + TARGET_ORDER_GROUP + ">asc|desc)\\s+)?(?<" + ATTACKERS_GROUP + ">\\.+)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     final static private Pattern FIRE_PATTERN = Pattern.compile(FIRE_REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -76,8 +76,8 @@ public class FireOrder extends ShipBasedOrder {
             order.coordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
             final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == order.coordinate);
             if (!sameSector) {
-                order.addResult("Attackers not all in same sector");
-                order.ships.clear();;
+                order.addError("Attackers not all in same sector");
+                order.ships.clear();
             }
 
             if (order.ships.isEmpty()) {

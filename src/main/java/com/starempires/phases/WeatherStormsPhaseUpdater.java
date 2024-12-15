@@ -67,9 +67,6 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         return unshieldedDamage;
     }
 
-    private void partitionShipsByEmpire(final Collection<Ship> ships, final Multimap<Empire, Ship> shipsByEmpire) {
-    }
-
     @Override
     public void update() {
         final Multimap<Coordinate, Storm> stormCoordinates = turnData.getStormCoordinates();

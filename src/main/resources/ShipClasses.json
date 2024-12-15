@@ -12,7 +12,7 @@
     "hullType": "orbital"
   },
   {
-    "name": "capital ship",
+    "name": "battleship",
     "guns": 35,
     "dp": 40,
     "engines": 2,
@@ -24,7 +24,7 @@
     "hullType": "capital ship"
   },
   {
-    "name": "scout",
+    "name": "probe",
     "guns": 1,
     "dp": 1,
     "engines": 3,
@@ -36,7 +36,7 @@
     "hullType": "scout"
   },
   {
-    "name": "transport",
+    "name": "carrier",
     "guns": 2,
     "dp": 10,
     "engines": 2,
@@ -48,7 +48,7 @@
     "hullType": "transport"
   },
   {
-    "name": "orbital",
+    "name": "station",
     "guns": 30,
     "dp": 40,
     "engines": 0,
@@ -60,7 +60,7 @@
     "hullType": "orbital"
   },
   {
-    "name": "gunship",
+    "name": "frigate",
     "guns": 20,
     "dp": 15,
     "engines": 2,
@@ -72,7 +72,7 @@
     "hullType": "gunship"
   },
   {
-    "name": "wing",
+    "name": "fighter",
     "guns": 5,
     "dp": 5,
     "engines": 0,
@@ -84,19 +84,7 @@
     "hullType": "wing"
   },
   {
-    "name": "device",
-    "guns": 0,
-    "dp": 1,
-    "engines": 0,
-    "scan": 0,
-    "racks": 0,
-    "tonnage": 1,
-    "cost": 1,
-    "ar": 0,
-    "hullType": "device"
-  },
-  {
-    "name": "missile",
+    "name": "nuke",
     "guns": 0,
     "dp": 1,
     "engines": 0,

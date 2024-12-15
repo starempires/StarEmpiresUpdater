@@ -11,17 +11,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * parameters:
  * DEPLOY device1 device2 ...
  */
 public class DeployDevicesPhaseUpdater extends PhaseUpdater {
-
-    final private String DEVICES_GROUP = "devices";
-    final private String PARAMETERS_REGEX = "^deploy (?<" + DEVICES_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
-    final private Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
     public DeployDevicesPhaseUpdater(final TurnData turnData) {
         super(Phase.DEPLOY_DEVICES, turnData);

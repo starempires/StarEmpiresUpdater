@@ -1,6 +1,7 @@
 package com.starempires.dao;
 
 import com.starempires.TurnData;
+import com.starempires.objects.HullParameters;
 import com.starempires.orders.Order;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface StarEmpiresDAO {
     void saveTurnData(final TurnData turnData) throws Exception;
     List<? extends Order> loadReadyOrders(final String session, final String empire, final int turnNumber) throws Exception;
     void saveReadyOrders(final String session, final String empire, final int turnNumber, final List<Order> orders) throws Exception;
+    List<HullParameters> loadHullParameters(final String session) throws Exception;
 }
