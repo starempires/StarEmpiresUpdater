@@ -22,7 +22,7 @@ public class Portal extends MappableObject {
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Set<Portal> connections = Sets.newHashSet();
+    private final Set<Portal> connections = Sets.newHashSet(); // exit connections
 
     @Builder
     private Portal(final String name, final Coordinate coordinate, final boolean collapsed) {

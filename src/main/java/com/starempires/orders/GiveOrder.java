@@ -48,8 +48,6 @@ public class GiveOrder extends EmpireBasedOrder {
                 return order;
             }
 
-            final List<String> validNames = order.shipClasses.stream().map(ShipClass::getName).toList();
-
             for (String recipientName: recipientNames) {
                 final Empire recipient = turnData.getEmpire(recipientName);
                 if (empire.isKnownEmpire(recipient)) {

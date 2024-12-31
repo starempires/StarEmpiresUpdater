@@ -375,6 +375,7 @@ public class Empire extends IdentifiableObject {
                 .collect(Collectors.toSet());
     }
 
+    @JsonIgnore
     public Set<Ship> getLiveShips() {
         return getShips().stream()
                 .filter(Ship::isAlive)

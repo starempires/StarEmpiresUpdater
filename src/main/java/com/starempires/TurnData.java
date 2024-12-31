@@ -26,7 +26,7 @@ import com.starempires.objects.ShipCondition;
 import com.starempires.objects.SitRep;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
-import com.starempires.phases.Phase;
+import com.starempires.updater.Phase;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -81,7 +81,7 @@ public class TurnData {
      * map of Coordinates to Sets of Portals
      */
     @JsonIgnore
-    private final Map<Coordinate, Portal> portalCoordinates = Maps.newHashMap();
+    private final Multimap<Coordinate, Portal> portalCoordinates = HashMultimap.create();
     /**
      * map of storm names to Storms
      */
@@ -197,7 +197,7 @@ public class TurnData {
         return portalNames.get(name);
     }
 
-    public Portal getPortal(final Coordinate coordinate) {
+    public Collection<Portal> getPortals(final Coordinate coordinate) {
         return portalCoordinates.get(coordinate);
     }
 
@@ -399,7 +399,7 @@ public class TurnData {
 
     public void removePortal(Portal portal) {
         portalNames.remove(portal.getName());
-        portalCoordinates.remove(portal.getCoordinate());
+        portalCoordinates.remove(portal.getCoordinate(), portal);
         portalNames.values().forEach(p -> p.removeConnection(portal));
         empireNames.values().forEach(empire -> empire.removeKnownPortal(portal));
     }

@@ -17,7 +17,7 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 public abstract class OwnableObject extends MappableObject {
 
-    public static final ObjectOwnerComparator OWNER_COMPARATOR =new ObjectOwnerComparator();
+    public static final ObjectOwnerComparator OWNER_COMPARATOR = new ObjectOwnerComparator();
 
     public static class ObjectOwnerComparator implements Comparator<OwnableObject> {
         @Override

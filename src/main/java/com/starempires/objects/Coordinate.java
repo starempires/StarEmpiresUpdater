@@ -15,12 +15,16 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +38,18 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Data
+@SuperBuilder
+@EqualsAndHashCode
 public class Coordinate implements Comparable<Coordinate> {
+
+    public static final CoordinateComparator COORDINATE_COMPARATOR = new CoordinateComparator();
+
+    public static class CoordinateComparator implements Comparator<Coordinate> {
+        @Override
+        public int compare(@NonNull final Coordinate c1, @NonNull final Coordinate c2) {
+            return ObjectUtils.compare(c1, c2);
+        }
+    }
 
     static class CoordinateMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends Coordinate>> {
         @Override

@@ -2,12 +2,14 @@ package com.starempires.objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class RadialCoordinate extends Coordinate {
 
     private final int radius;

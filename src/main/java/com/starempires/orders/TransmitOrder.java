@@ -50,8 +50,6 @@ public class TransmitOrder extends EmpireBasedOrder {
                 return order;
             }
 
-            final List<String> validPortalNames = order.portals.stream().map(Portal::getName).toList();
-
             for (String recipientName: recipientNames) {
                 final Empire recipient = turnData.getEmpire(recipientName);
                 if (empire.isKnownEmpire(recipient)) {

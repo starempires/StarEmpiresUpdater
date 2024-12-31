@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ public abstract class Order {
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     protected final boolean synthetic;
     protected final OrderType orderType;
+    @Builder.Default
     protected boolean ready = true;
 
     public void addResult(final String text) {

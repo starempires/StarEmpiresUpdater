@@ -1,6 +1,5 @@
 package com.starempires.orders;
 
-import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 public class MoveOrder extends ShipBasedOrder {
 
     final static private String ABSOLUTE_MOVE_GROUP = "to";
-    final static private String MOVE_REGEX = "(?:(?<" + ABSOLUTE_MOVE_GROUP + ">\\s+to\\s+)?" + COORDINATE_REGEX + "|" + LOCATION_REGEX;
+    final static private String MOVE_REGEX = "(?<" + ABSOLUTE_MOVE_GROUP + ">\\s+to\\s+)?" + COORDINATE_REGEX + "|" + LOCATION_REGEX;
     final static private Pattern MOVE_PATTERN = Pattern.compile(MOVE_REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate destination;
@@ -75,7 +74,6 @@ public class MoveOrder extends ShipBasedOrder {
                 return order;
             }
 
-            final List<Ship> validMovers = Lists.newArrayList();
             for (final Ship ship : movers) {
                 if (ship.isLoaded()) {
                     order.addError(ship, "Loaded ships cannot move");

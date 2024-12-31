@@ -1,0 +1,246 @@
+package com.starempires.generator;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.starempires.TurnData;
+import com.starempires.dao.JsonStarEmpiresDAO;
+import com.starempires.dao.StarEmpiresDAO;
+import com.starempires.objects.Coordinate;
+import com.starempires.objects.Empire;
+import com.starempires.objects.Portal;
+import com.starempires.objects.ScanStatus;
+import com.starempires.objects.Ship;
+import com.starempires.objects.Storm;
+import com.starempires.objects.World;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Getter
+@Log4j2
+public class SnapshotGenerator {
+    private static final String ARG_SESSION_NAME = "session";
+    private static final String ARG_TURN_NUMBER = "turn";
+    private static final String ARG_EMPIRE_NAME = "empire";
+    private static final String ARG_SESSION_DIR = "sessiondir";
+
+    private final StarEmpiresDAO dao;
+    private String sessionName;
+    private int turnNumber;
+    private String sessionDir;
+    private String empireName;
+
+    private void extractCommandLineOptions(final String[] args) throws ParseException {
+        final Options options = new Options();
+        try {
+            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
+            options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
+            options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE_NAME).hasArg().desc("empire name").required().build());
+            options.addOption(Option.builder("sd").argName("session dir").longOpt(ARG_SESSION_DIR).hasArg().desc("session dir").required().build());
+
+            final CommandLineParser parser = new DefaultParser();
+            final CommandLine cmd = parser.parse(options, args);
+            sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
+            turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            sessionDir = cmd.getOptionValue(ARG_SESSION_DIR);
+            empireName = cmd.getOptionValue(ARG_EMPIRE_NAME);
+        } catch (ParseException e) {
+            final HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("SnapshotGenerator", options);
+            throw e;
+        }
+    }
+
+    private TurnData loadTurnData() throws Exception {
+        final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
+        log.info("Loaded data for session {}, turn {}", sessionName, turnNumber);
+        return turnData;
+    }
+
+    public static void main(final String[] args) {
+        try {
+            final SnapshotGenerator generator = new SnapshotGenerator(args);
+            final TurnData turnData = generator.loadTurnData();
+            log.info("Generating snapshot for {}", generator.getEmpireName());
+            generator.generate(turnData);
+        } catch (Exception exception) {
+            log.error("Error generating snapshots", exception);
+        }
+    }
+
+    public SnapshotGenerator(String[] args) throws Exception {
+        extractCommandLineOptions(args);
+        dao = new JsonStarEmpiresDAO(sessionDir);
+    }
+
+    private Map<String, SectorShipSnapshot> getSectorShipSnapshots(final Multimap<Empire, Ship> allEmpireShips) {
+        if (allEmpireShips == null || allEmpireShips.isEmpty()) {
+            return null;
+        }
+        Map<String, SectorShipSnapshot> snapshots = Maps.newHashMap();
+        for (var entry : allEmpireShips.asMap().entrySet()) {
+            final Empire empire = entry.getKey();
+            final Collection<Ship> empireShips = entry.getValue();
+            final Map<String, ShipSnapshot> empireShipsSnapshots = empireShips.stream()
+                    .map(ship -> ShipSnapshot.fromShip(ship, empire)).collect(Collectors.toMap(ShipSnapshot::getSerialNumber, Function.identity()));
+            final SectorShipSnapshot sectorShipSnapshot =
+                    SectorShipSnapshot.builder()
+                            .count(empireShips.size())
+                            .tonnage(empireShips.stream().mapToInt(Ship::getTonnage).sum())
+                            .ships(empireShipsSnapshots)
+                            .build();
+            snapshots.put(empire.getName(), sectorShipSnapshot);
+        }
+        return snapshots;
+    }
+
+    private Map<Coordinate, Coordinate> getKnownConnections(final Empire empire, final TurnData turnData) {
+        final var allConnections = turnData.getAllConnections();
+        final Map<Coordinate, Coordinate> knownConnections = Maps.newHashMap();
+        for (var entry : allConnections.entries()) {
+            if (empire.hasNavData(entry.getKey()) && empire.hasNavData(entry.getValue())) {
+                knownConnections.put(entry.getKey().getCoordinate(), entry.getValue().getCoordinate());
+            }
+        }
+        return knownConnections;
+    }
+
+    private void generate(final TurnData turnData) throws JsonProcessingException {
+        final Empire empire = turnData.getEmpire(empireName);
+        final int radius = empire.computeMaxScanExtent();
+        // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
+        final EmpireSnapshot empireSnapshot = EmpireSnapshot.builder()
+                .abbreviation(empire.getAbbreviation())
+                .name(empire.getName())
+                .radius(radius)
+                .columns(2 * radius + 1)
+                .rows(4 * radius + 1)
+                .turnNumber(turnData.getTurnNumber())
+                .build();
+
+        // add "global" elements known to this empire
+        empireSnapshot.addKnownShipClasses(empire.getKnownShipClasses());
+
+        final Collection<Empire> knownEmpires = empire.getKnownEmpires();
+        empireSnapshot.addKnownEmpires(knownEmpires.stream()
+                .map(Empire::getName)
+                .collect(Collectors.toSet()));
+
+        empireSnapshot.addColors(empire.getMapColors());
+
+        Map<Coordinate, Coordinate> knownConnections = getKnownConnections(empire, turnData);
+        knownConnections.forEach(empireSnapshot::addConnection);
+
+        // populate sectors
+        final int numColumns = 2 * radius + 1;
+        final Coordinate localOrigin = new Coordinate(0, 0);
+        // get all known sectors in local coords, then translate each one to galactic
+        final Set<Coordinate> surroundingLocalCoords = Coordinate.getSurroundingCoordinates(localOrigin, radius);
+        surroundingLocalCoords.forEach(localCoord -> {
+            final Coordinate galacticCoord = empire.toGalactic(localCoord);
+            final ScanStatus status = empire.getScanStatus(galacticCoord);
+
+            final int row = computeRow(radius, localCoord);
+            final int column = computeColumn(numColumns, localCoord);
+
+            final World world = turnData.getWorld(galacticCoord);
+            final Collection<Portal> portals = turnData.getPortals(galacticCoord);
+            final Collection<Storm> storms = turnData.getStorms(galacticCoord);
+
+            Map<String, SectorShipSnapshot> sectorShipSnapshots = null;
+            final Multimap<Empire, Ship> sectorShipsByEmpire = HashMultimap.create();
+            if (status.isMoreVisible(ScanStatus.STALE)) {
+                int unidentifiedTonnage = 0;
+                int unidentifiedCount = 0;
+                final Set<Empire> empiresPresent = turnData.getEmpiresPresent(galacticCoord);
+                if (status == ScanStatus.SCANNED) {
+                    for (final Empire empirePresent : empiresPresent) {
+                        final Collection<Ship> empireSectorShips = empirePresent.getShips(galacticCoord);
+                        if (empire.isKnownEmpire(empirePresent)) {
+                            for (final Ship ship : empireSectorShips) {
+                                if (ship.isVisibleToEmpire(empire)) {
+                                    sectorShipsByEmpire.put(empirePresent, ship);
+                                } else {
+                                    unidentifiedCount++;
+                                    unidentifiedTonnage += ship.getTonnage();
+                                }
+                            }
+                        } else {
+                            unidentifiedCount += empireSectorShips.size();
+                            unidentifiedTonnage += empireSectorShips.stream()
+                                    .map(Ship::getTonnage)
+                                    .mapToInt(Integer::intValue)
+                                    .sum();
+                        }
+                    }
+                } else {
+                    empiresPresent.forEach(empirePresent -> {
+                        final Collection<Ship> empireSectorShips = empirePresent.getShips(galacticCoord);
+                        sectorShipsByEmpire.putAll(empirePresent, empireSectorShips);
+                    });
+                }
+
+                sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire);
+
+                final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
+                        .oblique(localCoord.getOblique())
+                        .y(localCoord.getY())
+                        .row(row)
+                        .column(column)
+                        .status(status)
+                        .world(WorldSnapshot.fromWorld(world, empire))
+                        .portals(portals.stream().map(portal -> PortalSnapshot.fromPortal(portal, empire)).toList())
+                        .ships(sectorShipSnapshots)
+                        .storms(storms.stream().map(StormSnapshot::fromStorm).toList())
+                        .unidentifiedShipCount(unidentifiedCount)
+                        .unidentifiedShipTonnage(unidentifiedTonnage)
+                        .build();
+                empireSnapshot.addSector(sectorSnapshot);
+                log.info("Adding {} galactic coordinate {}/local coordinate {} to snapshot for empire {}", status, galacticCoord,
+                        localCoord, empire);
+            } else if (status == ScanStatus.STALE) {
+                final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
+                        .oblique(localCoord.getOblique())
+                        .y(localCoord.getY())
+                        .row(row)
+                        .column(column)
+                        .status(status)
+                        .lastTurnScanned(empire.getLastTurnScanned(galacticCoord))
+                        .world(WorldSnapshot.fromWorld(world, empire))
+                        .portals(portals.stream().map(portal -> PortalSnapshot.fromPortal(portal, empire)).toList())
+                        .storms(storms.stream().map(StormSnapshot::fromStorm).toList())
+                        .build();
+                empireSnapshot.addSector(sectorSnapshot);
+                log.info("Adding stale galactic coordinate {}/local coordinate {} to snapshot for empire {}", galacticCoord,
+                        localCoord, empire);
+            }
+        });
+
+        final ObjectMapper mapper = new ObjectMapper();
+        final String json = mapper.writeValueAsString(empireSnapshot);
+        System.out.println(json);
+    }
+
+    int computeRow(final int radius, final Coordinate coordinate) {
+        return -2 * coordinate.getY() + coordinate.getOblique() + 2 * radius;
+    }
+
+    int computeColumn(final int numColumns, final Coordinate coordinate) {
+        return coordinate.getOblique() + numColumns / 2;
+    }
+}

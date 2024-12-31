@@ -36,7 +36,7 @@ public class BuildOrder extends WorldBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private String basename;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<String> names = Lists.newArrayList();
+    private final List<String> names = Lists.newArrayList();
 
     public static BuildOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final BuildOrder order = BuildOrder.builder()

@@ -187,8 +187,9 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
             final Ship ship = MAPPER.convertValue(data, new TypeReference<Ship>() {});
             final String owner = (String)data.get("owner");
             final Empire empire = turnData.getEmpire(owner);
+            ship.setOwner(empire);
             empire.addShip(ship);
-            log.info("Add ship {} to owner {}", ship, empire);
+            log.info("Loaded ship {} for owner {}", ship, empire);
             ships.put(ship.getName(), ship);
         }
 
@@ -287,6 +288,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     @Override
     public List<? extends Order> loadReadyOrders(final String session, final String empire, final int turnNumber) throws Exception {
         final Path path = constructPath(session, empire, "ready-orders", Integer.toString(turnNumber), "txt");
+        // TODO
         return Lists.newArrayList();
     }
 

@@ -27,13 +27,13 @@ public abstract class ShipBasedOrder extends Order {
     final static protected String LOCATION_GROUP = "location";
     final static private String COORDINATE_EXCEPT_LIST_GROUP = "coordexcept";
     final static private String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
-    final static private String SHIP_LIST_GROUP = "shiplist";
+    final static protected String SHIP_LIST_GROUP = "shiplist";
 
     final static protected String COORDINATE_REGEX = "(?<" + COORDINATE_GROUP + ">\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?)";
     final static private String COORDINATE_EXCEPT_REGEX = COORDINATE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">\\w+(?:\\s+\\w+)*))?";
     final static protected String LOCATION_REGEX = "(?<" + LOCATION_GROUP + ">@\\w+)";
     final static protected String LOCATION_EXCEPT_REGEX = LOCATION_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">\\w+(?:\\s+\\w+)*))?";
-    final static private String SHIP_LIST_REGEX = "(?<" + SHIP_LIST_GROUP + ">\\w+(?:\\s+\\w+)*)";
+    final static protected String SHIP_LIST_REGEX = "(?<" + SHIP_LIST_GROUP + ">\\w+(?:\\s+\\w+)*)";
 
     final static private String SHIP_GROUP_REGEX = COORDINATE_EXCEPT_REGEX + "|" + LOCATION_EXCEPT_REGEX + "|" + SHIP_LIST_REGEX;
     final static private Pattern SHIP_GROUP_PATTERN = Pattern.compile(SHIP_GROUP_REGEX, Pattern.CASE_INSENSITIVE);
@@ -56,6 +56,9 @@ public abstract class ShipBasedOrder extends Order {
             final Ship ship = empire.getShip(shipName);
             if (ship == null) {
                 order.addError(shipName, "Unknown ship");
+            }
+            else if (!ship.isAlive()) {
+                order.addError(ship, "Ship is destroyed");
             } else {
                 ships.add(ship);
             }

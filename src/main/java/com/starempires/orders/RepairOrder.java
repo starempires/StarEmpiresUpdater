@@ -30,7 +30,7 @@ public class RepairOrder extends ShipBasedOrder {
 
     private Ship ship;
     private int dpToRepair;
-    private List<World> worlds = Lists.newArrayList();
+    private final List<World> worlds = Lists.newArrayList();
 
     public static RepairOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final RepairOrder order = RepairOrder.builder().orderType(OrderType.REPAIR).empire(empire).parameters(parameters).build();

@@ -33,7 +33,7 @@ public class FireOrder extends ShipBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
-    private List<Empire> targets = Lists.newArrayList();
+    private final List<Empire> targets = Lists.newArrayList();
     private Coordinate coordinate;
     private boolean ascending;
 

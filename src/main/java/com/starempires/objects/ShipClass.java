@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(force = true)
 @SuperBuilder
 @AllArgsConstructor
+@JsonPropertyOrder(alphabetic = true)
 public class ShipClass extends IdentifiableObject {
 
     /** hull type of this ship class */
