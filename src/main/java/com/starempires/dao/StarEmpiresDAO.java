@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface StarEmpiresDAO {
+    List<String> loadEmpireData(final String session) throws Exception;
     TurnData loadTurnData(final String session, final int turnNumber) throws Exception;
     void saveTurnData(final String session, final TurnData turnData) throws Exception;
     List<? extends Order> loadReadyOrders(final String session, final String empire, final int turnNumber) throws Exception;

@@ -101,20 +101,18 @@ public class SessionCreator {
         dao = new JsonStarEmpiresDAO(sessionDir);
     }
 
-    public TurnData createSession() throws IOException {
+    public TurnData createSession(final List<String> empireData) throws Exception {
         final PropertiesUtil galaxyProperties = new PropertiesUtil(FileSystems.getDefault().getPath(dataDir, configFile));
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
         final TurnData turnData = TurnData.builder()
              .radius(radius)
              .session(sessionName)
              .build();
-        final List<String> empireData = loadItems(sessionDir, empireFile);
 
         final ThreadLocalRandom random = ThreadLocalRandom.current();
         final List<Coordinate> edgeCoordinates = Lists.newArrayList(Coordinate.getSurroundingRing(radius));
         edgeCoordinates.sort(COORDINATE_COMPARATOR);
         final int numEdgeCoordinates = edgeCoordinates.size();
-        final int edgeLength = numEdgeCoordinates/6;
 
         // create empires
         final Map<Empire, EmpireCreation> empireCreations = Maps.newHashMap();
@@ -126,8 +124,8 @@ public class SessionCreator {
             final Coordinate edge = edgeCoordinates.get(index);
             final String[] empireInfo = Arrays.stream(StringUtils.split(data, ",")).map(String::trim).toArray(String[]::new);
             final FrameOfReference frame = FrameOfReference.builder()
-                        .obliqueOffset(-edge.getOblique()) // random.nextInt(-radius / 2, radius / 2))
-                        .yOffset(-edge.getY()) // random.nextInt(-radius / 2, radius / 2))
+                        .obliqueOffset(-edge.getOblique())
+                        .yOffset(-edge.getY())
                         .horizontalMirror(random.nextInt(2) == 1)
                         .verticalMirror(random.nextInt(2) == 1)
                         .rotation(HexDirection.from(random.nextInt(HexDirection.values().length)))
@@ -234,16 +232,21 @@ public class SessionCreator {
         return colors;
     }
 
+    private List<String> loadEmpireData() throws Exception {
+        return dao.loadEmpireData(sessionName);
+    }
+
     private Map<String, String> createColorMap(final TurnData turnData) throws IOException {
         final Map<String, String> defaultColors = loadDefaultColors();
         final Map<String, String> colors = defaultColors.entrySet().stream()
-                .filter(entry -> !entry.getKey().startsWith("empire")) // Keep entries whose keys do not start with the prefix
+                .filter(entry -> !entry.getKey().startsWith("empire-")) // Keep entries whose keys do not start with the prefix
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // Collect into a new map
         final Collection<Empire> empires = turnData.getAllEmpires();
         int i = 0;
         for (Empire empire: empires) {
-            String color = defaultColors.get("empire" + i);
-            colors.put(empire.getName(), color);
+            String color = defaultColors.get("empire-" + i);
+            colors.put("empire-" + empire.getName(), color);
+            i++;
         }
         return colors;
     }
@@ -255,7 +258,8 @@ public class SessionCreator {
     public static void main(String[] args) {
         try {
             final SessionCreator creator = new SessionCreator(args);
-            final TurnData turnData = creator.createSession();
+            final List<String> empireData = creator.loadEmpireData();
+            final TurnData turnData = creator.createSession(empireData);
             creator.saveTurnData(turnData);
             final Map<String, String> colors = creator.createColorMap(turnData);
             creator.saveColors(colors);

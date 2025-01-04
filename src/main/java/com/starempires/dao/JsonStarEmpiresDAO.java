@@ -354,4 +354,12 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         log.info("Loaded map colors {}", colors);
         return colors;
     }
+
+    @Override
+    public List<String> loadEmpireData(final String session) throws Exception {
+        final Path path = constructPath(session, "empire-data", "txt");
+        final List<String> empireData = Files.readAllLines(path);
+        log.info("Loaded empire data {}", empireData);
+        return empireData;
+    }
 }

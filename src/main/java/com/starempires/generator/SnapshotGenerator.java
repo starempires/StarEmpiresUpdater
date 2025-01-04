@@ -27,6 +27,7 @@ import org.apache.commons.cli.ParseException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -37,21 +38,18 @@ import java.util.stream.Collectors;
 public class SnapshotGenerator {
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
-    private static final String ARG_EMPIRE_NAME = "empire";
     private static final String ARG_SESSION_DIR = "sessiondir";
 
     private final StarEmpiresDAO dao;
     private String sessionName;
     private int turnNumber;
     private String sessionDir;
-    private String empireName;
 
     private void extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
-            options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE_NAME).hasArg().desc("empire name").required().build());
             options.addOption(Option.builder("sd").argName("session dir").longOpt(ARG_SESSION_DIR).hasArg().desc("session dir").required().build());
 
             final CommandLineParser parser = new DefaultParser();
@@ -59,7 +57,6 @@ public class SnapshotGenerator {
             sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
             turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
             sessionDir = cmd.getOptionValue(ARG_SESSION_DIR);
-            empireName = cmd.getOptionValue(ARG_EMPIRE_NAME);
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("SnapshotGenerator", options);
@@ -73,13 +70,22 @@ public class SnapshotGenerator {
         return turnData;
     }
 
+    private List<String> loadEmpireNames() throws Exception {
+        final List<String> empireData = dao.loadEmpireData(sessionName);
+        final List<String> empireNames = empireData.stream()
+                .map(str -> str.split(",")[0]) // Split and get the first value
+                .collect(Collectors.toList()); //
+        log.info("Loaded empire names {}", empireNames);
+        return empireNames;
+    }
+
     private Map<String, String> loadColors() throws Exception {
         final Map<String, String> colors = dao.loadColors(sessionName);
         log.info("Loaded map colors for session {}, turn {}", sessionName, turnNumber);
         return colors;
     }
 
-    private void saveSnapshot(final EmpireSnapshot snapshot) throws Exception {
+    private void saveSnapshot(final EmpireSnapshot snapshot, final String empireName) throws Exception {
         dao.saveSnapshot(sessionName, empireName, turnNumber, snapshot);
         final ObjectMapper mapper = new ObjectMapper();
         final String json = mapper.writeValueAsString(snapshot);
@@ -91,9 +97,12 @@ public class SnapshotGenerator {
             final SnapshotGenerator generator = new SnapshotGenerator(args);
             final TurnData turnData = generator.loadTurnData();
             final Map<String, String> colors = generator.loadColors();
-            log.info("Generating snapshot for {}", generator.getEmpireName());
-            final EmpireSnapshot snapshot = generator.generate(turnData, colors);
-            generator.saveSnapshot(snapshot);
+            final List<String> empireNames = generator.loadEmpireNames();
+            for (String empireName: empireNames) {
+                log.info("Generating snapshot for {}", empireName);
+                final EmpireSnapshot snapshot = generator.generate(turnData, colors, empireName);
+                generator.saveSnapshot(snapshot, empireName);
+            }
         } catch (Exception exception) {
             log.error("Error generating snapshots", exception);
         }
@@ -136,7 +145,7 @@ public class SnapshotGenerator {
         return knownConnections;
     }
 
-    private EmpireSnapshot generate(final TurnData turnData, final Map<String, String> colors) throws JsonProcessingException {
+    private EmpireSnapshot generate(final TurnData turnData, final Map<String, String> colors, final String empireName) throws JsonProcessingException {
         final Empire empire = turnData.getEmpire(empireName);
         final int radius = empire.computeMaxScanExtent();
         // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
@@ -147,18 +156,21 @@ public class SnapshotGenerator {
                 .columns(2 * radius + 1)
                 .rows(4 * radius + 1)
                 .turnNumber(turnData.getTurnNumber())
-                .colors(colors)
                 .build();
 
         // add "global" elements known to this empire
         empireSnapshot.addKnownShipClasses(empire.getKnownShipClasses());
 
+        final Map<String, String> empireColors = colors.entrySet().stream()
+                .filter(entry -> !entry.getKey().startsWith("empire-")) // Keep entries whose keys do not start with the prefix
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        empireColors.put(empireName, colors.get("empire-" + empireName));
         final Collection<Empire> knownEmpires = empire.getKnownEmpires();
         empireSnapshot.addKnownEmpires(knownEmpires.stream()
                 .map(Empire::getName)
                 .collect(Collectors.toSet()));
-
-        empireSnapshot.addColors(empire.getMapColors());
+        knownEmpires.forEach(e -> empireColors.put(e.getName(), colors.get("empire-" + e.getName())));
+        empireSnapshot.addColors(empireColors);
 
         Map<Coordinate, Coordinate> knownConnections = getKnownConnections(empire, turnData);
         knownConnections.forEach(empireSnapshot::addConnection);
