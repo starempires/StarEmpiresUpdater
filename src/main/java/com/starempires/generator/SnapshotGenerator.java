@@ -24,6 +24,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
@@ -72,12 +73,27 @@ public class SnapshotGenerator {
         return turnData;
     }
 
+    private Map<String, String> loadColors() throws Exception {
+        final Map<String, String> colors = dao.loadColors(sessionName);
+        log.info("Loaded map colors for session {}, turn {}", sessionName, turnNumber);
+        return colors;
+    }
+
+    private void saveSnapshot(final EmpireSnapshot snapshot) throws Exception {
+        dao.saveSnapshot(sessionName, empireName, turnNumber, snapshot);
+        final ObjectMapper mapper = new ObjectMapper();
+        final String json = mapper.writeValueAsString(snapshot);
+        log.info(json);
+    }
+
     public static void main(final String[] args) {
         try {
             final SnapshotGenerator generator = new SnapshotGenerator(args);
             final TurnData turnData = generator.loadTurnData();
+            final Map<String, String> colors = generator.loadColors();
             log.info("Generating snapshot for {}", generator.getEmpireName());
-            generator.generate(turnData);
+            final EmpireSnapshot snapshot = generator.generate(turnData, colors);
+            generator.saveSnapshot(snapshot);
         } catch (Exception exception) {
             log.error("Error generating snapshots", exception);
         }
@@ -120,7 +136,7 @@ public class SnapshotGenerator {
         return knownConnections;
     }
 
-    private void generate(final TurnData turnData) throws JsonProcessingException {
+    private EmpireSnapshot generate(final TurnData turnData, final Map<String, String> colors) throws JsonProcessingException {
         final Empire empire = turnData.getEmpire(empireName);
         final int radius = empire.computeMaxScanExtent();
         // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
@@ -131,6 +147,7 @@ public class SnapshotGenerator {
                 .columns(2 * radius + 1)
                 .rows(4 * radius + 1)
                 .turnNumber(turnData.getTurnNumber())
+                .colors(colors)
                 .build();
 
         // add "global" elements known to this empire
@@ -230,17 +247,14 @@ public class SnapshotGenerator {
                         localCoord, empire);
             }
         });
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final String json = mapper.writeValueAsString(empireSnapshot);
-        System.out.println(json);
+        return empireSnapshot;
     }
 
-    int computeRow(final int radius, final Coordinate coordinate) {
+    int computeRow(final int radius, final @NotNull Coordinate coordinate) {
         return -2 * coordinate.getY() + coordinate.getOblique() + 2 * radius;
     }
 
-    int computeColumn(final int numColumns, final Coordinate coordinate) {
+    int computeColumn(final int numColumns, final @NotNull Coordinate coordinate) {
         return coordinate.getOblique() + numColumns / 2;
     }
 }

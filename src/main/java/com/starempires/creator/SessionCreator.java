@@ -2,6 +2,7 @@ package com.starempires.creator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
@@ -42,6 +43,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static com.starempires.objects.Coordinate.COORDINATE_COMPARATOR;
+
 @Log4j2
 public class SessionCreator {
 
@@ -59,8 +62,8 @@ public class SessionCreator {
 
     private final StarEmpiresDAO dao;
 
-    public List<String> loadItems(final String file) throws IOException {
-        final Path path = FileSystems.getDefault().getPath(dataDir, file);
+    public List<String> loadItems(final String dir, final String file) throws IOException {
+        final Path path = FileSystems.getDefault().getPath(dir, file);
         log.info("Loading data from {}", path);
         return Files.readAllLines(path);
     }
@@ -99,32 +102,42 @@ public class SessionCreator {
     }
 
     public TurnData createSession() throws IOException {
-
         final PropertiesUtil galaxyProperties = new PropertiesUtil(FileSystems.getDefault().getPath(dataDir, configFile));
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
         final TurnData turnData = TurnData.builder()
              .radius(radius)
              .session(sessionName)
              .build();
-        final List<String> empireData = loadItems(empireFile);
+        final List<String> empireData = loadItems(sessionDir, empireFile);
 
         final ThreadLocalRandom random = ThreadLocalRandom.current();
+        final List<Coordinate> edgeCoordinates = Lists.newArrayList(Coordinate.getSurroundingRing(radius));
+        edgeCoordinates.sort(COORDINATE_COMPARATOR);
+        final int numEdgeCoordinates = edgeCoordinates.size();
+        final int edgeLength = numEdgeCoordinates/6;
 
         // create empires
         final Map<Empire, EmpireCreation> empireCreations = Maps.newHashMap();
+        int i = 0;
+        int numEmpires = empireData.size();
+        int interval = numEdgeCoordinates / numEmpires;
         for (final String data: empireData) {
+            int index = i * interval;
+            final Coordinate edge = edgeCoordinates.get(index);
             final String[] empireInfo = Arrays.stream(StringUtils.split(data, ",")).map(String::trim).toArray(String[]::new);
             final FrameOfReference frame = FrameOfReference.builder()
-                        .obliqueOffset(random.nextInt(-radius / 2, radius / 2))
-                        .yOffset(random.nextInt(-radius / 2, radius / 2))
+                        .obliqueOffset(-edge.getOblique()) // random.nextInt(-radius / 2, radius / 2))
+                        .yOffset(-edge.getY()) // random.nextInt(-radius / 2, radius / 2))
                         .horizontalMirror(random.nextInt(2) == 1)
                         .verticalMirror(random.nextInt(2) == 1)
                         .rotation(HexDirection.from(random.nextInt(HexDirection.values().length)))
                         .build();
             final Empire empire = Empire.builder().name(empireInfo[0]).abbreviation(empireInfo[1]).empireType(EmpireType.valueOf(empireInfo[2])).
                     frameOfReference(frame).build();
-            final EmpireCreation ecd = EmpireCreation.builder().homeworldName(empireInfo[3]).starbaseName(empireInfo[4]).build();
+            final EmpireCreation ecd = EmpireCreation.builder().homeworldName(empireInfo[3]).starbaseName(empireInfo[4]).center(edge).build();
             empireCreations.put(empire, ecd);
+            i++;
+            log.info("Created empire {} with FOR {}", empire, frame);
         }
         turnData.addEmpires(empireCreations.keySet());
         final Empire gm = Empire.builder().name("GM").abbreviation("GM").empireType(EmpireType.GM).frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE).build();
@@ -211,14 +224,44 @@ public class SessionCreator {
         return turnData;
     }
 
+    private Map<String, String> loadDefaultColors() throws IOException {
+        final Map<String, String> colors = Maps.newHashMap();
+        final List<String> list = loadItems(dataDir, "Colors.txt");
+        list.forEach( line -> {
+            final String[] parts = StringUtils.split(line.trim(), ":");
+            colors.put(parts[0], parts[1]);
+        });
+        return colors;
+    }
+
+    private Map<String, String> createColorMap(final TurnData turnData) throws IOException {
+        final Map<String, String> defaultColors = loadDefaultColors();
+        final Map<String, String> colors = defaultColors.entrySet().stream()
+                .filter(entry -> !entry.getKey().startsWith("empire")) // Keep entries whose keys do not start with the prefix
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // Collect into a new map
+        final Collection<Empire> empires = turnData.getAllEmpires();
+        int i = 0;
+        for (Empire empire: empires) {
+            String color = defaultColors.get("empire" + i);
+            colors.put(empire.getName(), color);
+        }
+        return colors;
+    }
+
+    private void saveColors(final Map<String, String> colors) throws Exception {
+        dao.saveColors(sessionName, colors);
+    }
+
     public static void main(String[] args) {
         try {
             final SessionCreator creator = new SessionCreator(args);
             final TurnData turnData = creator.createSession();
             creator.saveTurnData(turnData);
+            final Map<String, String> colors = creator.createColorMap(turnData);
+            creator.saveColors(colors);
             // reload turn data to confirm it's valid
             final TurnData turnData2 = creator.loadTurnData(turnData.getSession(), turnData.getTurnNumber());
-            log.info("Loaded turnData " + turnData2);
+            log.info("Loaded turnData {}", turnData2);
         } catch (Exception exception) {
             log.error("Session creation failed", exception);
         }
@@ -229,14 +272,14 @@ public class SessionCreator {
     }
 
     private void saveTurnData(final TurnData turndata) throws Exception {
-        dao.saveTurnData(turndata);
+        dao.saveTurnData(sessionName, turndata);
     }
 
     private Galaxy generateGalaxy(final PropertiesUtil galaxyProperties, final Map<Empire, EmpireCreation> empireCreations) throws IOException {
-        final List<String> portalNames = loadItems("PortalNames.txt");
-        final List<String> worldNames = loadItems("WorldNames.txt");
-        final List<String> stormNames = loadItems("StormNames.txt");
-        final List<String> nebulaNames = loadItems("NebulaNames.txt");
+        final List<String> portalNames = loadItems(dataDir, "PortalNames.txt");
+        final List<String> worldNames = loadItems(dataDir, "WorldNames.txt");
+        final List<String> stormNames = loadItems(dataDir, "StormNames.txt");
+        final List<String> nebulaNames = loadItems(dataDir, "NebulaNames.txt");
 
         final Galaxy galaxy = new Galaxy(galaxyProperties);
         galaxy.initHomeworlds(empireCreations);

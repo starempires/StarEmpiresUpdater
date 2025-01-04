@@ -22,8 +22,6 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-import static com.starempires.objects.Coordinate.COORDINATE_COMPARATOR;
-
 @Log4j2
 @Getter
 public class Galaxy {
@@ -147,24 +145,11 @@ public class Galaxy {
     }
 
     public void initHomeworlds(final Map<Empire, EmpireCreation> empireCreations) {
-        final List<Coordinate> edgeCoordinates = Lists.newArrayList(Coordinate.getSurroundingRing(radius));
-        edgeCoordinates.sort(COORDINATE_COMPARATOR);
-        final int numEdgeCoordinates = edgeCoordinates.size();
-        final int edgeLength = numEdgeCoordinates/6;
-        final List<Coordinate> surrounding = Lists.newArrayList();
-        int i = 0;
         for (Map.Entry<Empire, EmpireCreation> entry: empireCreations.entrySet()) {
             final Empire empire = entry.getKey();
             final EmpireCreation ec = entry.getValue();
-            int index = Math.round(i * (float) edgeLength + edgeLength/2);
-            final Coordinate edge = edgeCoordinates.get(index);
-            surrounding.clear();
-            surrounding.addAll(Coordinate.getSurroundingCoordinates(edge, 1));
-            surrounding.retainAll(unoccupied);
-            index = ThreadLocalRandom.current().nextInt(surrounding.size());
-            final Coordinate coordinate = surrounding.get(index);
+            final Coordinate coordinate = ec.getCenter();
             final String name = ec.getHomeworldName();
-            final int id = worlds.size() + 1;
 
             final World.WorldBuilder builder = World.builder();
             final World world = builder.name(name).coordinate(coordinate)
@@ -175,7 +160,6 @@ public class Galaxy {
             worlds.add(world);
             unoccupied.remove(coordinate);
             log.info("Added {} homeworld {} ", empire, world);
-            i++;
         }
         log.info("Added {} homeworlds", empireCreations.size());
     }
@@ -204,7 +188,6 @@ public class Galaxy {
         IntStream.range(0, numPortals).forEach(i -> {
             final Coordinate coordinate = getNewPortalCoordinate(minPortalDistance, wormnetPortals);
             if (coordinate != null) {
-                final int id = portals.size() + 1;
                 final String name = getName(names);
                 final Portal portal = Portal.builder().name(name).coordinate(coordinate).build();
                 wormnetPortals.add(portal);
@@ -242,7 +225,6 @@ public class Galaxy {
             if (!isNearbyHomeworld(coordinate)) {
                 final double random = ThreadLocalRandom.current().nextDouble();
                 if (random <= worldDensity) {
-                    final int id = worlds.size() + 1;
                     final String name = getName(names);
                     final int production = 1 + ThreadLocalRandom.current().nextInt(maxWorldProduction - 1);
                     final World world = World.builder().name(name).coordinate(coordinate)
@@ -262,7 +244,6 @@ public class Galaxy {
         allCoordinates.forEach(coordinate -> {
             if (!homeworlds.containsKey(coordinate)) {
                 if (ThreadLocalRandom.current().nextDouble() < stormDensity) {
-                    final int id = storms.size() + 1;
                     final int rating = ThreadLocalRandom.current().nextInt(maxStormRating) + 1;
                     final String name = getName(stormNames);
                     final Storm storm = Storm.builder().coordinate(coordinate).name(name).rating(rating)
@@ -271,7 +252,6 @@ public class Galaxy {
                     log.info("Added storm {}", storm);
                 }
                 else if (ThreadLocalRandom.current().nextDouble() < nebulaDensity) {
-                    final int id = storms.size() + 1;
                     final String name = getName(nebulaNames);
                     final Storm nebula = Storm.builder().coordinate(coordinate).name(name).rating(0)
                             .build();

@@ -79,7 +79,7 @@ public class OrderParser {
     }
 
 
-    private List<String> loadOrdersText() throws Exception {
+    private List<String> loadOrders() throws Exception {
         final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", sessionName, empireName, turnNumber, "orders", "txt"));
         final List<String> ordersText = Files.readAllLines(path);
         log.info("Loaded {} orders for empire {}, session {}, turn {}", ordersText.size(), empireName,sessionName, turnNumber);
@@ -96,10 +96,6 @@ public class OrderParser {
         return (Order) method.invoke(null, turnData, empire, parameters); // static method, so use `null` for instance
     }
 
-    private void saveOrders(final List<Order> orders) throws Exception {
-        dao.saveReadyOrders(sessionName, empireName, turnNumber, orders);
-    }
-
     private List<Order> parseOrders(final TurnData turnData, final Empire empire, final List<String> ordersText) {
         final List<Order> orders = Lists.newArrayList();
         ordersText.forEach(text -> {
@@ -113,7 +109,9 @@ public class OrderParser {
         return orders;
     }
 
-    private void printResults(final List<Order> orders) {
+    private void saveOrders(final List<Order> orders) throws Exception {
+        dao.saveReadyOrders(sessionName, empireName, turnNumber, orders);
+        dao.saveOrderResults(sessionName, empireName, turnNumber, orders);
         orders.forEach(order -> {
             final List<String> messages = order.getResults();
             if (messages.isEmpty()) {
@@ -145,10 +143,9 @@ public class OrderParser {
                 log.error(message);
                 throw new RuntimeException(message);
             }
-            final List<String> ordersTexts = parser.loadOrdersText();
+            final List<String> ordersTexts = parser.loadOrders();
             final List<Order> orders = parser.parseOrders(turnData, empire, ordersTexts);
             parser.saveOrders(orders);
-            parser.printResults(orders);
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }

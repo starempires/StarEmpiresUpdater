@@ -148,7 +148,7 @@ public class TurnUpdater {
     }
 
     private void saveTurnData(TurnData turnData) throws Exception {
-        dao.saveTurnData(turnData);
+        dao.saveTurnData(sessionName, turnData);
         log.info("Saved turn data for session {} turn {}", sessionName, turnData.getTurnNumber());
     }
 }

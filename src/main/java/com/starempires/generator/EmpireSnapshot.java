@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.starempires.objects.Coordinate;
@@ -47,7 +46,7 @@ public class EmpireSnapshot extends IdentifiableObjectSnapshot {
     @JsonProperty("ownedWorlds")
     final private Set<WorldSnapshot> ownedWorlds = Sets.newHashSet();
     @JsonProperty("colors")
-    final private Map<String, String> colors = Maps.newHashMap();
+    final private Map<String, String> colors;
 
     final private Multimap<Coordinate, Coordinate> connections = HashMultimap.create();
 
@@ -67,8 +66,8 @@ public class EmpireSnapshot extends IdentifiableObjectSnapshot {
         knownEmpires.addAll(knownEmpireNames);
     }
 
-    public void addColors(final Map<?, String> map) {
-        map.forEach((key, value) -> colors.put(key.toString(), value));
+    public void addColors(final Map<String, String> map) {
+        colors.putAll(map);
     }
 
     @JsonProperty("connections")

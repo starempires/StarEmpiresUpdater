@@ -1,6 +1,0 @@
-The Culture, CU, ACTIVE, Norstrilia, Vavatch
-KRATOS, KR, ACTIVE, KRATOS, NESTCUBE
-Federation, FE, ACTIVE, Earth, Starbase1
-Shakespeare, SH, ACTIVE, Elsinore, The Globe
-MCRN, MC, ACTIVE, Mars, Ares
-Atriedes, AT, ACTIVE, Arrakis, Arrakeen

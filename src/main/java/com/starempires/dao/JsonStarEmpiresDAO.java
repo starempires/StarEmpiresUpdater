@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
+import com.starempires.generator.EmpireSnapshot;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.HullParameters;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
@@ -279,8 +281,8 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
-    public void saveTurnData(final TurnData turnData) throws Exception {
-        final Path path = constructPath(turnData.getSession(), "turndata", Integer.toString(turnData.getTurnNumber()), "json");
+    public void saveTurnData(final String session, final TurnData turnData) throws Exception {
+        final Path path = constructPath(session, "turndata", Integer.toString(turnData.getTurnNumber()), "json");
         MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), turnData);
         log.info("Wrote {} turn {} data to {}", turnData.getSession(), turnData.getTurnNumber(), path);
     }
@@ -300,6 +302,33 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
+    public void saveSnapshot(final String session, final String empire, int turnNumber, final EmpireSnapshot snapshot) throws IOException {
+        final Path path = constructPath(session, empire, "snapshot", Integer.toString(turnNumber), "json");
+        MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), snapshot);
+        log.info("Wrote snapshot for empire {} turn {} to {}", empire, turnNumber, path);
+    }
+
+    @Override
+    public void saveOrderResults(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
+        final Path path = constructPath(session, empire, "orders-results", Integer.toString(turnNumber), "txt");
+        final List<String> lines = Lists.newArrayList();
+        orders.forEach(order -> {
+            final List<String> messages = order.getResults();
+            if (messages.isEmpty()) {
+                lines.add(String.format("%s: OK", order));
+            }
+            else if (messages.size() == 1) {
+                lines.add(String.format("%s: %s", order, messages.get(0)));
+            }
+            else {
+                lines.add(String.format("%s:\n %s", order, StringUtils.join(messages, "\n ")));
+            }
+        });
+        Files.write(path, lines);
+        log.info("Wrote {} order results for empire {} turn {} to {}", orders.size(), empire, turnNumber, path);
+    }
+
+    @Override
     public List<HullParameters> loadHullParameters(final String session) throws Exception {
         final Path path = constructPath(session, "hull-parameters", "json");
         final List<HullParameters> hullParameters = Lists.newArrayList();
@@ -309,5 +338,20 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
             hullParameters.add(parameters);
         }
         return hullParameters;
+    }
+
+    @Override
+    public void saveColors(final String session, final Map<String, String> colors) throws Exception {
+        final Path path = constructPath(session, "map-colors", "json");
+        MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), colors);
+        log.info("Wrote map colors {}", colors);
+    }
+
+    @Override
+    public Map<String, String> loadColors(final String session) throws Exception {
+        final Path path = constructPath(session, "map-colors", "json");
+        final Map<String, String> colors = MAPPER.readValue(path.toFile(),new TypeReference<Map<String, String>>() {});
+        log.info("Loaded map colors {}", colors);
+        return colors;
     }
 }
