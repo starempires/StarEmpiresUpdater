@@ -101,6 +101,38 @@ public class SessionCreator {
         dao = new JsonStarEmpiresDAO(sessionDir);
     }
 
+    private List<Coordinate> sortEdgeCoordinates(final List<Coordinate> coordinates) {
+        final List<Coordinate> bothPositive = Lists.newArrayList();
+        final List<Coordinate> bothNegative = Lists.newArrayList();
+        final List<Coordinate> onlyObliquePositive = Lists.newArrayList();
+        final List<Coordinate> onlyObliqueNegative = Lists.newArrayList();
+
+        for (Coordinate coordinate : coordinates) {
+            if (coordinate.getOblique() >= 0) {
+                if (coordinate.getY() >= 0) {
+                    bothPositive.add(coordinate);
+                }
+                else {
+                    onlyObliquePositive.add(coordinate);
+                }
+            } else if (coordinate.getY() < 0) {
+                bothNegative.add(coordinate);
+            } else {
+                onlyObliqueNegative.add(coordinate);
+            }
+        }
+        bothPositive.sort(COORDINATE_COMPARATOR);
+        bothNegative.sort(COORDINATE_COMPARATOR);
+        onlyObliquePositive.sort(COORDINATE_COMPARATOR);
+        onlyObliqueNegative.sort(COORDINATE_COMPARATOR);
+        final List<Coordinate> edgeCoordinates = Lists.newArrayList();
+        edgeCoordinates.addAll(bothPositive);
+        edgeCoordinates.addAll(onlyObliquePositive);
+        edgeCoordinates.addAll(bothNegative);
+        edgeCoordinates.addAll(onlyObliqueNegative);
+        return edgeCoordinates;
+    }
+
     public TurnData createSession(final List<String> empireData) throws Exception {
         final PropertiesUtil galaxyProperties = new PropertiesUtil(FileSystems.getDefault().getPath(dataDir, configFile));
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
@@ -110,8 +142,8 @@ public class SessionCreator {
              .build();
 
         final ThreadLocalRandom random = ThreadLocalRandom.current();
-        final List<Coordinate> edgeCoordinates = Lists.newArrayList(Coordinate.getSurroundingRing(radius));
-        edgeCoordinates.sort(COORDINATE_COMPARATOR);
+        //final List<Coordinate> edgeCoordinates = sortEdgeCoordinates(Coordinate.getSurroundingRing(radius));
+        final List<Coordinate> edgeCoordinates = Coordinate.getSurroundingRing(radius);
         final int numEdgeCoordinates = edgeCoordinates.size();
 
         // create empires

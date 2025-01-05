@@ -34,7 +34,9 @@ public class Galaxy {
     private final int maxWorldProduction;
     private final int numWormnets;
     private final int maxWormnetPortals;
-    private final int minPortalDistance;
+    private final int minPortalToPortalDistance;
+    private final int minPortalToHomeworldDistance;
+    private final int minNebulaToHomeworldDistance;
     private final double nebulaDensity;
     private final double stormDensity;
     private final int maxStormRating;
@@ -75,9 +77,17 @@ public class Galaxy {
         Validate.isTrue(maxWormnetPortals >= 0, "Max wormnet portals must be non-negative");
         log.info("Max wormnet portals {}", maxWormnetPortals);
 
-        minPortalDistance = properties.getInt(Constants.CONFIG_MIN_PORTAL_DISTANCE, Constants.DEFAULT_MIN_PORTAL_DISTANCE);
-        Validate.isTrue(minPortalDistance > 1, "Min portal distance must be > 1");
-        log.info("Min portals distance {}", minPortalDistance);
+        minPortalToPortalDistance = properties.getInt(Constants.CONFIG_MIN_PORTAL_TO_PORTAL_DISTANCE, Constants.DEFAULT_MIN_PORTAL_TO_PORTAL_DISTANCE);
+        Validate.isTrue(minPortalToPortalDistance > 1, "Min portal to portal distance must be > 1");
+        log.info("Min portal to portal distance {}", minPortalToPortalDistance);
+
+        minPortalToHomeworldDistance = properties.getInt(Constants.CONFIG_MIN_PORTAL_TO_HOMEWORLD_DISTANCE, Constants.DEFAULT_MIN_PORTAL_TO_HOMEWORLD_DISTANCE);
+        Validate.isTrue(minPortalToHomeworldDistance > 1, "Min portal to homeworld distance must be > 1");
+        log.info("Min portal to homeworld distance {}", minPortalToHomeworldDistance);
+
+        minNebulaToHomeworldDistance = properties.getInt(Constants.CONFIG_MIN_NEBULA_TO_HOMEWORLD_DISTANCE, Constants.DEFAULT_MIN_NEBULA_TO_HOMEWORLD_DISTANCE);
+        Validate.isTrue(minNebulaToHomeworldDistance > 1, "Min nebula to homeworld distance must be > 1");
+        log.info("Min nebula to homeworld distance {}", minNebulaToHomeworldDistance);
 
         maxStormRating = properties.getInt(Constants.CONFIG_MAX_STORM_RATING, Constants.DEFAULT_MAX_STORM_RATING);
         Validate.isTrue(maxStormRating >= 0, "Max storm rating must be non-negative");
@@ -164,13 +174,12 @@ public class Galaxy {
         log.info("Added {} homeworlds", empireCreations.size());
     }
 
-    private static boolean isMinDistanceFromPortals(final Set<Portal> portalSet, final Coordinate coordinate, final int minDistance) {
-        return portalSet.stream().map(Portal::getCoordinate).anyMatch(c -> Coordinate.distance(c, coordinate) < minDistance);
-    }
-
-    private Coordinate getNewPortalCoordinate(final int minDistance, final Set<Portal> portals) {
+    private Coordinate getNewPortalCoordinate(final Set<Portal> portals) {
         final Coordinate coordinate = unoccupied.stream()
-                .filter(coord -> isMinDistanceFromPortals(portals, coord, minDistance)).findFirst().orElse(unoccupied.get(ThreadLocalRandom.current().nextInt(unoccupied.size())));
+                .filter(coord -> coord.isBeyondMinDistanceToObjects(portals, minPortalToPortalDistance))
+                .filter(coord -> coord.isBeyondMinDistanceToObjects(homeworlds.values(), minPortalToHomeworldDistance))
+                .findFirst()
+                .orElse(null);
         if (coordinate != null) {
             unoccupied.remove(coordinate);
         }
@@ -186,7 +195,7 @@ public class Galaxy {
         log.info("Generating new wormnet with {} portals", numPortals);
         final Set<Portal> wormnetPortals = Sets.newHashSet();
         IntStream.range(0, numPortals).forEach(i -> {
-            final Coordinate coordinate = getNewPortalCoordinate(minPortalDistance, wormnetPortals);
+            final Coordinate coordinate = getNewPortalCoordinate(wormnetPortals);
             if (coordinate != null) {
                 final String name = getName(names);
                 final Portal portal = Portal.builder().name(name).coordinate(coordinate).build();
@@ -205,7 +214,7 @@ public class Galaxy {
             });
         }
         else {
-            log.warn("Can't find enough portal hexes with min distance " + minPortalDistance);
+            log.warn("Can't find enough portal hexes beyond minimum distances");
         }
     }
 
@@ -240,9 +249,9 @@ public class Galaxy {
     }
 
     public void initNebulaeAndStorms(final List<String> stormNames, final List<String> nebulaNames) {
-        // TODO ensure no storm/nebula within X distance of homeworlds
         allCoordinates.forEach(coordinate -> {
-            if (!homeworlds.containsKey(coordinate)) {
+            if (!homeworlds.containsKey(coordinate) &&
+                    coordinate.isBeyondMinDistanceToObjects(homeworlds.values(), minNebulaToHomeworldDistance)) {
                 if (ThreadLocalRandom.current().nextDouble() < stormDensity) {
                     final int rating = ThreadLocalRandom.current().nextInt(maxStormRating) + 1;
                     final String name = getName(stormNames);

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
@@ -18,11 +19,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
  * @author john
  *
  */
+@Log4j2
 @AllArgsConstructor
 @Data
 @SuperBuilder
@@ -51,7 +56,24 @@ public class Coordinate implements Comparable<Coordinate> {
         }
     }
 
-    static class CoordinateMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends Coordinate>> {
+    public static class CoordinateMultimapSerializer extends JsonSerializer<Multimap<Coordinate, ? extends Coordinate>> {
+        @Override
+        public void serialize(Multimap<Coordinate, ? extends Coordinate> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
+            final Map<String, List<String>> map = objects.asMap().entrySet().stream()
+                    .collect(Collectors.toMap(
+                            entry -> entry.getKey().getName(),
+                            entry -> entry.getValue().stream().map(Coordinate::getName).toList()
+                    ));
+            gen.writeObject(map);
+        }
+
+        @Override
+        public boolean isEmpty(SerializerProvider provider, Multimap<Coordinate, ? extends Coordinate> value) {
+            return (value == null || value.isEmpty());
+        }
+    }
+
+    static class EmpireCoordinateMultimapSerializer extends JsonSerializer<Multimap<Empire, ? extends Coordinate>> {
         @Override
         public void serialize(Multimap<Empire, ? extends Coordinate> objects, JsonGenerator gen, SerializerProvider serializers) throws IOException, IOException {
             final Map<Empire, List<? extends Coordinate>> map = objects.asMap().entrySet().stream()
@@ -68,7 +90,7 @@ public class Coordinate implements Comparable<Coordinate> {
         }
     }
 
-    static class DeferredCoordinateMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends Coordinate>> {
+    static class DeferredEmpireCoordinateMultimapDeserializer extends JsonDeserializer<Multimap<Empire, ? extends Coordinate>> {
         @Override
         public Multimap<Empire, ? extends Coordinate> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException, IOException {
             return HashMultimap.create();
@@ -200,9 +222,9 @@ public class Coordinate implements Comparable<Coordinate> {
      *            The distance out from a center (0,0) Coordinate
      * @return The List of Coordinates in the given ring
      */
-    public static Set<Coordinate> getSurroundingRing(final int distance) {
+    public static List<Coordinate> getSurroundingRing(final int distance) {
         final int capacity = distance * 6;
-        final Set<Coordinate> rv;
+        final List<Coordinate> rv;
         if (distance > 0) {
             final Coordinate[] coordinates = new Coordinate[capacity + 1];
             for (int i = 0; i <= distance; i++) {
@@ -213,10 +235,11 @@ public class Coordinate implements Comparable<Coordinate> {
                 coordinates[4 * distance + i] = new Coordinate(-distance, -distance + i);
                 coordinates[5 * distance + i] = new Coordinate(-distance + i, i);
             }
-            rv = Sets.newHashSet(coordinates);
+            rv = Lists.newArrayList(coordinates);
+            rv.remove(rv.size() - 1); // last element is the same as first element
         }
         else {
-            rv = Collections.emptySet();
+            rv = Collections.emptyList();
         }
         return rv;
     }
@@ -313,5 +336,9 @@ public class Coordinate implements Comparable<Coordinate> {
         negative.oblique = -negative.oblique;
         negative.y = -negative.y;
         return negative;
+    }
+
+    public boolean isBeyondMinDistanceToObjects(final @NotNull Collection<? extends MappableObject> objects, final int minDistance) {
+        return objects.stream().map(MappableObject::getCoordinate).allMatch(c -> this.distanceTo(c) >= minDistance);
     }
 }

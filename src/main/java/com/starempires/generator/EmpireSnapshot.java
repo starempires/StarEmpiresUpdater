@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-@JsonInclude(Include.NON_DEFAULT)
+@JsonInclude(Include.NON_EMPTY)
 @SuperBuilder
 @JsonPropertyOrder(alphabetic = true)
 public class EmpireSnapshot extends IdentifiableObjectSnapshot {
@@ -48,11 +48,12 @@ public class EmpireSnapshot extends IdentifiableObjectSnapshot {
     final private Set<WorldSnapshot> ownedWorlds = Sets.newHashSet();
     @JsonProperty("colors")
     final private Map<String, String> colors = Maps.newHashMap();
-
+    @JsonProperty("connections")
+    @JsonSerialize(using = Coordinate.CoordinateMultimapSerializer.class)
     final private Multimap<Coordinate, Coordinate> connections = HashMultimap.create();
 
-    public void addConnection(final Coordinate from, final Coordinate to) {
-        connections.put(from, to);
+    public void addConnections(final Multimap<Coordinate, Coordinate> conns) {
+        connections.putAll(conns);
     }
 
     public void addSector(final SectorSnapshot sector) {
@@ -69,10 +70,5 @@ public class EmpireSnapshot extends IdentifiableObjectSnapshot {
 
     public void addColors(final Map<String, String> map) {
         colors.putAll(map);
-    }
-
-    @JsonProperty("connections")
-    public Map<Coordinate, Collection<Coordinate>> getConnectionsAsMap() {
-        return connections.asMap();
     }
 }

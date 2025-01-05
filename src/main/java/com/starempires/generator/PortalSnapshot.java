@@ -23,7 +23,6 @@ public class PortalSnapshot extends IdentifiableObjectSnapshot {
     private final Set<String> exits;
 
     public static PortalSnapshot fromPortal(final Portal portal, final Empire empire) {
-
         if (portal == null) {
             return null;
         }
@@ -54,7 +53,34 @@ public class PortalSnapshot extends IdentifiableObjectSnapshot {
                     }
                 });
         return PortalSnapshot.builder()
+                .name(portal.getName())
                 .navDataKnown(navDataKnown)
+                .collapsed(collapsed)
+                .entrances(entrances)
+                .exits(exits)
+                .build();
+    }
+
+    public static PortalSnapshot forGM(final Portal portal) {
+        if (portal == null) {
+            return null;
+        }
+
+        final boolean collapsed = portal.isCollapsed();
+        boolean navDataKnown = false;
+        final Set<String> entrances = Sets.newHashSet();
+        final Set<String> exits = Sets.newHashSet();
+
+        portal.getConnections()
+                .forEach(connection -> {
+                    exits.add(connection.getName());
+                    if (connection.isConnectedTo(portal)) {
+                        entrances.add(connection.getName());
+                    }
+                });
+        return PortalSnapshot.builder()
+                .name(portal.getName())
+                .navDataKnown(true)
                 .collapsed(collapsed)
                 .entrances(entrances)
                 .exits(exits)

@@ -98,7 +98,9 @@ public class Constants {
     public static final String CONFIG_STORM_DENSITY = "stormDensity";
     public static final String CONFIG_NEBULA_DENSITY = "nebulaDensity";
     public static final String CONFIG_MAX_WORMNET_PORTALS = "maxWormnetPortals";
-    public static final String CONFIG_MIN_PORTAL_DISTANCE = "minPortalDistance";
+    public static final String CONFIG_MIN_PORTAL_TO_PORTAL_DISTANCE = "minPortalToPortalDistance";
+    public static final String CONFIG_MIN_PORTAL_TO_HOMEWORLD_DISTANCE = "minPortalToHomeworldDistance";
+    public static final String CONFIG_MIN_NEBULA_TO_HOMEWORLD_DISTANCE = "minNebulaToHomeworldDistance";
     public static final String CONFIG_MAX_STORM_RATING = "maxStormRating";
     public static final String CONFIG_RADIUS = "radius";
 
@@ -108,9 +110,11 @@ public class Constants {
     public static final int DEFAULT_HOMEWORLD_NUM_NEARBY_WORLDS = 2;
     public static final int DEFAULT_HOMEWORLD_NEARBY_RADIUS = 2;
     public static final int DEFAULT_MAX_WORLD_PRODUCTION = 9;
-    public static final int DEFAULT_NUM_WORMNETS = 2;
+    public static final int DEFAULT_NUM_WORMNETS = 3;
     public static final int DEFAULT_MAX_WORMNET_PORTALS = 4;
-    public static final int DEFAULT_MIN_PORTAL_DISTANCE = 7;
+    public static final int DEFAULT_MIN_PORTAL_TO_PORTAL_DISTANCE = 8;
+    public static final int DEFAULT_MIN_PORTAL_TO_HOMEWORLD_DISTANCE = 3;
+    public static final int DEFAULT_MIN_NEBULA_TO_HOMEWORLD_DISTANCE = 2;
     public static final int DEFAULT_MAX_STORM_RATING = 10;
     public static final int DEFAULT_GALAXY_RADIUS = 10;
 

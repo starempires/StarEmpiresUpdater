@@ -92,8 +92,8 @@ public class Empire extends IdentifiableObject {
      * map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized
      */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = Coordinate.CoordinateMultimapSerializer.class)
-    @JsonDeserialize(using = Coordinate.DeferredCoordinateMultimapDeserializer.class)
+    @JsonSerialize(using = Coordinate.EmpireCoordinateMultimapSerializer.class)
+    @JsonDeserialize(using = Coordinate.DeferredEmpireCoordinateMultimapDeserializer.class)
     private final Multimap<Empire, RadialCoordinate> shareCoordinates = HashMultimap.create();
     /**
      * map of empires to sets of Ships for which scan access has been authorized

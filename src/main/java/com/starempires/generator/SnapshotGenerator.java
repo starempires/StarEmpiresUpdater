@@ -103,6 +103,8 @@ public class SnapshotGenerator {
                 final EmpireSnapshot snapshot = generator.generate(turnData, colors, empireName);
                 generator.saveSnapshot(snapshot, empireName);
             }
+            final EmpireSnapshot snapshot = generator.generateGM(turnData, colors);
+            generator.saveSnapshot(snapshot, "GM");
         } catch (Exception exception) {
             log.error("Error generating snapshots", exception);
         }
@@ -134,9 +136,9 @@ public class SnapshotGenerator {
         return snapshots;
     }
 
-    private Map<Coordinate, Coordinate> getKnownConnections(final Empire empire, final TurnData turnData) {
+    private Multimap<Coordinate, Coordinate> getKnownConnections(final Empire empire, final TurnData turnData) {
         final var allConnections = turnData.getAllConnections();
-        final Map<Coordinate, Coordinate> knownConnections = Maps.newHashMap();
+        final Multimap<Coordinate, Coordinate> knownConnections = HashMultimap.create();
         for (var entry : allConnections.entries()) {
             if (empire.hasNavData(entry.getKey()) && empire.hasNavData(entry.getValue())) {
                 knownConnections.put(entry.getKey().getCoordinate(), entry.getValue().getCoordinate());
@@ -172,8 +174,7 @@ public class SnapshotGenerator {
         knownEmpires.forEach(e -> empireColors.put(e.getName(), colors.get("empire-" + e.getName())));
         empireSnapshot.addColors(empireColors);
 
-        Map<Coordinate, Coordinate> knownConnections = getKnownConnections(empire, turnData);
-        knownConnections.forEach(empireSnapshot::addConnection);
+        empireSnapshot.addConnections(getKnownConnections(empire, turnData));
 
         // populate sectors
         final int numColumns = 2 * radius + 1;
@@ -258,6 +259,79 @@ public class SnapshotGenerator {
                 log.info("Adding stale galactic coordinate {}/local coordinate {} to snapshot for empire {}", galacticCoord,
                         localCoord, empire);
             }
+        });
+        return empireSnapshot;
+    }
+
+    private EmpireSnapshot generateGM(final TurnData turnData, final Map<String, String> colors) throws JsonProcessingException {
+        final int radius = turnData.getRadius();
+        // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
+        final EmpireSnapshot empireSnapshot = EmpireSnapshot.builder()
+                .abbreviation("GM")
+                .name("GM")
+                .radius(radius)
+                .columns(2 * radius + 1)
+                .rows(4 * radius + 1)
+                .turnNumber(turnData.getTurnNumber())
+                .build();
+
+        // add "global" elements known to this empire
+        empireSnapshot.addKnownShipClasses(turnData.getAllShipClasses());
+
+        final Collection<Empire> knownEmpires = turnData.getAllEmpires();
+        empireSnapshot.addKnownEmpires(knownEmpires.stream()
+                .map(Empire::getName)
+                .collect(Collectors.toSet()));
+
+        final Map<String, String> empireColors = colors.entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().replace("empire-", ""),
+                        Map.Entry::getValue
+                ));
+        empireSnapshot.addColors(empireColors);
+
+        final var allConnections = turnData.getAllConnections();
+        final Multimap<Coordinate, Coordinate> knownConnections = HashMultimap.create();
+        for (var entry : allConnections.entries()) {
+             knownConnections.put(entry.getKey().getCoordinate(), entry.getValue().getCoordinate());
+        }
+        empireSnapshot.addConnections(knownConnections);
+
+        // populate sectors
+        final int numColumns = 2 * radius + 1;
+        final Coordinate origin = new Coordinate(0, 0);
+        final Set<Coordinate> surroundingCoords = Coordinate.getSurroundingCoordinates(origin, radius);
+        surroundingCoords.forEach(galacticCoord -> {
+            final int row = computeRow(radius, galacticCoord);
+            final int column = computeColumn(numColumns, galacticCoord);
+
+            final World world = turnData.getWorld(galacticCoord);
+            final Collection<Portal> portals = turnData.getPortals(galacticCoord);
+            final Collection<Storm> storms = turnData.getStorms(galacticCoord);
+
+            Map<String, SectorShipSnapshot> sectorShipSnapshots = null;
+            final Multimap<Empire, Ship> sectorShipsByEmpire = HashMultimap.create();
+            final Set<Empire> empiresPresent = turnData.getEmpiresPresent(galacticCoord);
+            empiresPresent.forEach(empirePresent -> {
+                final Collection<Ship> empireSectorShips = empirePresent.getShips(galacticCoord);
+                sectorShipsByEmpire.putAll(empirePresent, empireSectorShips);
+            });
+
+            sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire);
+
+            final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
+                        .oblique(galacticCoord.getOblique())
+                        .y(galacticCoord.getY())
+                        .row(row)
+                        .column(column)
+                        .status(ScanStatus.VISIBLE)
+                        .world(WorldSnapshot.forGM(world))
+                        .portals(portals.stream().map(PortalSnapshot::forGM).toList())
+                        .ships(sectorShipSnapshots)
+                        .storms(storms.stream().map(StormSnapshot::fromStorm).toList())
+                        .build();
+                empireSnapshot.addSector(sectorSnapshot);
+                log.info("Adding galactic coordinate {} to GM snapshot", galacticCoord);
         });
         return empireSnapshot;
     }

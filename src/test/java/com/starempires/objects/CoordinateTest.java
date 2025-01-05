@@ -3,13 +3,15 @@ package com.starempires.objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CoordinateTest {
 
@@ -96,10 +98,10 @@ public class CoordinateTest {
 
     @Test
     public void testGetSurroundingRing() {
-        final Set<Coordinate> ring = Sets.newHashSet(Arrays.asList(radius1Coords));
+        final List<Coordinate> ring = Arrays.asList(radius1Coords);
         ring.remove(c1);
         assertEquals(ring, Coordinate.getSurroundingRing(1));
-        assertEquals(Collections.emptySet(), Coordinate.getSurroundingRing(0));
+        assertEquals(Collections.emptyList(), Coordinate.getSurroundingRing(0));
     }
 
     @Test

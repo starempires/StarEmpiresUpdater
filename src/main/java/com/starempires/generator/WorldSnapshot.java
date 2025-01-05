@@ -57,4 +57,23 @@ public class WorldSnapshot extends OwnableObjectSnapshot {
                 .homeworld(homeworld)
                 .build();
     }
+
+    public static WorldSnapshot forGM(final World world) {
+        if (world == null) {
+            return null;
+        }
+        final int stockpile = world.getStockpile();
+        final Prohibition prohibition = world.getProhibition() != Prohibition.NONE ? world.getProhibition() : null;
+        final boolean homeworld = world.isHomeworld();
+        final String owner = world.isOwned() ? world.getOwner().getName() : null;
+        final int production = world.getProduction();
+        return WorldSnapshot.builder()
+                .name(world.getName())
+                .owner(owner)
+                .production(production)
+                .stockpile(stockpile)
+                .prohibition(prohibition)
+                .homeworld(homeworld)
+                .build();
+    }
 }
