@@ -1,5 +1,6 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
@@ -18,8 +19,8 @@ import java.util.regex.Pattern;
 public class TraverseOrder extends ShipBasedOrder {
 
     final static private String EXIT_GROUP = "exit";
-    final static private String TRAVERSE_REGEX = "\\s+from\\s+" + LOCATION_REGEX + "\\s+to\\s+(?:(?<" + EXIT_GROUP + ">@[\\w]+))?";
-    final static private Pattern TRAVERSE_PATTERN = Pattern.compile(TRAVERSE_REGEX, Pattern.CASE_INSENSITIVE);
+    final static private String REGEX = "\\s+from\\s+" + LOCATION_REGEX + "\\s+to\\s+(?:(?<" + EXIT_GROUP + ">@[\\w]+))?";
+    final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Portal entry;
     private Portal exit;
@@ -30,9 +31,8 @@ public class TraverseOrder extends ShipBasedOrder {
                 .orderType(OrderType.TRAVERSE)
                 .parameters(parameters)
                 .build();
-        final Matcher matcher = TRAVERSE_PATTERN.matcher(parameters);
+        final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-
             final List<Ship> movers = getLocationShips(empire, parameters, order);
             final Coordinate coordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
             final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == coordinate);
@@ -97,5 +97,14 @@ public class TraverseOrder extends ShipBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static TraverseOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = TraverseOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.TRAVERSE, builder);
+        return builder
+                .entry(getTurnDataItemFromJsonNode(node.get("entry"), turnData::getPortal))
+                .exit(getTurnDataItemFromJsonNode(node.get("exit"), turnData::getPortal))
+                .build();
     }
 }

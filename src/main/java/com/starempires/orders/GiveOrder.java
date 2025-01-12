@@ -1,7 +1,13 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.ShipClass;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -20,14 +26,18 @@ public class GiveOrder extends EmpireBasedOrder {
     private static final String PARAMETERS_REGEX = "(?<" + CLASSES_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     private static final Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     final List<ShipClass> shipClasses;
-    final List<Empire> recipients;
 
     public static GiveOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final GiveOrder order = GiveOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.GIVE)
                 .parameters(parameters)
+                .recipients(Lists.newArrayList())
+                .shipClasses(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -75,5 +85,13 @@ public class GiveOrder extends EmpireBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static GiveOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = GiveOrder.builder();
+        EmpireBasedOrder.parseReady(node, turnData, OrderType.GIVE, builder);
+        return builder
+                .shipClasses(getTurnDataListFromJsonNode(node, turnData::getShipClass))
+                .build();
     }
 }

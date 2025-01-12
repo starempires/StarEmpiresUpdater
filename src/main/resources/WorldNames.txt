@@ -235,7 +235,6 @@ Devyat
 Dherzig
 Diatopaliz
 Didact
-Dien Bien Phu
 Disaster Area
 Dogger Bank
 Dol Amroth
@@ -271,6 +270,7 @@ Elbonia
 Elesyian Fields
 Elihu
 Ellis
+Ellison
 Elsewhere
 Elsinore
 Endor
@@ -336,6 +336,7 @@ Galaxy 500
 Gallatin
 Gallifrey
 Gamilon
+Gandalfini
 Gargamel
 Garibaldi
 Gatheron Null

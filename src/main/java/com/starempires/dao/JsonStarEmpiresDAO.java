@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
@@ -18,6 +19,7 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
+import com.starempires.orders.CustomOrderDeserializer;
 import com.starempires.orders.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -61,7 +63,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() { });
         log.info("Loaded data\n" + jsonData);
 
-        int radius = (int) jsonData.get("radius");
+        final int radius = (int) jsonData.get("radius");
         TurnData turnData = TurnData.builder().session(session).turnNumber(turnNumber).radius(radius).build();
 
         // load objects first
@@ -288,10 +290,20 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
-    public List<? extends Order> loadReadyOrders(final String session, final String empire, final int turnNumber) throws Exception {
-        final Path path = constructPath(session, empire, "ready-orders", Integer.toString(turnNumber), "txt");
-        // TODO
-        return Lists.newArrayList();
+    public List<Order> loadReadyOrders(final String session, final String empire, final int turnNumber, final TurnData turnData) throws Exception {
+        final Path path = constructPath(session, empire, "ready-orders", Integer.toString(turnNumber), "json");
+        if (Files.exists(path)) {
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
+            MAPPER.registerModule(module);
+            final List<Order> orders = MAPPER.readValue(path.toFile(), new TypeReference<List<Order>>() {});
+            log.info("Loading {} orders: {}", empire, orders);
+            return orders;
+        }
+        else {
+            log.info("No ready orders found for empire {} turn {}", empire, turnNumber);
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -359,7 +371,28 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     public List<String> loadEmpireData(final String session) throws Exception {
         final Path path = constructPath(session, "empire-data", "txt");
         final List<String> empireData = Files.readAllLines(path);
-        log.info("Loaded empire data {}", empireData);
+        log.info("Loaded empire data {} from {}", empireData, path);
         return empireData;
+    }
+
+    public List<String> loadOrders(final String session, final String empire, final int turnNumber) throws Exception {
+        final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", session, empire, turnNumber, "orders", "txt"));
+        final List<String> ordersText = Files.readAllLines(path);
+        log.info("Loaded {} orders for empire {}, session {}, turn {} from {}", ordersText.size(), empire, session, turnNumber, path);
+        return ordersText;
+    }
+
+    public List<String> loadEmpireNames(final String session) throws Exception {
+        final List<String> empireData = loadEmpireData(session);
+        final List<String> empireNames = empireData.stream()
+                .map(str -> str.split(",")[0]) // Split and get the first value
+                .collect(Collectors.toList()); //
+        log.info("Loaded empire names {}", empireNames);
+        return empireNames;
+    }
+
+    @Override
+    public void saveNews(String session, String empire, int turnNumber, List<String> news) throws Exception {
+
     }
 }

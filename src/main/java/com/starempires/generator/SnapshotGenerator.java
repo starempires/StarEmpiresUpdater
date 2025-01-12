@@ -188,9 +188,12 @@ public class SnapshotGenerator {
             final int row = computeRow(radius, localCoord);
             final int column = computeColumn(numColumns, localCoord);
 
-            final World world = turnData.getWorld(galacticCoord);
-            final Collection<Portal> portals = turnData.getPortals(galacticCoord);
-            final Collection<Storm> storms = turnData.getStorms(galacticCoord);
+            World world = turnData.getWorld(galacticCoord);
+            if (!empire.isKnownWorld(world)) {
+                world = null;
+            }
+            final Collection<Portal> portals = turnData.getPortals(galacticCoord).stream().filter(empire::isKnownPortal).collect(Collectors.toSet());
+            final Collection<Storm> storms = turnData.getStorms(galacticCoord).stream().filter(empire::isKnownStorm).collect(Collectors.toSet());
 
             Map<String, SectorShipSnapshot> sectorShipSnapshots = null;
             final Multimap<Empire, Ship> sectorShipsByEmpire = HashMultimap.create();

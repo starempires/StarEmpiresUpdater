@@ -1,4 +1,4 @@
-package com.starempires.parser;
+package com.starempires.orders;
 
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
@@ -6,10 +6,6 @@ import com.starempires.dao.JsonStarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Empire;
 import com.starempires.objects.HullParameters;
-import com.starempires.orders.LoadOrder;
-import com.starempires.orders.Order;
-import com.starempires.orders.OrderType;
-import com.starempires.orders.UnloadOrder;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,9 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 @Log4j2
@@ -78,12 +71,8 @@ public class OrderParser {
         return hullParameters;
     }
 
-
     private List<String> loadOrders() throws Exception {
-        final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", sessionName, empireName, turnNumber, "orders", "txt"));
-        final List<String> ordersText = Files.readAllLines(path);
-        log.info("Loaded {} orders for empire {}, session {}, turn {}", ordersText.size(), empireName,sessionName, turnNumber);
-        return ordersText;
+        return dao.loadOrders(sessionName, empireName, turnNumber);
     }
 
     private Order parseOrder(final TurnData turnData, final Empire empire, final String text) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {

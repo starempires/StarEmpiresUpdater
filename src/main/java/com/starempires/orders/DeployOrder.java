@@ -1,5 +1,6 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
@@ -35,5 +36,11 @@ public class DeployOrder extends ShipBasedOrder {
         }
         order.setReady(!order.ships.isEmpty());
         return order;
+    }
+
+    public static DeployOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = DeployOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.DEPLOY, builder);
+        return builder.build();
     }
 }

@@ -1,5 +1,6 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.World;
@@ -100,5 +101,17 @@ public class TransferOrder extends WorldBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static TransferOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = TransferOrder.builder();
+        WorldBasedOrder.parseReady(node, turnData, OrderType.TRANSFER, builder);
+        return builder
+                .fromWorld(getTurnDataItemFromJsonNode(node.get("fromWorld"), turnData::getWorld))
+                .toWorld(getTurnDataItemFromJsonNode(node.get("toWorld"), turnData::getWorld))
+                .toEmpire(getTurnDataItemFromJsonNode(node.get("toEmpire"), turnData::getEmpire))
+                .amount(getInt(node, "amount"))
+                .transferAll(getBoolean(node, "transferAll"))
+                .build();
     }
 }

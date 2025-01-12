@@ -14,7 +14,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public abstract class OwnableObject extends MappableObject {
 
     public static final ObjectOwnerComparator OWNER_COMPARATOR = new ObjectOwnerComparator();

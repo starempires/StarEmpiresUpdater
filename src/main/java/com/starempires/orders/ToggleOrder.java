@@ -1,8 +1,13 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import lombok.Getter;
@@ -23,13 +28,17 @@ public class ToggleOrder extends ShipBasedOrder {
     final private static Pattern PATTERN = Pattern.compile(REGEX,  Pattern.CASE_INSENSITIVE);
 
     private boolean publicMode;
-    private final List<ShipClass> shipClasses = Lists.newArrayList();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
+    private final List<ShipClass> shipClasses;
 
     public static ToggleOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final ToggleOrder order = ToggleOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.TOGGLE)
                 .parameters(parameters)
+                .shipClasses(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -57,5 +66,14 @@ public class ToggleOrder extends ShipBasedOrder {
         }
 
         return order;
+    }
+
+    public static ToggleOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = ToggleOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.TOGGLE, builder);
+        return builder
+                .shipClasses(getTurnDataListFromJsonNode(node, turnData::getShipClass))
+                .publicMode(getBoolean(node, "publicMode"))
+                .build();
     }
 }

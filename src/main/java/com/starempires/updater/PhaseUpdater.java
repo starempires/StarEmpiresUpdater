@@ -20,13 +20,6 @@ public abstract class PhaseUpdater {
 
     protected static final String ALL_SHIPS_TOKEN = "all";
 
-    static enum MapObject {
-        PORTAL,
-        SHIP,
-        STORM,
-        WORLD;
-    }
-
     protected final Phase phase;
     protected final TurnData turnData;
 

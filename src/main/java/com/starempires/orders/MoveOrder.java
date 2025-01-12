@@ -1,5 +1,6 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -109,4 +110,13 @@ public class MoveOrder extends ShipBasedOrder {
         return order;
     }
 
+    public static MoveOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = MoveOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.MOVE, builder);
+        final String name = getString(node, "carrier");
+        return builder
+                .destination(getCoordinateFromJsonNode(node))
+                .destinationText(getString(node, "destinationText"))
+                .build();
+    }
 }

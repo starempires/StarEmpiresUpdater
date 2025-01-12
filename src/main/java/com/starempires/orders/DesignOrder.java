@@ -1,5 +1,6 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
@@ -181,4 +182,18 @@ public class DesignOrder extends WorldBasedOrder {
         return order;
     }
 
+    public static DesignOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = DesignOrder.builder();
+        WorldBasedOrder.parseReady(node, turnData, OrderType.DESIGN, builder);
+        return builder
+                .name(getString(node, "name"))
+                .hullType(EnumUtils.getEnumIgnoreCase(HullType.class, getString(node, "hullType")))
+                .guns(getInt(node, "guns"))
+                .dp(getInt(node, "dp"))
+                .engines(getInt(node, "engines"))
+                .scan(getInt(node, "scan"))
+                .racks(getInt(node, "racks"))
+                .tonnage(getInt(node, "tonnage"))
+                .build();
+    }
 }

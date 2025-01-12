@@ -3,6 +3,7 @@ package com.starempires.updater;
 import com.starempires.TurnData;
 import com.starempires.dao.JsonStarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
+import com.starempires.orders.Order;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,6 +12,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import java.util.List;
 
 
 @Log4j2
@@ -53,9 +56,11 @@ public class TurnUpdater {
         try {
             final TurnUpdater turnUpdater = new TurnUpdater(args);
             final TurnData turnData = turnUpdater.loadTurnData();
+            turnUpdater.loadReadyOrders(turnData);
             turnUpdater.processTurn(turnData);
             turnData.setTurnNumber(turnData.getTurnNumber() + 1);
             turnUpdater.saveTurnData(turnData);
+            turnUpdater.saveNews(turnData);
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }
@@ -65,6 +70,14 @@ public class TurnUpdater {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
         log.info("Loaded data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
+    }
+
+    private void loadReadyOrders(final TurnData turnData) throws Exception {
+        final List<String> empireNames = dao.loadEmpireNames(sessionName);
+        for (String empireName: empireNames) {
+            final List<Order> orders = dao.loadReadyOrders(sessionName, empireName, turnNumber, turnData);
+            turnData.addOrders(orders);
+        }
     }
 
     private void processPhase(final PhaseUpdater phase) {
@@ -148,6 +161,11 @@ public class TurnUpdater {
     }
 
     private void saveTurnData(TurnData turnData) throws Exception {
+        dao.saveTurnData(sessionName, turnData);
+        log.info("Saved turn data for session {} turn {}", sessionName, turnData.getTurnNumber());
+    }
+
+    private void saveNews(TurnData turnData) throws Exception {
         dao.saveTurnData(sessionName, turnData);
         log.info("Saved turn data for session {} turn {}", sessionName, turnData.getTurnNumber());
     }

@@ -165,6 +165,7 @@ public class Galaxy {
             final World world = builder.name(name).coordinate(coordinate)
                     .owner(empire)
                     .production(homeworldProduction)
+                    .stockpile(homeworldProduction)
                     .homeworld(true).build();
             homeworlds.put(coordinate, world);
             worlds.add(world);

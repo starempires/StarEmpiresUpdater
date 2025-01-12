@@ -1,12 +1,17 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.World;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.regex.Pattern;
 
 @Getter
 @SuperBuilder
+@NoArgsConstructor
 public class BuildOrder extends WorldBasedOrder {
 
     //BUILD world {number|REMAINING} design [name* | name1 name2 …]
@@ -28,21 +34,25 @@ public class BuildOrder extends WorldBasedOrder {
     final static private String REGEX = WORLD_REGEX + "\\s+" + NUMBER_REGEX + "\\s+" + DESIGN_REGEX + "\\s+" + NAMES_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonInclude
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private ShipClass shipClass;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean buildMax;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int count;
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String basename;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final List<String> names = Lists.newArrayList();
+    private List<String> names;
 
     public static BuildOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.BUILD)
                 .parameters(parameters)
+                .names(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -134,12 +144,24 @@ public class BuildOrder extends WorldBasedOrder {
             order.buildMax = buildMax;
             order.count = count;
             order.basename = basename;
-            order.names.addAll(names);
+            order.names = names;
         }
         else {
             order.addError("Invalid build order: " + parameters);
             order.setReady(false);
         }
         return order;
+    }
+
+    public static BuildOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = BuildOrder.builder();
+        WorldBasedOrder.parseReady(node, turnData, OrderType.BUILD, builder);
+        return builder
+                .shipClass(getTurnDataItemFromJsonNode(node.get("shipClass"), turnData::getShipClass))
+                .buildMax(getBoolean(node, "buildMax"))
+                .count(getInt(node, "count"))
+                .basename(getString(node, "basename"))
+                .names(getStringList(node, "names"))
+                .build();
     }
 }

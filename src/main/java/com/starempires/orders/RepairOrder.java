@@ -1,9 +1,14 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Ship;
 import com.starempires.objects.World;
 import lombok.Getter;
@@ -28,12 +33,22 @@ public class RepairOrder extends ShipBasedOrder {
     private static final String REGEX = SHIP_REGEX + "\\s+" + DP_REGEX + "\\s+" + WORLDS_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Ship ship;
     private int dpToRepair;
-    private final List<World> worlds = Lists.newArrayList();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
+    private final List<World> worlds;
 
     public static RepairOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
-        final RepairOrder order = RepairOrder.builder().orderType(OrderType.REPAIR).empire(empire).parameters(parameters).build();
+        final RepairOrder order = RepairOrder.builder()
+                .orderType(OrderType.REPAIR)
+                .empire(empire)
+                .parameters(parameters)
+                .worlds(Lists.newArrayList())
+                .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String shipName = matcher.group(SHIP_GROUP);
@@ -109,5 +124,16 @@ public class RepairOrder extends ShipBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static RepairOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = RepairOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.REPAIR, builder);
+        final String name = getString(node, "carrier");
+        return builder
+                .ship(turnData.getShip(getString(node, "ship")))
+                .dpToRepair(getInt(node, "dpToRepair"))
+                .worlds(getTurnDataListFromJsonNode(node, turnData::getWorld))
+                .build();
     }
 }

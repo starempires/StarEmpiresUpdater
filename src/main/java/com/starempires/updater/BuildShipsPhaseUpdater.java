@@ -34,7 +34,7 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
                 if (basename != null) {
                     name = basename + (startingNumber + i);
                 }
-                else if (count < names.size()) {
+                else if (i < names.size()) {
                     name = names.get(i);
                 }
                 final Ship ship = empire.buildShip(shipClass, world, name, turnData.getTurnNumber());

@@ -1,7 +1,13 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Portal;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -20,14 +26,18 @@ public class TransmitOrder extends EmpireBasedOrder {
     private static final String PARAMETERS_REGEX = "(?<" + PORTALS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
     private static final Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     final List<Portal> portals;
-    final List<Empire> recipients;
 
     public static TransmitOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final TransmitOrder order = TransmitOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.TRANSMIT)
                 .parameters(parameters)
+                .portals(Lists.newArrayList())
+                .recipients(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -78,5 +88,13 @@ public class TransmitOrder extends EmpireBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static TransmitOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = TransmitOrder.builder();
+        EmpireBasedOrder.parseReady(node, turnData, OrderType.TRANSMIT, builder);
+        return builder
+                .portals(getTurnDataListFromJsonNode(node.get("portals"), turnData::getPortal))
+                .build();
     }
 }

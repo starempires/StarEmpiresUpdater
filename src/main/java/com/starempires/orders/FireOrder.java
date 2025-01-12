@@ -1,6 +1,7 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
@@ -33,7 +34,7 @@ public class FireOrder extends ShipBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
-    private final List<Empire> targets = Lists.newArrayList();
+    private final List<Empire> targets;
     private Coordinate coordinate;
     private boolean ascending;
 
@@ -42,6 +43,7 @@ public class FireOrder extends ShipBasedOrder {
                 .empire(empire)
                 .orderType(OrderType.FIRE)
                 .parameters(parameters)
+                .targets(Lists.newArrayList())
                 .build();
         final Matcher matcher = FIRE_PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -115,5 +117,15 @@ public class FireOrder extends ShipBasedOrder {
 
         order.setReady(!order.ships.isEmpty());
         return order;
+    }
+
+    public static FireOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = FireOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.FIRE, builder);
+        return builder
+             .targets(getTurnDataListFromJsonNode(node, turnData::getEmpire))
+             .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
+             .ascending(getBoolean(node, "ascending"))
+             .build();
     }
 }

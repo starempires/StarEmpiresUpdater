@@ -56,7 +56,6 @@ public class SessionCreator {
     private String dataDir;
     private String sessionDir;
     private String configFile;
-    private String empireFile;
     private String shipClassFile;
     private String hullParametersFile;
 
@@ -75,7 +74,6 @@ public class SessionCreator {
             options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
             options.addOption(Option.builder("d").argName("data dir").longOpt("datadir").hasArg().desc("data dir").required().build());
             options.addOption(Option.builder("sd").argName("session dir").longOpt("sessiondir").hasArg().desc("session dir").required().build());
-            options.addOption(Option.builder("e").argName("empire data").longOpt("empires").hasArg().desc("empire data").required().build());
             options.addOption(Option.builder("sc").argName("ship classes").longOpt("shipclasses").hasArg().desc("ship classes").required().build());
             options.addOption(Option.builder("hp").argName("hull parameters").longOpt("hullparameters").hasArg().desc("hull parameters").required().build());
 
@@ -86,7 +84,6 @@ public class SessionCreator {
             dataDir = cmd.getOptionValue("datadir");
             sessionDir = cmd.getOptionValue("sessiondir");
             configFile = cmd.getOptionValue("config");
-            empireFile = cmd.getOptionValue("empires");
             shipClassFile = cmd.getOptionValue("shipclasses");
             hullParametersFile = cmd.getOptionValue("hullparameters");
         } catch (ParseException e) {
@@ -221,14 +218,14 @@ public class SessionCreator {
                     }
                     else {
                         empire.mergeScanStatus(coord, ScanStatus.SCANNED);
-                    }
-                    if (worldCoordinates.containsKey(coord)) {
-                        empire.addKnownWorld(worldCoordinates.get(coord));
-                        log.info("Added known world {} for {}", worldCoordinates.get(coord), empire);
-                    }
-                    if (portalCoordinates.containsKey(coord)) {
-                        empire.addKnownPortal(portalCoordinates.get(coord));
-                        log.info("Added known portal {} for {}", portalCoordinates.get(coord), empire);
+                        if (worldCoordinates.containsKey(coord)) {
+                            empire.addKnownWorld(worldCoordinates.get(coord));
+                            log.info("Added known world {} for {}", worldCoordinates.get(coord), empire);
+                        }
+                        if (portalCoordinates.containsKey(coord)) {
+                            empire.addKnownPortal(portalCoordinates.get(coord));
+                            log.info("Added known portal {} for {}", portalCoordinates.get(coord), empire);
+                        }
                     }
                 }
                 empire.mergeScanStatus(ship, ScanStatus.VISIBLE);

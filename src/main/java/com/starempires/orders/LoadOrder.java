@@ -1,8 +1,10 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
@@ -35,6 +37,7 @@ public class LoadOrder extends ShipBasedOrder {
                 .empire(empire)
                 .orderType(OrderType.LOAD)
                 .parameters(parameters)
+                .ships(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -65,5 +68,14 @@ public class LoadOrder extends ShipBasedOrder {
             order.setReady(false);
         }
         return order;
+    }
+
+    public static LoadOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = LoadOrder.builder();
+        ShipBasedOrder.parseReady(node, turnData, OrderType.LOAD, builder);
+        final String name = getString(node, "carrier");
+        return builder
+                .carrier(name == null ? null : turnData.getShip(name))
+                .build();
     }
 }

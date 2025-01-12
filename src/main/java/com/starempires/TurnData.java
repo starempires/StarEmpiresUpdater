@@ -174,7 +174,11 @@ public class TurnData {
     }
 
     public void addOrder(@NonNull Order order) {
-        orders.get(order.getOrderType()).add(order);
+        orders.put(order.getOrderType(), order);
+    }
+
+    public void addOrders(@NonNull Collection<Order> orders) {
+        orders.forEach(this::addOrder);
     }
 
     public Storm getStorm(final String name) {

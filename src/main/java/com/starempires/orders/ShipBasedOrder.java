@@ -1,9 +1,11 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
+import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
@@ -21,7 +23,6 @@ import java.util.regex.Pattern;
 @Getter
 @SuperBuilder
 public abstract class ShipBasedOrder extends Order {
-
 
     final static protected String COORDINATE_GROUP = "coordinate";
     final static protected String LOCATION_GROUP = "location";
@@ -41,7 +42,7 @@ public abstract class ShipBasedOrder extends Order {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
-    protected final List<Ship> ships = Lists.newArrayList();
+    protected final List<Ship> ships;
 
     /**
      * Given a list of ship names, return the matching list of Ships.
@@ -127,4 +128,9 @@ public abstract class ShipBasedOrder extends Order {
         return locationShips;
     }
 
+    protected static void parseReady(final JsonNode node, final TurnData turnData, final OrderType orderType, final ShipBasedOrder.ShipBasedOrderBuilder<?, ?> builder) {
+        Order.parseReady(node, turnData, orderType, builder);
+        final JsonNode shipsNode = node.get("ships");
+        builder.ships(getTurnDataListFromJsonNode(node, turnData::getShip));
+    }
 }

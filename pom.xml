@@ -118,10 +118,48 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.4.1</version>
-                <configuration>
-                    <mainClass>com.starempires.Main</mainClass>
-                </configuration>
+                <executions>
+                   <execution>
+                       <id>SessionCreator</id>
+                       <configuration>
+                           <mainClass>com.starempires.creator.SessionCreator</mainClass>
+                       </configuration>
+                       <goals>
+                           <goal>java</goal>
+                       </goals>
+                   </execution>
+                   <execution>
+                        <id>SnapshotGenerator</id>
+                        <configuration>
+                            <mainClass>com.starempires.generator.SnapshotGenerator</mainClass>
+                        </configuration>
+                       <goals>
+                           <goal>java</goal>
+                       </goals>
+                   </execution>
+
+                    <execution>
+                        <id>OrderParser</id>
+                        <configuration>
+                            <mainClass>com.starempires.orders.OrderParser</mainClass>
+                        </configuration>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>TurnUpdater</id>
+                        <configuration>
+                            <mainClass>com.starempires.updater.TurnUpdater</mainClass>
+                        </configuration>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
