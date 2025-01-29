@@ -1,7 +1,6 @@
 package com.starempires.generator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -87,9 +86,6 @@ public class SnapshotGenerator {
 
     private void saveSnapshot(final EmpireSnapshot snapshot, final String empireName) throws Exception {
         dao.saveSnapshot(sessionName, empireName, turnNumber, snapshot);
-        final ObjectMapper mapper = new ObjectMapper();
-        final String json = mapper.writeValueAsString(snapshot);
-        log.info(json);
     }
 
     public static void main(final String[] args) {
@@ -244,7 +240,7 @@ public class SnapshotGenerator {
                         .unidentifiedShipTonnage(unidentifiedTonnage)
                         .build();
                 empireSnapshot.addSector(sectorSnapshot);
-                log.info("Adding {} galactic coordinate {}/local coordinate {} to snapshot for empire {}", status, galacticCoord,
+                log.debug("Adding {} galactic coordinate {}/local coordinate {} to snapshot for empire {}", status, galacticCoord,
                         localCoord, empire);
             } else if (status == ScanStatus.STALE) {
                 final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
@@ -259,7 +255,7 @@ public class SnapshotGenerator {
                         .storms(storms.stream().map(StormSnapshot::fromStorm).toList())
                         .build();
                 empireSnapshot.addSector(sectorSnapshot);
-                log.info("Adding stale galactic coordinate {}/local coordinate {} to snapshot for empire {}", galacticCoord,
+                log.debug("Adding stale galactic coordinate {}/local coordinate {} to snapshot for empire {}", galacticCoord,
                         localCoord, empire);
             }
         });
@@ -334,7 +330,7 @@ public class SnapshotGenerator {
                         .storms(storms.stream().map(StormSnapshot::fromStorm).toList())
                         .build();
                 empireSnapshot.addSector(sectorSnapshot);
-                log.info("Adding galactic coordinate {} to GM snapshot", galacticCoord);
+                log.debug("Adding galactic coordinate {} to GM snapshot", galacticCoord);
         });
         return empireSnapshot;
     }

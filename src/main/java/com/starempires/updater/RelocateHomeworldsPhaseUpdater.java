@@ -75,7 +75,7 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
         final Set<Empire> empires = turnData.getActiveEmpires();
         empires.forEach(empire -> {
             final World world = turnData.getHomeworld(empire);
-            if (world == null || !world.getOwner().equals(empire)) {
+            if (world == null || !world.isOwnedBy(empire)) {
                 relocateHomeworld(empire);
             }
         });

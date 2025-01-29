@@ -16,14 +16,12 @@ public class TransferOrder extends WorldBasedOrder {
 
     //TRANSFER from-world {amount|ALL} to-world [empire]
 
-    final static protected String AMOUNT_GROUP = "amount";
-    final static protected String AMOUNT_REGEX = "(?<" + AMOUNT_GROUP + ">\\d+|ALL)";
-    final static protected String TO_WORLD_GROUP = "world";
-    final static protected String TO_WORLD_REGEX = "(?<" + WORLD_GROUP + ">@\\w+)";
-    final static protected String EMPIRE_GROUP = "empire";
-    final static protected String EMPIRE_REGEX = "(?<" + EMPIRE_GROUP + ">\\w+)?";
+    final static protected String TO_WORLD_GROUP = "toworld";
+    final static protected String TO_WORLD_CAPTURE_REGEX = "(?<" + TO_WORLD_GROUP + ">" + ID_REGEX + ")";
+    final static protected String RECIPIENT_GROUP = "recipient";
+    final static protected String RECIPIENT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + RECIPIENT_GROUP + ">" +ID_REGEX + "))?";
 
-    private static final String REGEX = WORLD_REGEX + "\\s+" + AMOUNT_REGEX + "\\s+" + TO_WORLD_REGEX + "\\s*" + EMPIRE_REGEX;
+    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + TO_WORLD_CAPTURE_REGEX + RECIPIENT_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private World fromWorld;
@@ -43,7 +41,7 @@ public class TransferOrder extends WorldBasedOrder {
             String fromWorldName = matcher.group(WORLD_GROUP);
             String toWorldName = matcher.group(TO_WORLD_GROUP);
             String amountText = matcher.group(AMOUNT_GROUP);
-            String toEmpireName = matcher.group(EMPIRE_GROUP);
+            String toEmpireName = matcher.group(RECIPIENT_GROUP);
             World fromWorld = turnData.getWorld(fromWorldName);
             if (fromWorld == null || !empire.isKnownWorld(fromWorld) || !fromWorld.isOwnedBy(empire)) {
                 order.addError("You do not own world " + fromWorldName);

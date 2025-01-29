@@ -1,40 +1,41 @@
-Abyssal Surge
-Aether Rift
-Arcwave Convergence
-Aurora Deluge
-Celestial Barricade
-Celestial Vortex
-Cosmic Gale
-Eclipse Torrent
-Flux Spire
-Gravity Shroud
-Helix Devastation
-Hyperion Gust
-Icarus' Descent
-Inferno Drift
-Nebula Torrent
-Neptune's Breath
-Oblivion Roar
-Orion's Wake
-Pandora's Pulse
-Phantom Drift
-Quantum Squall
-Quasar Barrage
-Radiant Squall
-Scorched Veil
-Shattered Tempest
-Silver Maelstrom
-Singularity Barrage
-Solarstorm Deluge
-Specter Wind
-Stardust Cascade
-Starfire Surge
-Talon's Wrath
-Tempest Shroud
-Thalassa's Fury
-The Dustbowl
-Twilight Torrent
-Voidbreaker Surge
-Voidstream Collapse
-Zenith Fury
-Zephyr Cascade
+Abyssal_Surge
+Aether_Rift
+Arcwave_Convergence
+Aurora_Deluge
+Celestial_Barricade
+Celestial_Vortex
+Cosmic_Gale
+Eclipse_Torrent
+Flux_Spire
+Gravity_Shroud
+Helix_Devastation
+Hyperion_Gust
+Icarus_Descent
+Inferno_Drift
+Ionic_Disturbance
+Nebula_Torrent
+Neptunes_Breath
+Oblivion_Roar
+Orions_Wake
+Pandoras_Pulse
+Phantom_Drift
+Quantum_Squall
+Quasar_Barrage
+Radiant_Squall
+Scorched_Veil
+Shattered_Tempest
+Silver_Maelstrom
+Singularity_Barrage
+Solarstorm_Deluge
+Specter_Wind
+Stardust_Cascade
+Starfire_Surge
+Talons_Wrath
+Tempest_Shroud
+Thalassas_Fury
+The_Dustbowl
+Twilight_Torrent
+Voidbreaker_Surge
+Voidstream_Collapse
+Zenith_Fury
+Zephyr_Cascade

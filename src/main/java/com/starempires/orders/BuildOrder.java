@@ -24,14 +24,10 @@ import java.util.regex.Pattern;
 public class BuildOrder extends WorldBasedOrder {
 
     //BUILD world {number|REMAINING} design [name* | name1 name2 …]
-    final static private String WORLD_GROUP = "world";
-    final static private String NUMBER_GROUP = "number";
-    final static private String DESIGN_GROUP = "design";
+
     final static private String NAMES_GROUP = "names";
-    final static private String NUMBER_REGEX = "(?<" + NUMBER_GROUP + ">\\d+|max)";
-    final static private String DESIGN_REGEX = "(?<" + DESIGN_GROUP + ">\\w+)";
-    final static private String NAMES_REGEX = "(?<" + NAMES_GROUP + ">(?:\\w+\\s+(?:\\w+)*)|\\w+\\*)?";
-    final static private String REGEX = WORLD_REGEX + "\\s+" + NUMBER_REGEX + "\\s+" + DESIGN_REGEX + "\\s+" + NAMES_REGEX;
+    final static private String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
+    final static private String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -57,8 +53,8 @@ public class BuildOrder extends WorldBasedOrder {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String worldName = matcher.group(WORLD_GROUP);
-            final String numberText = matcher.group(NUMBER_GROUP);
-            final String designName = matcher.group(DESIGN_GROUP);
+            final String numberText = matcher.group(AMOUNT_GROUP);
+            final String designName = matcher.group(SHIP_CLASS_GROUP);
             final String nameText = matcher.group(NAMES_GROUP);
 
             boolean buildMax = false;
@@ -120,7 +116,7 @@ public class BuildOrder extends WorldBasedOrder {
                         nextBasenameNumber = empire.getLargestBasenameNumber(basename);
                     }
                     else {
-                        names.addAll(List.of(nameText.split("\\s+")));
+                        names.addAll(List.of(nameText.split(SPACE_REGEX)));
                     }
                 }
                 String nextName;

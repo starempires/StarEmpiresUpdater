@@ -18,13 +18,13 @@ public class CoordinateTest {
     private final Coordinate c1 = new Coordinate(0, 0);
     private final Coordinate c2 = new Coordinate(1, 0);
     private final Coordinate[] radius1Coords = {
-            new Coordinate(0, 0),
             new Coordinate(0, 1),
-            new Coordinate(0, -1),
+            new Coordinate(1, 1),
             new Coordinate(1, 0),
-            new Coordinate(-1, 0),
+            new Coordinate(0, 0),
+            new Coordinate(0, -1),
             new Coordinate(-1, -1),
-            new Coordinate(1, 1)
+            new Coordinate(-1, 0)
     };
 
     @Test
@@ -98,7 +98,7 @@ public class CoordinateTest {
 
     @Test
     public void testGetSurroundingRing() {
-        final List<Coordinate> ring = Arrays.asList(radius1Coords);
+        final List<Coordinate> ring = Lists.newArrayList(radius1Coords);
         ring.remove(c1);
         assertEquals(ring, Coordinate.getSurroundingRing(1));
         assertEquals(Collections.emptyList(), Coordinate.getSurroundingRing(0));

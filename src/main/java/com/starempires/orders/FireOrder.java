@@ -21,15 +21,14 @@ import java.util.regex.Pattern;
 @Getter
 public class FireOrder extends ShipBasedOrder {
 
-    final static private String TARGETS_GROUP = "targets";
     final static private String TARGET_ORDER_GROUP = "targetorder";
-    final static private String ATTACKERS_GROUP = "attackers";
+    final static private String TARGET_ORDER_CAPTURE_REGEX = "(?:(?<" + TARGET_ORDER_GROUP + ">asc|desc)\\s+)?";
 
     // parameters are FIRE [asc|desc] (oblique,y) AT empire1 [empire2 ...]
     // parameters are FIRE [asc|desc] @location AT empire1 [empire2 ...]
     // parameters are FIRE [asc|desc] ship1 [ship2 ...] AT empire1 [empire2 ...]
-    final static private String FIRE_REGEX = "(?:(?<" + TARGET_ORDER_GROUP + ">asc|desc)\\s+)?(?<" + ATTACKERS_GROUP + ">\\.+)\\s+at\\s+(?<" + TARGETS_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
-    final static private Pattern FIRE_PATTERN = Pattern.compile(FIRE_REGEX, Pattern.CASE_INSENSITIVE);
+    final static private String REGEX = TARGET_ORDER_CAPTURE_REGEX + SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "at" + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
+    final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -45,15 +44,14 @@ public class FireOrder extends ShipBasedOrder {
                 .parameters(parameters)
                 .targets(Lists.newArrayList())
                 .build();
-        final Matcher matcher = FIRE_PATTERN.matcher(parameters);
+        final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String targetOrderText = matcher.group(TARGET_ORDER_GROUP);
             if (targetOrderText != null) {
                 order.ascending = targetOrderText.equalsIgnoreCase("asc");
             }
 
-            final String attackerText = matcher.group(ATTACKERS_GROUP);
-            final List<Ship> attackers = getLocationShips(empire, attackerText, order);
+            final List<Ship> attackers = getLocationShips(empire, matcher, order);
             for (final Ship ship : attackers) {
                 if (ship.getAvailableGuns() < 1) {
                     order.addError(ship, "Ship has no operational guns");
@@ -88,7 +86,7 @@ public class FireOrder extends ShipBasedOrder {
                 return order;
             }
 
-            final String[] targetsText = matcher.group(TARGETS_GROUP).split(" ");
+            final String[] targetsText = matcher.group(RECIPIENT_LIST_GROUP).split(SPACE_REGEX);
             for (final String targetEmpire : targetsText) {
                 final Empire target = turnData.getEmpire(targetEmpire);
                 if (target == null) {

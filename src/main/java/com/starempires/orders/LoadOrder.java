@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class LoadOrder extends ShipBasedOrder {
 
-    private static final String CARGO_GROUP = "cargo";
     private static final String CARRIER_GROUP = "carrier";
-    private static final String REGEX = "(?<" + CARGO_GROUP + ">\\w+(?:\\s+\\w+)*)\\s+onto\\s+(?<" + CARRIER_GROUP + ">(\\w+))\\s*$";
+    private static final String CARRIER_CAPTURE_REGEX = "(?<" + CARRIER_GROUP + ">" + ID_REGEX + ")";
+    private static final String REGEX = SHIP_LIST_CAPTURE_REGEX + SPACE_REGEX + "onto" + SPACE_REGEX + CARRIER_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -47,7 +47,7 @@ public class LoadOrder extends ShipBasedOrder {
                 order.addError("You do not own carrier " + carrierName);
                 order.setReady(false);
             } else {
-                final List<Ship> cargo = getShipsFromNames(empire, matcher.group(CARGO_GROUP), order);
+                final List<Ship> cargo = getShipsFromNames(empire, matcher.group(SHIP_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
                     if (ship.isLoaded()) {
                         order.addError(ship, "Already loaded onto carrier %s".formatted(carrier));

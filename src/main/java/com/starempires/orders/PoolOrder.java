@@ -21,9 +21,8 @@ import java.util.regex.Pattern;
 public class PoolOrder extends WorldBasedOrder {
 
     // POOL world [EXCEPT world1 world2….]
-    private static final String EXCEPT_GROUP = "worlds";
-    private static final String EXCEPT_REGEX = "(?<" + EXCEPT_GROUP + ">(\\w+)(?:\\w+\\w+)*)";
-    private static final String REGEX = WORLD_REGEX + "( EXCEPT " + EXCEPT_REGEX + ")*";
+    private static final String EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "except" + SPACE_REGEX + WORLD_LIST_CAPTURE_REGEX + ")?";
+    private static final String REGEX = WORLD_CAPTURE_REGEX + EXCEPT_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -50,7 +49,7 @@ public class PoolOrder extends WorldBasedOrder {
             order.addOKResult(world);
             order.world = world;
 
-            final String exceptText = matcher.group(EXCEPT_GROUP);
+            final String exceptText = matcher.group(WORLD_LIST_GROUP);
             if (exceptText != null) {
                 for (String worldNameToExcept : exceptText.split(" ")) {
                     final World worldToExcept = turnData.getWorld(worldNameToExcept);

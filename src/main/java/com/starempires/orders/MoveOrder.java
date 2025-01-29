@@ -17,8 +17,9 @@ import java.util.regex.Pattern;
 public class MoveOrder extends ShipBasedOrder {
 
     final static private String ABSOLUTE_MOVE_GROUP = "to";
-    final static private String MOVE_REGEX = "(?<" + ABSOLUTE_MOVE_GROUP + ">\\s+to\\s+)?" + COORDINATE_REGEX + "|" + LOCATION_REGEX;
-    final static private Pattern MOVE_PATTERN = Pattern.compile(MOVE_REGEX, Pattern.CASE_INSENSITIVE);
+    final static private String ABSOLUTE_MOVE_CAPTURE_REGEX = "(?<" + ABSOLUTE_MOVE_GROUP + ">to)?";
+    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + ABSOLUTE_MOVE_CAPTURE_REGEX + SPACE_REGEX + "(?:" + COORDINATE_CAPTURE_REGEX + "|" + LOCATION_CAPTURE_REGEX + ")";
+    final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate destination;
     private String destinationText;
@@ -29,11 +30,11 @@ public class MoveOrder extends ShipBasedOrder {
                 .orderType(OrderType.MOVE)
                 .parameters(parameters)
                 .build();
-        final Matcher matcher = MOVE_PATTERN.matcher(parameters);
+        final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final boolean relativeMove = matcher.group(ABSOLUTE_MOVE_GROUP) == null;
 
-            final List<Ship> movers = getLocationShips(empire, parameters, order);
+            final List<Ship> movers = getLocationShips(empire, matcher, order);
             final Coordinate startCoordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
 
             final String coordText = matcher.group(COORDINATE_GROUP);
@@ -113,7 +114,6 @@ public class MoveOrder extends ShipBasedOrder {
     public static MoveOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = MoveOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.MOVE, builder);
-        final String name = getString(node, "carrier");
         return builder
                 .destination(getCoordinateFromJsonNode(node))
                 .destinationText(getString(node, "destinationText"))

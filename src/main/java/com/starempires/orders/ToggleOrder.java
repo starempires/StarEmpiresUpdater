@@ -24,8 +24,9 @@ public class ToggleOrder extends ShipBasedOrder {
     // toggle {public|private} ship-class1 [ship-class2 ...]
 
     final private static String MODE_GROUP = "mode";
-    final private static String REGEX = "(<" + MODE_GROUP + ">public|private)\\s+" + SHIP_LIST_REGEX;
-    final private static Pattern PATTERN = Pattern.compile(REGEX,  Pattern.CASE_INSENSITIVE);
+    final private static String MODE_CAPTURE_REGEX = "(<" + MODE_GROUP + ">public|private)";
+    final private static String REGEX = MODE_CAPTURE_REGEX + SPACE_REGEX + SHIP_LIST_CAPTURE_REGEX;
+    final private static Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private boolean publicMode;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

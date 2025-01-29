@@ -25,12 +25,8 @@ public class RepairOrder extends ShipBasedOrder {
     // REPAIR ship {dp|ALL} world1 [world2…]
 
     private static final String SHIP_GROUP = "ship";
-    private static final String DP_GROUP = "dp";
-    private static final String WORLDS_GROUP = "worlds";
-    private static final String SHIP_REGEX = "(?<" + SHIP_GROUP + ">\\w+)";
-    private static final String DP_REGEX = "(?<" + DP_GROUP + ">(ALL|\\d+))";
-    private static final String WORLDS_REGEX = "(?<" + WORLDS_GROUP + ">(\\w+)(?:\\w+\\w+)*)";
-    private static final String REGEX = SHIP_REGEX + "\\s+" + DP_REGEX + "\\s+" + WORLDS_REGEX;
+    private static final String SHIP_CAPTURE_REGEX = "(?<" + SHIP_GROUP + ">" + ID_REGEX + ")";
+    private static final String REGEX = SHIP_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + WORLD_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
@@ -52,8 +48,8 @@ public class RepairOrder extends ShipBasedOrder {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String shipName = matcher.group(SHIP_GROUP);
-            final String dpText = matcher.group(DP_GROUP);
-            final String worldNames = matcher.group(WORLDS_GROUP);
+            final String dpText = matcher.group(AMOUNT_GROUP);
+            final String worldNames = matcher.group(WORLD_LIST_GROUP);
             final Ship ship = empire.getShip(shipName);
             if (ship == null) {
                 order.addError("Unknown ship : " + shipName);
@@ -129,7 +125,6 @@ public class RepairOrder extends ShipBasedOrder {
     public static RepairOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = RepairOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.REPAIR, builder);
-        final String name = getString(node, "carrier");
         return builder
                 .ship(turnData.getShip(getString(node, "ship")))
                 .dpToRepair(getInt(node, "dpToRepair"))

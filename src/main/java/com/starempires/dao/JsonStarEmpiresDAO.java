@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
+import com.starempires.TurnNews;
 import com.starempires.generator.EmpireSnapshot;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -21,6 +23,7 @@ import com.starempires.objects.Storm;
 import com.starempires.objects.World;
 import com.starempires.orders.CustomOrderDeserializer;
 import com.starempires.orders.Order;
+import com.starempires.updater.Phase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -90,6 +93,9 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
                 final World world = turnData.getWorld(name);
                 final Empire empire = turnData.getEmpire(owner);
                 world.setOwner(empire);
+                if (world.isHomeworld()) {
+                    turnData.setHomeworld(empire, world);
+                }
                 log.info("Set world {} owner {}", world, empire);
             }
         }
@@ -119,17 +125,17 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         turnData.addHullParameters(hullParameters);
     }
 
-    private Coordinate getCoordinate(final Map<String, Object> data) {
-        return new Coordinate((int) data.get("oblique"), (int) data.get("y"));
-    }
-
-    private int getInt(final Map<String, Object> data, final String key) {
-        return (int) data.getOrDefault(key, 0);
-    }
-
-    private boolean getBoolean(final Map<String, Object> data, final String key) {
-        return (boolean) data.getOrDefault(key, false);
-    }
+//    private Coordinate getCoordinate(final Map<String, Object> data) {
+//        return new Coordinate((int) data.get("oblique"), (int) data.get("y"));
+//    }
+//
+//    private int getInt(final Map<String, Object> data, final String key) {
+//        return (int) data.getOrDefault(key, 0);
+//    }
+//
+//    private boolean getBoolean(final Map<String, Object> data, final String key) {
+//        return (boolean) data.getOrDefault(key, false);
+//    }
 
     private Collection<String> getStringCollection(final Map<String, Object> data, final String key) {
         return (Collection<String>) data.getOrDefault(key, Collections.emptyList());
@@ -333,7 +339,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
                 lines.add(String.format("%s: %s", order, messages.get(0)));
             }
             else {
-                lines.add(String.format("%s:\n %s", order, StringUtils.join(messages, "\n ")));
+                lines.add(String.format("%s:%n %s", order, StringUtils.join(messages, "\n ")));
             }
         });
         Files.write(path, lines);
@@ -376,7 +382,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     public List<String> loadOrders(final String session, final String empire, final int turnNumber) throws Exception {
-        final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", session, empire, turnNumber, "orders", "txt"));
+        final Path path = FileSystems.getDefault().getPath(sessionDir, StringUtils.joinWith(".", session, empire, "orders", turnNumber, "txt"));
         final List<String> ordersText = Files.readAllLines(path);
         log.info("Loaded {} orders for empire {}, session {}, turn {} from {}", ordersText.size(), empire, session, turnNumber, path);
         return ordersText;
@@ -392,7 +398,13 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     }
 
     @Override
-    public void saveNews(String session, String empire, int turnNumber, List<String> news) throws Exception {
-
+    public void saveNews(String session, TurnNews turnNews, int turnNumber) throws Exception {
+        final Map<Empire, Multimap<Phase, String>> news = turnNews.getNews();
+        for (Empire empire: news.keySet()) {
+            final List<String> results = turnNews.getEmpireNews(empire);
+            final Path path = constructPath(session, empire.getName(), "news", Integer.toString(turnNumber), "txt");
+            Files.write(path, results);
+            log.info("Saved {} news for turn {} to {}", empire, turnNumber, path);
+        }
     }
 }

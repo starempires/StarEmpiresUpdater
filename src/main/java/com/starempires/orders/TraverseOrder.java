@@ -18,8 +18,12 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class TraverseOrder extends ShipBasedOrder {
 
+    // TRAVERSE {ships|location|coord} portal {entry} [{exit}]
+    final static private String ENTRY_GROUP = "entry";
     final static private String EXIT_GROUP = "exit";
-    final static private String REGEX = "\\s+from\\s+" + LOCATION_REGEX + "\\s+to\\s+(?:(?<" + EXIT_GROUP + ">@[\\w]+))?";
+    final static private String ENTRY_CAPTURE_REGEX = "(?<" + ENTRY_GROUP + ">" + ID_REGEX + ")";
+    final static private String EXIT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + EXIT_GROUP + ">" + ID_REGEX + "))?";
+    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "portal" + SPACE_REGEX + ENTRY_CAPTURE_REGEX + EXIT_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Portal entry;
@@ -33,7 +37,7 @@ public class TraverseOrder extends ShipBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final List<Ship> movers = getLocationShips(empire, parameters, order);
+            final List<Ship> movers = getLocationShips(empire, matcher, order);
             final Coordinate coordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
             final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == coordinate);
             if (!sameSector) {
@@ -67,7 +71,7 @@ public class TraverseOrder extends ShipBasedOrder {
                 return order;
             }
             if (entry.isCollapsed()) {
-                order.addWarning(entry, "Entrance portal currently collapsed");
+                order.addWarning(entry, "Entrance portal " + entry + " currently collapsed");
             }
             order.entry = entry;
 

@@ -30,14 +30,15 @@ public abstract class ShipBasedOrder extends Order {
     final static private String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
     final static protected String SHIP_LIST_GROUP = "shiplist";
 
-    final static protected String COORDINATE_REGEX = "(?<" + COORDINATE_GROUP + ">\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?)";
-    final static private String COORDINATE_EXCEPT_REGEX = COORDINATE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">\\w+(?:\\s+\\w+)*))?";
-    final static protected String LOCATION_REGEX = "(?<" + LOCATION_GROUP + ">@\\w+)";
-    final static protected String LOCATION_EXCEPT_REGEX = LOCATION_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">\\w+(?:\\s+\\w+)*))?";
-    final static protected String SHIP_LIST_REGEX = "(?<" + SHIP_LIST_GROUP + ">\\w+(?:\\s+\\w+)*)";
+    final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
+    final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
+    final static private String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
+    final static protected String LOCATION_CAPTURE_REGEX = "(?<" + LOCATION_GROUP + ">" + ID_REGEX + ")";
+    final static protected String LOCATION_EXCEPT_CAPTURE_REGEX = LOCATION_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
+    final static protected String SHIP_LIST_CAPTURE_REGEX = "(?<" + SHIP_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
 
-    final static private String SHIP_GROUP_REGEX = COORDINATE_EXCEPT_REGEX + "|" + LOCATION_EXCEPT_REGEX + "|" + SHIP_LIST_REGEX;
-    final static private Pattern SHIP_GROUP_PATTERN = Pattern.compile(SHIP_GROUP_REGEX, Pattern.CASE_INSENSITIVE);
+    final static protected String SHIP_GROUP_CAPTURE_REGEX = "(?:" + COORDINATE_CAPTURE_EXCEPT_REGEX + "|" + LOCATION_EXCEPT_CAPTURE_REGEX + "|" + SHIP_LIST_CAPTURE_REGEX + ")";
+    final static private Pattern SHIP_GROUP_PATTERN = Pattern.compile(SHIP_GROUP_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -51,7 +52,7 @@ public abstract class ShipBasedOrder extends Order {
      * @return
      */
     protected static List<Ship> getShipsFromNames(final Empire empire, final String text, final Order order) {
-        final String[] shipNames = text.split(" ");
+        final String[] shipNames = text.split(SPACE_REGEX);
         final List<Ship> ships = Lists.newArrayList();
         for (String shipName : shipNames) {
             final Ship ship = empire.getShip(shipName);
@@ -92,11 +93,11 @@ public abstract class ShipBasedOrder extends Order {
      * or location can be followed by a list of ships to exclude.
      *
      * @param empire
-     * @param text
+     * @param matcher
+     * @param order
      * @return
      */
-    protected static List<Ship> getLocationShips(final Empire empire, final String text, final Order order) {
-        final Matcher matcher = SHIP_GROUP_PATTERN.matcher(text);
+    protected static List<Ship> getLocationShips(final Empire empire, final Matcher matcher, final Order order) {
         final List<Ship> locationShips = Lists.newArrayList();
         if (matcher.matches()) {
             final String coordText = matcher.group(COORDINATE_GROUP);
@@ -122,8 +123,6 @@ public abstract class ShipBasedOrder extends Order {
             } else if (shipListText != null) {
                 locationShips.addAll(getShipsFromNames(empire, shipListText, order));
             }
-        } else {
-            order.addError("Invalid ship group: " + text);
         }
         return locationShips;
     }

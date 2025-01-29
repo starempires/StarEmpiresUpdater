@@ -1,12 +1,12 @@
-1 Mile North
-1000 Hurts
-14th Street
+1_Mile_North
+1000_Hurts
+14th_Street
 386DX
 8675309
-Aardvark Motel
+Aardvark_Motel
 Aarhus
 Aarktica
-Aarratt Confederacy
+Aarratt_Confederacy
 Abcdefghijklmnop
 Aberration
 Abydos
@@ -25,24 +25,24 @@ Ajax
 Albion
 Alcatraz
 Alderan
-Aldershot West
-Aleph Null
+Aldershot_West
+Aleph_Null
 Algol68
-Alien Artifact
+Alien_Artifact
 Allanak
-Altair IV
+Altair_IV
 Altamira
 Amazon
 Amilloh
-Amon Sul
+Amon_Sul
 Anathema
-Ancient Artifact
+Ancient_Artifact
 Andham
 Anfalas
 Angband
 Angels
 Angrenost
-Annihilus One
+Annihilus_One
 Anorien
 Anther
 Antietam
@@ -51,20 +51,20 @@ Appalachia
 Appin
 Aqaba
 Aquaria
-Archimedes' Lament
+Archimedes_Lament
 Ardbeg
-Area 51
-Argon's Eye
+Area_51
+Argons_Eye
 Argosy
 Arisia
 Aristotle
 Arkham
 Armageddon
 Arrakis
-Arura Pente
+Arura_Pente
 Arwen
-Asphyxial Eclipse
-Atari HQ
+Asphyxial_Eclipse
+Atari_HQ
 Atlantis
 Attica
 Auerman
@@ -79,17 +79,17 @@ Azuvir
 Babareeba
 Babel
 Bablicon
-Bad Stone
+Bad_Stone
 Bakersfield
 Baku
 Bandersnatch
 Banishment
 Banks
-Bar Lev
+Bar_Lev
 Barbican
 Barsoom
 Barstow
-Bartek's Landing
+Barteks_Landing
 Bartizan
 Barugon
 Basilisk
@@ -97,64 +97,64 @@ Bauble
 Beeblebrox
 Belerophon
 Belfalas
-Ben's Plaything
+Bens_Plaything
 Benjac
 Berenyi
 Berseneff
 Bertolotti
 Besson
-Beta 1
+Beta_1
 Betazed
 Betelguese
 Beucephalus
-Big Ball Of Rock
-Big Poppa
-Big Slick
+Big_Ball_Of_Rock
+Big_Poppa
+Big_Slick
 Bilge
-Binary Bill
+Binary_Bill
 Bingo
 Bitterroot
-Black Butte
-Black Maple Hill
-Blackberry Blossom
+Black_Butte
+Black_Maple_Hill
+Blackberry_Blossom
 Blackwill
 Blamethrower
-Blatec Nine
+Blatec_Nine
 Blaupunkt
 Bleek
-Bletchley Park
-Blighted Isle
-Blum Blum Shub
+Bletchley_Park
+Blighted_Isle
+Blum_Blum_Shub
 Boardwalk
 Bob
 Bonaventure
 Boozler
-Borg Prime
-Borghum's Whole
+Borg_Prime
+Borghums_Whole
 Borton
 Bosconia
 Bouvier
 Brakeen
-Bran Van 3000
+Bran_Van_3000
 Breadnaught
 Bree
 Britannia
 Brontitall
 Brooklyn
-Bruce Crossing
+Bruce_Crossing
 Bruford
 Bruni
 Buphti
-Burning Lands
+Burning_Lands
 Burrard
-Burton on Trent
-Bus Stop
+Burton_on_Trent
+Bus_Stop
 Busan
 Cacophany
-Cafe du Mike
-Cair Andros
+Cafe_du_Mike
+Cair_Andros
 Caison
-Caledon Wood
+Caledon_Wood
 Calexico
 Caliban
 Caliope
@@ -163,29 +163,29 @@ Calumny
 Camaron
 Campbell
 Carlowe
-Casino Royale
+Casino_Royale
 Castor
 Cattaraugus
 Celebrant
 Cenote
-Centar Zupa
-Chaco Boreal
-Chain Home
+Centar_Zupa
+Chaco_Boreal
+Chain_Home
 Chapman
 Charmeeta
 Charon
-Chav X
+Chav_X
 Chemulpo
 Cherguelen
 Chernobyl
-Chiba City
+Chiba_City
 Chimay
 Chodov
 Chorsu
 Chujo
 Chultapec
 Cicero
-Cinder Cone
+Cinder_Cone
 Cisco
 Clamagore
 Claypoole
@@ -197,7 +197,7 @@ Codign
 Codurer
 Coloropia
 Colozona
-Concordia Plus
+Concordia_Plus
 Constantinople
 Contention
 Cooties
@@ -212,40 +212,40 @@ Cyrinx
 Dacia
 Dagenhart
 Dagorlad
-Dairy Farm
+Dairy_Farm
 Dale
 Dalyctos
-Dark Lair
+Dark_Lair
 Darkhome
 Dauphin
-De La Rocha
-Dead Battery
+De_La_Rocha
+Dead_Battery
 Deadend
-Death Blossom
-Dedekind Domain
-Dee's Betrayal
+Death_Blossom
+Dedekind_Domain
+Dees_Betrayal
 Deepness
-Delm's Heap
+Delms_Heap
 Demimonde
 Descartes
 Despair
 Deva
-Devil's Tower
+Devils_Tower
 Devyat
 Dherzig
 Diatopaliz
 Didact
-Disaster Area
-Dogger Bank
-Dol Amroth
-Don't Come Here
+Disaster_Area
+Dogger_Bank
+Dol_Amroth
+Dont_Come_Here
 Donkey
 Donnelly
 Doofusville
 Dorsai
 Dorthonion
-Double T Diner
-Doughnut World
+Double_T_Diner
+Doughnut_World
 Dracos
 Dragonspine
 Droplet
@@ -253,21 +253,21 @@ Drumguish
 Dungannon
 Dymaxion
 Earth
-Earth II
-East Nowhere
-East Outer Guam
+Earth_II
+East_Nowhere
+East_Outer_Guam
 Eastasia
 Eden
-Edis Raf
+Edis_Raf
 Edoras
-Efluvia 5
+Efluvia_5
 Egad
-Eight Nine Three
-El Gamal
-El Kabong
-El Supremo
+Eight_Nine_Three
+El_Gamal
+El_Kabong
+El_Supremo
 Elbonia
-Elesyian Fields
+Elesyian_Fields
 Elihu
 Ellis
 Ellison
@@ -275,7 +275,7 @@ Elsewhere
 Elsinore
 Endor
 Endymion
-Enemy Planet
+Enemy_Planet
 Ennui
 Epiphany
 Erebor
@@ -292,7 +292,7 @@ Evans
 Everheart
 Evermore
 Explodaphone
-Eye of Heaven
+Eye_of_Heaven
 Eylea
 Eyrie
 FMI
@@ -300,100 +300,100 @@ Fairewood
 Fangorn
 Farhome
 Farkistan
-Fells Point
+Fells_Point
 Fern
 Ferret
 Feynman
 Fezworld
-Fight For Me
-Finnegan's Wake
+Fight_For_Me
+Finnegans_Wake
 Firaxion
 Firecloud
-Five Points
+Five_Points
 Flopsus
-Flopturn River
+Flopturn_River
 Floss
 Flushing
 Fogglia
-Foggy Bottom
-Forbidden Planet
+Foggy_Bottom
+Forbidden_Planet
 Forodwaith
 Forsythia
-Fortran V
-Fotta Barnes
+Fortran_V
+Fotta_Barnes
 Fredonia
 Freezer
 Fresno
 Frontenac
 Frosithia
-Frostbite Falls
+Frostbite_Falls
 Frozen
 Fulcrum
 Funeralopolis
-Galactic Armpit
+Galactic_Armpit
 Galatea
-Galaxy 500
+Galaxy_500
 Gallatin
 Gallifrey
 Gamilon
 Gandalfini
 Gargamel
 Garibaldi
-Gatheron Null
+Gatheron_Null
 Gattaca
-Gedia Opix
+Gedia_Opix
 Gelon
 Gemeinschaft
 Genesis
 Gerg
-Gestalt's Pattern
-Ghanj Rho
+Gestalts_Pattern
+Ghanj_Rho
 Gibralter
-Giedi Prime
+Giedi_Prime
 Gilliam
-Gilligan's Isle
+Gilligans_Isle
 Giverne
-Gizmonics Institute
+Gizmonics_Institute
 Glaceria
-Gladden Fields
-Gliese 581
+Gladden_Fields
+Gliese_581
 Glock
 Glorm
 Go
-Godwin's Rock
+Godwins_Rock
 Goitar
 Gojeira
-Golem Korab
-Golgo 13
+Golem_Korab
+Golgo_13
 Gondolin
 Gor
 Gormenghast
 Gotham
 Grappelli
-Gratha Prime
+Gratha_Prime
 Grayson
-Great Kills
-Great Redoubt
-Green Giant
+Great_Kills
+Great_Redoubt
+Green_Giant
 Greeneggs
 Grendel
 Grep
 Grignr
 Gryffindor
-Hackney Central
+Hackney_Central
 Hadji
 Haephestus
 Haggis
 Hajek
 Hakazooba
-Haladin's Finger
+Haladins_Finger
 Haldeman
 Halliwel
-Hammer of Misfortune
-Hammond's Victory
+Hammer_of_Misfortune
+Hammonds_Victory
 Hammontree
-Hanford Reach
-Hanger 18
+Hanford_Reach
+Hanger_18
 Haradwaith
 Harkona
 Harlon
@@ -401,35 +401,35 @@ Harmony
 Harp
 Harrington
 Hastur
-Hasty Pudding
+Hasty_Pudding
 Haven
-Hawk Nebula
-Hazard County
+Hawk_Nebula
+Hazard_County
 Heap
 Heavens
 Hector
 Heechee
 Hekla
 Helios
-Hell's Ditch
-Helm's Deep
+Hells_Ditch
+Helms_Deep
 Hemloche
-Here It Is
+Here_It_Is
 Hesperus
 Hewson
 Hexapodia
 Hibbing
-High Lab
+High_Lab
 Hippyworld
 Hithlum
 Hogwarts
-Hohe Dichte
+Hohe_Dichte
 Homonculus
 Honeypot
-Horizon IX
+Horizon_IX
 Hornblower
 Hosaka
-Hot Pants
+Hot_Pants
 Hoth
 Houndstooth
 Howe
@@ -439,7 +439,7 @@ Hungnam
 Hyperbole
 Hyperion
 Iastony
-Ice Station Zebra
+Ice_Station_Zebra
 Ikanunnis
 Iliax
 Illumina
@@ -452,8 +452,8 @@ Inconsequential
 Inmac
 Interlagos
 Iopos
-Iota Draconis
-Iron Mountain
+Iota_Draconis
+Iron_Mountain
 Irondequoit
 Isengard
 Isherwood
@@ -462,13 +462,13 @@ Ix
 Izmir
 Jamacha
 Jasper
-Jeju Island
+Jeju_Island
 Jersey
 Jervis
 Jester
 Johan
 Joppa
-Justicar's Junction
+Justicars_Junction
 Jutland
 KHZ
 Kadath
@@ -477,9 +477,9 @@ Kaldimor
 Kamino
 Kanabec
 Karas
-Katarina's World
+Katarinas_World
 Keef
-Keeper's Memory
+Keepers_Memory
 Kellogs
 Kenderhome
 Kenton
@@ -489,74 +489,74 @@ Kermit
 Khurvark
 Kiki
 Kikuchiyo
-Killers Haven
+Killers_Haven
 Kirsebom
 Kite
 Kithrup
 Klah
 Klatch
-Klik Klak
+Klik_Klak
 Knightfall
 Kochanski
 Kodi
 Kolob
 Kratos
 Kronos
-Kryten V
+Kryten_V
 Kuang
 Kuopio
 Kutahya
 Kwyjibo
 Kzin
-LV 426
+LV_426
 LaPlace
-Lab 101
+Lab_101
 Lagavulin
-Lagrange 4
+Lagrange_4
 Lalage
 Lambic
 Lamneth
 Laphroaig
-Larry Cooper
-Lart Haven
-Last Chance
+Larry_Cooper
+Lart_Haven
+Last_Chance
 Layla
 Lebowitz
-Leech Lake
+Leech_Lake
 Leelanau
 Leemor
 Lepanto
-Lesser Celandine
+Lesser_Celandine
 Letucien
 Levitas
 Lexxon
-Lincoln's World
-Lingua Damianum
+Lincolns_World
+Lingua_Damianum
 Lipsiege
 Littleford
 Locarno
 Logopolis
-Loki 5
-Lolth's Lair
+Loki_5
+Lolths_Lair
 Londo
 Longfellow
 Lookithat
 Lorien
 Lossarnach
-Lost Christabel
-Lost Wages
-Loup Garou
+Lost_Christabel
+Lost_Wages
+Loup_Garou
 Lowlands
 Ludlum
 Lusby
 ME262
 MG42
-MGB GT
-Macvicar's Castle
+MGB_GT
+Macvicars_Castle
 Majipoor
-Malcom The Tenth
+Malcom_The_Tenth
 Malloc
-Malvinas Islands
+Malvinas_Islands
 Manderley
 Manticore
 Margaritaville
@@ -564,30 +564,30 @@ Marnic
 Marrow
 Mayhem
 McDonalds
-McMahon Manor
+McMahon_Manor
 McPherson
-Meat Cove
+Meat_Cove
 Megnopolis
 Melnibone
-Meridian Prime
+Meridian_Prime
 Metaluna
-Meteor Magnet
+Meteor_Magnet
 Metzada
-Michel Delving
+Michel_Delving
 Michilimackinac
 Midgard
-Mike's Cafe
+Mikes_Cafe
 Mikula
-Mill Ends Park
+Mill_Ends_Park
 Miller
 Minbar
-Minor Triad
+Minor_Triad
 Minsc
 Mintaka
-Minter's Tower
-Mirrith Tinas
-Missabe Range
-Moggy Top
+Minters_Tower
+Mirrith_Tinas
+Missabe_Range
+Moggy_Top
 Mohinder
 Moletania
 Mollari
@@ -598,70 +598,70 @@ Monopolowa
 Moo
 Mopsus
 Moria
-Mornington Crescent
-Mox Ruby
+Mornington_Crescent
+Mox_Ruby
 Mozambique
 Muddworld
 Muhcoy
 Mullen
 Mulmaster
-Mystic Artifact
+Mystic_Artifact
 NEXUS
 NMJC
 Naboo
 Nachodsk
 Nakahara
-Naked Chicks
+Naked_Chicks
 Namednilg
 Namsunk
 Nankinala
 Nargothrond
 Narpet
-Nehalem Bay
+Nehalem_Bay
 Nejjat
 Nekweros
 Nelson
-Nem Szabat
+Nem_Szabat
 Nematos
 Neopolis
-Neptune's Revenge
+Neptunes_Revenge
 Neshabur
 Nesie
 Neuropol
 Neverclear
 Neverneverland
-New Carrolton
-New Eden
-New Gotham
-New Horizon
-New London
-New New Zealand
-New Perdition
-New Plymouth
-New Rochelle
-New Venice
-Newcastle Upon Tyne
-Newel Post
+New_Carrolton
+New_Eden
+New_Gotham
+New_Horizon
+New_London
+New_New_Zealand
+New_Perdition
+New_Plymouth
+New_Rochelle
+New_Venice
+Newcastle_Upon_Tyne
+Newel_Post
 Newhome
 Nicaraguam
 Nirvana
-Noodles Corner
+Noodles_Corner
 Norrath
 Norstrilia
-North By Northwest
+North_By_Northwest
 Nostromo
-Not So Far
-Nova Nova Scotia
+Not_So_Far
+Nova_Nova_Scotia
 Numenor
 Nurn
-Nyack I
+Nyack_I
 Nyjora
 Oberon
-Obukoff Works
+Obukoff_Works
 Odysseus
-Old Charter
-Oldham's Palace
-Olympus Mons
+Old_Charter
+Oldhams_Palace
+Olympus_Mons
 Ooloolenn
 Oordalia
 Opplistaar
@@ -670,48 +670,48 @@ Orduleen
 Organia
 Osgiliath
 Otaku
-Out of Gas
-Outer Ketchikan
+Out_of_Gas
+Outer_Ketchikan
 Outland
-Outpost Alpha
+Outpost_Alpha
 Paddlefoot
 Paladia
-Pantone 209
+Pantone_209
 Paradis
 Parillaud
-Paris West
-Park Place
-Parody Check
-Peggy's Kitchen
+Paris_West
+Park_Place
+Parody_Check
+Peggys_Kitchen
 Peladon
 Pellew
-Perfekt World
+Perfekt_World
 Pern
 Persiphone
 Petrocolus
-Phantatwain Nomads
+Phantatwain_Nomads
 Phromnoea
 Picofarad
-Pink Moon
-Pinko's Grave
+Pink_Moon
+Pinkos_Grave
 Pionk
-Pirate Haven
+Pirate_Haven
 Pittance
-Plains Of Abraham
-Planet 10
-Planet Claire
-Planet Dot Com
-Planet Smeg
-Planet Stripper
-Planet X
-Planet of the Apes
+Plains_Of_Abraham
+Planet_10
+Planet_Claire
+Planet_Dot_Com
+Planet_Smeg
+Planet_Stripper
+Planet_X
+Planet_of_the_Apes
 Planetworld
 Planetzilla
 Pleadies
 Plutonia
 Plymouth
 Poirot
-Pollard Rho
+Pollard_Rho
 Pollux
 Popeal
 Portmeiron
@@ -720,17 +720,17 @@ Pottsylvania
 Potworld
 Poulain
 Poundstone
-Pravin IV
+Pravin_IV
 Presidio
-Primaris V
+Primaris_V
 Procyon
-Project 627
-Prok Prime
+Project_627
+Prok_Prime
 Proletarskaya
 Proxima
 Puck
 Pyat
-Qatch XXII
+Qatch_XXII
 Qiyas
 Qonos
 Quagaar
@@ -739,7 +739,7 @@ Quantacola
 Quarton
 Queeg
 Quest
-Quidditch Pitch
+Quidditch_Pitch
 Quinton
 Quixotic
 Qwerty
@@ -750,19 +750,19 @@ Rasalhague
 Raspberryworld
 Ravenloft
 Rebellion
-Red Rock
-Red Spider
-Red Storm
-Regis III
-Reiston Proxima
+Red_Rock
+Red_Spider
+Red_Storm
+Regis_III
+Reiston_Proxima
 Relay
 Rellim
 Remus
-Retiro Park
+Retiro_Park
 Rhombicuboctahedron
 Rhovanion
 Rhun
-Rhys Evo
+Rhys_Evo
 Ribos
 Riffington
 Rijndael
@@ -771,104 +771,104 @@ Rimmerworld
 Rincewind
 Ringworld
 Rinzler
-Rio de Dios
+Rio_de_Dios
 Rippon
 Rlyeh
-Rodos Aurora
+Rodos_Aurora
 Romulus
 Rot13
 Rubaiyat
 Runnymede
 Rutan
-SH 10151
-Sagrada Familia
+SH_10151
+Sagrada_Familia
 Sailus
-Salak Selatan
+Salak_Selatan
 Salamanca
 Salvo
 Samax
 Samnorsk
 Sampson
 Sandow
-Sandy Bottom
+Sandy_Bottom
 Saratoga
 Sazerac
-Scapa Flow
+Scapa_Flow
 Schiz
-Schmutz Prime
+Schmutz_Prime
 Scrape
 Scree
 Sebecea
-Second Arthyr
+Second_Arthyr
 Sem
 Septon
 Serendipity
 Serenity
 Setback
-Seti Alpha 7
+Seti_Alpha_7
 Seuss
-Seven Eleven
-Seward's Folly
+Seven_Eleven
+Sewards_Folly
 Seymour
 Shadow
-Shadowy Planet
-Shady Grove
-Shangri La
-Shanks Mare
+Shadowy_Planet
+Shady_Grove
+Shangri_La
+Shanks_Mare
 Shayol
 Shelbyville
 Shest
-Shiba Inu
-Shih Kwan
+Shiba_Inu
+Shih_Kwan
 Shiloh
-Shub Niggurath
+Shub_Niggurath
 Shufflemonkey
-Siderum Prime
+Siderum_Prime
 Sigil
-Sigma 957
+Sigma_957
 Silke
 Sinclair
-Single Peak
+Single_Peak
 Siridhar
 Sirius
 Skaro
-Sky Lobby
+Sky_Lobby
 Slumberyard
 Slytherin
-Smurf Village
+Smurf_Village
 Sniffleheim
-Sol 3
+Sol_3
 Solitude
 Soma
 Souvenir
 Spanakorzo
-Spartan Freehold
+Spartan_Freehold
 Spears
 Sphinx
 Spinner
 Squire
 Squonk
-Sreyem Bew
-Stalag 13
-Star 58
-Star City
+Sreyem_Bew
+Stalag_13
+Star_58
+Star_City
 Staromestska
-Stendili 256
-Stone Temple
+Stendili_256
+Stone_Temple
 Stor
 Strachan
-Strange Artifact
-Straumli Realm
+Strange_Artifact
+Straumli_Realm
 Stroh
-Sui Generis
-Sullivan's Gulch
+Sui_Generis
+Sullivans_Gulch
 Sunnydale
-Surf City
-Surface Of Eceon
+Surf_City
+Surface_Of_Eceon
 Sweetpotater
 Tacubaya
 Taft
-Taki Blue
+Taki_Blue
 Takis
 Talos
 Tanelorn
@@ -876,50 +876,50 @@ Tangmere
 Tannenberg
 Tantalus
 Tarwater
-Tau Ceti IV
+Tau_Ceti_IV
 Tauri
 Telandrios
-Telescope Workshop
+Telescope_Workshop
 Telos
-Temple Of Syrinx
-Temporary Shelter
+Temple_Of_Syrinx
+Temporary_Shelter
 Tenebra
 Tenskwatawa
-Tenuous Hue
+Tenuous_Hue
 Terminus
-Terra II
-Terra Incognita
-Terylene Top
-Tessaract Three
+Terra_II
+Terra_Incognita
+Terylene_Top
+Tessaract_Three
 Thalassa
 Thantap
-The Archology
-The Below
-The Bronx
-The Center Ring
-The Cryptgardens
-The Hill
-The Hyatt
-The Overlook
-The Planet
-The Prison Planet
-The Rest Stop
-The Rock Collection
-The Shire
-The Sticks
-The Style Planet
-The Village
-The Wolfling World
+The_Archology
+The_Below
+The_Bronx
+The_Center_Ring
+The_Cryptgardens
+The_Hill
+The_Hyatt
+The_Overlook
+The_Planet
+The_Prison_Planet
+The_Rest_Stop
+The_Rock_Collection
+The_Shire
+The_Sticks
+The_Style_Planet
+The_Village
+The_Wolfling_World
 Thesaurus
 Thiessen
-Thirty Ought Six
-This World Sucks
+Thirty_Ought_Six
+This_World_Sucks
 Thorbis
-Thoth Amon
-Three Truck Shay
+Thoth_Amon
+Three_Truck_Shay
 Tiamat
 Tibidabo
-Tierra Del Fuego
+Tierra_Del_Fuego
 Tipton
 Toad
 Tobir
@@ -933,7 +933,7 @@ Torg
 Traken
 Tralfamadore
 Trantor
-Trattoria Annamaria
+Trattoria_Annamaria
 Triel
 Tripe
 Tripper
@@ -950,58 +950,58 @@ Tyz
 Uleena
 Umbar
 Undine
-Unguent's Bane
+Unguents_Bane
 Uniton
 Unobtainia
 Unpronouncable
-Unseen University
+Unseen_University
 Urgh
-Urthur's Stronghold
+Urthurs_Stronghold
 Urupa
-Vallvidrera Superior
-Van Deussen
+Vallvidrera_Superior
+Van_Deussen
 VanNess
 Vangaurdia
 Vassey
 Vatos
 Vaughn
 Vavatch
-Venerix Zexx
+Venerix_Zexx
 Veritas
 Vershenn
 Victory
 Vindaloo
 Virah
-Virgo IV
+Virgo_IV
 Viz
-Vl'Huurg
+VlHuurg
 Vmlinuz
 Voidstar
 Voivod
 Vosem
-Vulcher Haven
+Vulcher_Haven
 WTF
 Wakeman
-Wandering Planet
+Wandering_Planet
 Warzone
 Wasco
-Way Out There
-Wayne's World
-We Didn't Make It
-We Made It
+Way_Out_There
+Waynes_World
+We_Didnt_Make_It
+We_Made_It
 Weedpatch
-Well Of Souls
+Well_Of_Souls
 Wellinghall
-West Ruislip
+West_Ruislip
 Wexford
 Wherle
-Whitefish Point
+Whitefish_Point
 Wifty
-Wolf 359
-Woodford Reserve
-Worthless Asteroids
-Wyatt's Folly
-XOR 67
+Wolf_359
+Woodford_Reserve
+Worthless_Asteroids
+Wyatts_Folly
+XOR_67
 Xelor
 Xemit
 Xevion
@@ -1009,18 +1009,18 @@ Xolto
 Xox
 Xymox
 Xyrfrenn
-Xystus III
+Xystus_III
 YMPC90
 Ya
-Yavin 4
+Yavin_4
 Yehaclum
 Yeltsin
 Yggdrasil
 Youngblade
 Youngsworld
-Your Name Here
+Your_Name_Here
 Ythelsterine
-Yytrium Dioxide
+Yytrium_Dioxide
 ZaHaDum
 Zaar
 Zalaegerzeg
@@ -1028,10 +1028,10 @@ Zanji
 Zanzibar
 Zarathustra
 Zed
-Zen Identity
-Zephyr's Lament
+Zen_Identity
+Zephyrs_Lament
 Zerbennia
-Zero Gravitas
+Zero_Gravitas
 Zion
 Zmugury
 Zodiac

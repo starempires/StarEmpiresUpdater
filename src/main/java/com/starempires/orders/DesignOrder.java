@@ -22,15 +22,12 @@ public class DesignOrder extends WorldBasedOrder {
 
     //DESIGN world name hulltype parameters
 
-    final static private String NAME_GROUP = "name";
     final static private String HULLTYPE_GROUP = "hulltype";
     final static private String PARAMETERS_GROUP = "parameters";
+    final static private String HULLTYPE_CAPTURE_REGEX = "(?<" + HULLTYPE_GROUP + ">" + ID_REGEX + ")";
+    final static private String SHIP_PARAMS_CAPTURE_REGEX = "(?<" + PARAMETERS_GROUP + ">[\\d\\s]+)";
 
-    final static private String NAME_REGEX = "(?<" + NAME_GROUP + ">\\w+)";
-    final static private String HULLTYPE_REGEX = "(?<" + HULLTYPE_GROUP + ">\\w+)";
-    final static private String SHIP_PARAMS_REGEX = "(?<" + PARAMETERS_GROUP + ">[\\d\\s]+)";
-
-    final static private String REGEX = WORLD_REGEX + "\\s+" + NAME_REGEX + "\\s+" + HULLTYPE_REGEX + "\\s+" + SHIP_PARAMS_REGEX;
+    final static private String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + HULLTYPE_CAPTURE_REGEX + SPACE_REGEX + SHIP_PARAMS_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private String name;
@@ -64,7 +61,7 @@ public class DesignOrder extends WorldBasedOrder {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String worldName = matcher.group(WORLD_GROUP);
-            final String designName = matcher.group(NAME_GROUP);
+            final String designName = matcher.group(SHIP_CLASS_GROUP);
             final String hullTypeName = matcher.group(HULLTYPE_GROUP);
             final String paramText = matcher.group(PARAMETERS_GROUP);
 
@@ -111,6 +108,7 @@ public class DesignOrder extends WorldBasedOrder {
                         "  cost   : %d".formatted(cost));
                 order.guns = guns;
                 order.tonnage = tonnage;
+                order.dp = 1;
                 final ShipClass shipClass = ShipClass.builder()
                         .name(designName)
                         .hullType(hullType)
@@ -134,9 +132,9 @@ public class DesignOrder extends WorldBasedOrder {
                 final int racks = Integer.parseInt(tokens[4]);
                 if (!order.checkAttribute(guns, 0, hullParameters.getMaxGuns(), "guns", hullType) ||
                     !order.checkAttribute(dp, 1, hullParameters.getMaxDp(), "DP", hullType) ||
-                    !order.checkAttribute(engines, 1, hullParameters.getMaxEngines(), "engines", hullType) ||
-                    !order.checkAttribute(scan, 1, hullParameters.getMaxScan(), "scan", hullType) ||
-                    !order.checkAttribute(racks, 1, hullParameters.getMaxRacks(), "racks", hullType)) {
+                    !order.checkAttribute(engines, 0, hullParameters.getMaxEngines(), "engines", hullType) ||
+                    !order.checkAttribute(scan, 0, hullParameters.getMaxScan(), "scan", hullType) ||
+                    !order.checkAttribute(racks, 0, hullParameters.getMaxRacks(), "racks", hullType)) {
                     return order;
                 }
                 final int cost = hullParameters.getCost(guns, dp, engines, scan, racks);
@@ -150,10 +148,10 @@ public class DesignOrder extends WorldBasedOrder {
                 final int ar = Math.max(1, Math.round(dp * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
                 world.adjustStockpile(-designCost);
                 order.addResult("OK (%d RU remaining)\n".formatted(world.getStockpile()) +
-                        "  design confirmation for missile G:%d DP:%d E:%d S:%d R:%d\n".formatted(guns, dp, engines, scan, racks) +
-                        "  cost   : %d".formatted(cost) +
-                        "  AR   : %d".formatted(ar) +
-                        "  tonnage   : %d".formatted(tonnage));
+                        "  design confirmation for missile G:%d DP:%d E:%d S:%d R:%d%n".formatted(guns, dp, engines, scan, racks) +
+                        "  cost: %d".formatted(cost) +
+                        "  AR: %d".formatted(ar) +
+                        "  tonnage: %d".formatted(tonnage));
                 order.guns = guns;
                 order.dp = dp;
                 order.engines = engines;
@@ -193,7 +191,7 @@ public class DesignOrder extends WorldBasedOrder {
                 .engines(getInt(node, "engines"))
                 .scan(getInt(node, "scan"))
                 .racks(getInt(node, "racks"))
-                .tonnage(getInt(node, "tonnage"))
+                .tonnage(getInt(node, "tonnage")) // for missiles
                 .build();
     }
 }

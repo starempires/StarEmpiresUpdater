@@ -1,0 +1,1653 @@
+{
+  "session" : "alpha",
+  "turnNumber" : 0,
+  "radius" : 10,
+  "empires" : [ {
+    "name" : "KRATOS",
+    "abbreviation" : "KR",
+    "frameOfReference" : {
+      "obliqueOffset" : -9,
+      "yOffset" : -9,
+      "horizontalMirror" : true,
+      "rotation" : "DIRECTION_300"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : 11,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 11,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 11,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 9,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 7,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 10,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : 7,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : 8,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : 9,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Gamilon", "KRATOS" ],
+    "knownStorms" : [ "Hourglass", "Nebula of Ashes", "Pandora's Pulse", "Spectral Veil", "Tempestfall" ]
+  }, {
+    "name" : "Shakespeare",
+    "abbreviation" : "SH",
+    "frameOfReference" : {
+      "obliqueOffset" : 0,
+      "yOffset" : 9,
+      "horizontalMirror" : true,
+      "rotation" : "DIRECTION_120"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : 2,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 2,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 2,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : -9,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Elsinore", "Hazard County", "Namednilg" ]
+  }, {
+    "name" : "MCRN",
+    "abbreviation" : "MC",
+    "frameOfReference" : {
+      "obliqueOffset" : 9,
+      "yOffset" : 9,
+      "rotation" : "DIRECTION_240"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : -10,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : -9,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : -8,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : -9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -9,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Azathoth", "Here It Is", "Mars" ],
+    "knownStorms" : [ "Celestial Tide", "Singularity Barrage" ]
+  }, {
+    "name" : "Federation",
+    "abbreviation" : "FE",
+    "frameOfReference" : {
+      "obliqueOffset" : -9,
+      "yOffset" : 0,
+      "horizontalMirror" : true,
+      "verticalMirror" : true,
+      "rotation" : "DIRECTION_240"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : 11,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 11,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 11,
+      "y" : 2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 10,
+      "y" : 2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : -2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 0,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 9,
+      "y" : 2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : -2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 8,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : -2,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : -1,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 7,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Closer", "Earth", "Quest" ],
+    "knownStorms" : [ "Scorched Veil", "Valkyrie Mist" ]
+  }, {
+    "name" : "The Culture",
+    "abbreviation" : "CU",
+    "frameOfReference" : {
+      "obliqueOffset" : 0,
+      "yOffset" : -9,
+      "verticalMirror" : true,
+      "rotation" : "DIRECTION_240"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : 0,
+      "y" : 7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : 9,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 0,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : 7,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -1,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : 7,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -2,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 2,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 2,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 2,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : 8,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : 9,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : 10,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : 1,
+      "y" : 11,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Eucher", "Kryten V", "Norstrilia" ],
+    "knownStorms" : [ "Specter Wind" ]
+  }, {
+    "name" : "Atriedes",
+    "abbreviation" : "AT",
+    "frameOfReference" : {
+      "obliqueOffset" : 9,
+      "yOffset" : 0,
+      "horizontalMirror" : true,
+      "verticalMirror" : true,
+      "rotation" : "DIRECTION_240"
+    },
+    "empireType" : "ACTIVE",
+    "scanData" : [ {
+      "oblique" : -8,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -8,
+      "y" : 2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : 0,
+      "status" : "visible",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -9,
+      "y" : 2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : -2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -10,
+      "y" : 1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : -2,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : -1,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -11,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : 0,
+      "status" : "scanned",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : 1,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    }, {
+      "oblique" : -7,
+      "y" : 2,
+      "status" : "stale",
+      "lastTurnScanned" : 0
+    } ],
+    "knownShipClasses" : [ "battleship", "carrier", "fighter", "frigate", "nuke", "probe", "starbase", "station" ],
+    "knownWorlds" : [ "Arrakis", "Taft", "Tanelorn" ],
+    "knownStorms" : [ "Crimson Veil", "The Lagoon" ]
+  } ],
+  "ships" : [ {
+    "name" : "Ares",
+    "oblique" : -9,
+    "y" : -9,
+    "turnBuilt" : 0,
+    "serialNumber" : "MCe0349",
+    "dpRemaining" : 200,
+    "owner" : "MCRN",
+    "shipClass" : "starbase"
+  }, {
+    "name" : "Arrakeen",
+    "oblique" : -9,
+    "y" : 0,
+    "turnBuilt" : 0,
+    "serialNumber" : "ATa1d3e",
+    "dpRemaining" : 200,
+    "owner" : "Atriedes",
+    "shipClass" : "starbase"
+  }, {
+    "name" : "NESTCUBE",
+    "oblique" : 9,
+    "y" : 9,
+    "turnBuilt" : 0,
+    "serialNumber" : "KR40b07",
+    "dpRemaining" : 200,
+    "owner" : "KRATOS",
+    "shipClass" : "starbase"
+  }, {
+    "name" : "The Globe",
+    "oblique" : 0,
+    "y" : -9,
+    "turnBuilt" : 0,
+    "serialNumber" : "SH5d2f3",
+    "dpRemaining" : 200,
+    "owner" : "Shakespeare",
+    "shipClass" : "starbase"
+  }, {
+    "name" : "Vavatch",
+    "oblique" : 0,
+    "y" : 9,
+    "turnBuilt" : 0,
+    "serialNumber" : "CU0ff05",
+    "dpRemaining" : 200,
+    "owner" : "The Culture",
+    "shipClass" : "starbase"
+  }, {
+    "name" : "Starbase1",
+    "oblique" : 9,
+    "y" : 0,
+    "turnBuilt" : 0,
+    "serialNumber" : "FE98b88",
+    "dpRemaining" : 200,
+    "owner" : "Federation",
+    "shipClass" : "starbase"
+  } ],
+  "worlds" : [ {
+    "name" : "Hazard County",
+    "oblique" : -1,
+    "y" : -9,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Augustine",
+    "oblique" : -5,
+    "y" : -2,
+    "production" : 2,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Sinclair",
+    "oblique" : 4,
+    "y" : -1,
+    "production" : 1,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Nirvana",
+    "oblique" : 3,
+    "y" : 0,
+    "production" : 3,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Staromestska",
+    "oblique" : 1,
+    "y" : -1,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Escanaba",
+    "oblique" : 4,
+    "y" : 7,
+    "production" : 2,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Kryten V",
+    "oblique" : -1,
+    "y" : 8,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Second Arthyr",
+    "oblique" : 0,
+    "y" : 0,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Kite",
+    "oblique" : -4,
+    "y" : -5,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Namednilg",
+    "oblique" : -2,
+    "y" : -10,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Nehalem Bay",
+    "oblique" : 5,
+    "y" : -4,
+    "production" : 7,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Earth",
+    "oblique" : 9,
+    "y" : 0,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "Federation"
+  }, {
+    "name" : "Ardbeg",
+    "oblique" : -4,
+    "y" : -3,
+    "production" : 1,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Mars",
+    "oblique" : -9,
+    "y" : -9,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "MCRN"
+  }, {
+    "name" : "Tanelorn",
+    "oblique" : -8,
+    "y" : -1,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Leech Lake",
+    "oblique" : -2,
+    "y" : -7,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Zen Identity",
+    "oblique" : 3,
+    "y" : 8,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Gratha Prime",
+    "oblique" : 5,
+    "y" : -5,
+    "production" : 1,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Elsinore",
+    "oblique" : 0,
+    "y" : -9,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "Shakespeare"
+  }, {
+    "name" : "Larry Cooper",
+    "oblique" : 6,
+    "y" : -3,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Shady Grove",
+    "oblique" : 2,
+    "y" : -1,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Closer",
+    "oblique" : 8,
+    "y" : -2,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Haephestus",
+    "oblique" : 6,
+    "y" : 7,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "KRATOS",
+    "oblique" : 9,
+    "y" : 9,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "KRATOS"
+  }, {
+    "name" : "Arrakis",
+    "oblique" : -9,
+    "y" : 0,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "Atriedes"
+  }, {
+    "name" : "Gamilon",
+    "oblique" : 8,
+    "y" : 8,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Disaster Area",
+    "oblique" : 5,
+    "y" : 4,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Sniffleheim",
+    "oblique" : 7,
+    "y" : 4,
+    "production" : 1,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Quest",
+    "oblique" : 8,
+    "y" : 1,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Kolob",
+    "oblique" : -1,
+    "y" : -4,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Norstrilia",
+    "oblique" : 0,
+    "y" : 9,
+    "production" : 12,
+    "stockpile" : 12,
+    "productionMultiplier" : 1.0,
+    "homeworld" : true,
+    "owner" : "The Culture"
+  }, {
+    "name" : "Evans",
+    "oblique" : 1,
+    "y" : -5,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Urgh",
+    "oblique" : -2,
+    "y" : -5,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Adin",
+    "oblique" : 10,
+    "y" : 5,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Here It Is",
+    "oblique" : -9,
+    "y" : -10,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Azathoth",
+    "oblique" : -8,
+    "y" : -9,
+    "production" : 6,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Taft",
+    "oblique" : -8,
+    "y" : 1,
+    "production" : 5,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Gemeinschaft",
+    "oblique" : -3,
+    "y" : 0,
+    "production" : 7,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Terminus",
+    "oblique" : 2,
+    "y" : 6,
+    "production" : 1,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Burrard",
+    "oblique" : 8,
+    "y" : 7,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  }, {
+    "name" : "Eucher",
+    "oblique" : -1,
+    "y" : 7,
+    "production" : 4,
+    "productionMultiplier" : 1.0
+  } ],
+  "portals" : [ {
+    "name" : "Mystic Portal",
+    "oblique" : 5,
+    "y" : 5,
+    "connections" : [ "Charmander's Price", "Kelrik Hub" ]
+  }, {
+    "name" : "Geist",
+    "oblique" : 2,
+    "y" : 7,
+    "connections" : [ "Damian's Door", "Lazy Imp Hub" ]
+  }, {
+    "name" : "Lost In Space",
+    "oblique" : 2,
+    "y" : -4,
+    "connections" : [ "Kiev Canal", "Twisty Tunnel Maze" ]
+  }, {
+    "name" : "Lazy Imp Hub",
+    "oblique" : 8,
+    "y" : 4,
+    "connections" : [ "Damian's Door", "Geist" ]
+  }, {
+    "name" : "Banana Peel",
+    "oblique" : -7,
+    "y" : -6,
+    "connections" : [ "Eon Blue Apocalypse" ]
+  }, {
+    "name" : "Eon Blue Apocalypse",
+    "oblique" : 0,
+    "y" : 6,
+    "connections" : [ "Banana Peel" ]
+  }, {
+    "name" : "Damian's Door",
+    "oblique" : -6,
+    "y" : 2,
+    "connections" : [ "Geist", "Lazy Imp Hub" ]
+  }, {
+    "name" : "Charmander's Price",
+    "oblique" : 4,
+    "y" : -3,
+    "connections" : [ "Kelrik Hub", "Mystic Portal" ]
+  }, {
+    "name" : "Twisty Tunnel Maze",
+    "oblique" : -7,
+    "y" : -10,
+    "connections" : [ "Kiev Canal", "Lost In Space" ]
+  }, {
+    "name" : "Kelrik Hub",
+    "oblique" : -2,
+    "y" : 6,
+    "connections" : [ "Charmander's Price", "Mystic Portal" ]
+  }, {
+    "name" : "Kiev Canal",
+    "oblique" : 4,
+    "y" : 5,
+    "connections" : [ "Lost In Space", "Twisty Tunnel Maze" ]
+  } ],
+  "storms" : [ {
+    "name" : "Cosmic Gale",
+    "oblique" : -1,
+    "y" : 2,
+    "rating" : 2
+  }, {
+    "name" : "Orion's Wake",
+    "oblique" : 2,
+    "y" : 3,
+    "rating" : 5
+  }, {
+    "name" : "Celestial Tide",
+    "oblique" : -7,
+    "y" : -8,
+    "rating" : 0
+  }, {
+    "name" : "Radiant Squall",
+    "oblique" : 8,
+    "y" : 6,
+    "rating" : 1
+  }, {
+    "name" : "Tempest Shroud",
+    "oblique" : 6,
+    "y" : 7,
+    "rating" : 4
+  }, {
+    "name" : "Aether Rift",
+    "oblique" : -3,
+    "y" : 0,
+    "rating" : 4
+  }, {
+    "name" : "Frostveil",
+    "oblique" : 9,
+    "y" : 3,
+    "rating" : 0
+  }, {
+    "name" : "Veil of Seraphim",
+    "oblique" : -7,
+    "y" : -10,
+    "rating" : 0
+  }, {
+    "name" : "Phantom Drift",
+    "oblique" : 8,
+    "y" : 5,
+    "rating" : 5
+  }, {
+    "name" : "Helix Devastation",
+    "oblique" : 3,
+    "y" : -3,
+    "rating" : 5
+  }, {
+    "name" : "Quantum Squall",
+    "oblique" : 5,
+    "y" : 8,
+    "rating" : 1
+  }, {
+    "name" : "Twilight Halo",
+    "oblique" : -1,
+    "y" : 3,
+    "rating" : 0
+  }, {
+    "name" : "Starspire",
+    "oblique" : -4,
+    "y" : 4,
+    "rating" : 0
+  }, {
+    "name" : "Tempest Coil",
+    "oblique" : 0,
+    "y" : -3,
+    "rating" : 0
+  }, {
+    "name" : "Eternal Drift",
+    "oblique" : -3,
+    "y" : -10,
+    "rating" : 0
+  }, {
+    "name" : "The Dustbowl",
+    "oblique" : 2,
+    "y" : -4,
+    "rating" : 1
+  }, {
+    "name" : "Midnight Bloom",
+    "oblique" : -3,
+    "y" : 4,
+    "rating" : 0
+  }, {
+    "name" : "Shattered Tempest",
+    "oblique" : -5,
+    "y" : 2,
+    "rating" : 2
+  }, {
+    "name" : "Cradle of Stars",
+    "oblique" : 2,
+    "y" : -3,
+    "rating" : 0
+  }, {
+    "name" : "Radiant Crown",
+    "oblique" : -4,
+    "y" : -5,
+    "rating" : 0
+  }, {
+    "name" : "Titan’s Breath",
+    "oblique" : -4,
+    "y" : -10,
+    "rating" : 0
+  }, {
+    "name" : "Radiant Abyss",
+    "oblique" : 8,
+    "y" : 3,
+    "rating" : 0
+  }, {
+    "name" : "The Lagoon",
+    "oblique" : -7,
+    "y" : 1,
+    "rating" : 0
+  }, {
+    "name" : "Voidbreaker Surge",
+    "oblique" : 5,
+    "y" : 0,
+    "rating" : 4
+  }, {
+    "name" : "Talon's Wrath",
+    "oblique" : 0,
+    "y" : -1,
+    "rating" : 2
+  }, {
+    "name" : "Rosette",
+    "oblique" : -2,
+    "y" : -1,
+    "rating" : 0
+  }, {
+    "name" : "Siren’s Shroud",
+    "oblique" : -1,
+    "y" : 6,
+    "rating" : 0
+  }, {
+    "name" : "Zephyr Cascade",
+    "oblique" : 6,
+    "y" : -1,
+    "rating" : 5
+  }, {
+    "name" : "Wraith's Halo",
+    "oblique" : 3,
+    "y" : 9,
+    "rating" : 0
+  }, {
+    "name" : "Flux Spire",
+    "oblique" : -1,
+    "y" : -7,
+    "rating" : 1
+  }, {
+    "name" : "Arcwave Convergence",
+    "oblique" : 3,
+    "y" : 10,
+    "rating" : 3
+  }, {
+    "name" : "Crimson Veil",
+    "oblique" : -7,
+    "y" : 2,
+    "rating" : 0
+  }, {
+    "name" : "Hyperion Gust",
+    "oblique" : -6,
+    "y" : -5,
+    "rating" : 1
+  }, {
+    "name" : "Nebula of Ashes",
+    "oblique" : 7,
+    "y" : 9,
+    "rating" : 0
+  }, {
+    "name" : "Oblivion Roar",
+    "oblique" : 1,
+    "y" : 5,
+    "rating" : 3
+  }, {
+    "name" : "Ghostlight",
+    "oblique" : -7,
+    "y" : -2,
+    "rating" : 0
+  }, {
+    "name" : "Icarus' Descent",
+    "oblique" : -1,
+    "y" : 4,
+    "rating" : 2
+  }, {
+    "name" : "Carina",
+    "oblique" : -7,
+    "y" : -4,
+    "rating" : 0
+  }, {
+    "name" : "Specter Wind",
+    "oblique" : -2,
+    "y" : 7,
+    "rating" : 3
+  }, {
+    "name" : "Gravity Shroud",
+    "oblique" : -7,
+    "y" : -6,
+    "rating" : 4
+  }, {
+    "name" : "Zenith Fury",
+    "oblique" : 0,
+    "y" : 5,
+    "rating" : 1
+  }, {
+    "name" : "Silver Maelstrom",
+    "oblique" : 10,
+    "y" : 6,
+    "rating" : 2
+  }, {
+    "name" : "Thalassa's Fury",
+    "oblique" : -6,
+    "y" : -7,
+    "rating" : 2
+  }, {
+    "name" : "Valkyrie Mist",
+    "oblique" : 7,
+    "y" : -1,
+    "rating" : 0
+  }, {
+    "name" : "Starfire Surge",
+    "oblique" : -7,
+    "y" : -3,
+    "rating" : 4
+  }, {
+    "name" : "Eclipse Torrent",
+    "oblique" : 4,
+    "y" : 0,
+    "rating" : 4
+  }, {
+    "name" : "Tempestfall",
+    "oblique" : 7,
+    "y" : 8,
+    "rating" : 0
+  }, {
+    "name" : "Spectral Veil",
+    "oblique" : 8,
+    "y" : 10,
+    "rating" : 0
+  }, {
+    "name" : "Abyssal Surge",
+    "oblique" : 10,
+    "y" : 5,
+    "rating" : 4
+  }, {
+    "name" : "Nebula Torrent",
+    "oblique" : 4,
+    "y" : 8,
+    "rating" : 4
+  }, {
+    "name" : "Celestial Vortex",
+    "oblique" : 10,
+    "y" : 4,
+    "rating" : 1
+  }, {
+    "name" : "Pillars of Creation",
+    "oblique" : 7,
+    "y" : 4,
+    "rating" : 0
+  }, {
+    "name" : "Forgotten Mist",
+    "oblique" : -4,
+    "y" : -2,
+    "rating" : 0
+  }, {
+    "name" : "Neptune's Breath",
+    "oblique" : 3,
+    "y" : 8,
+    "rating" : 1
+  }, {
+    "name" : "Aurora Deluge",
+    "oblique" : -8,
+    "y" : -5,
+    "rating" : 5
+  }, {
+    "name" : "Elysian Cloud",
+    "oblique" : 2,
+    "y" : 5,
+    "rating" : 0
+  }, {
+    "name" : "Voidstar Veil",
+    "oblique" : -2,
+    "y" : -3,
+    "rating" : 0
+  }, {
+    "name" : "Medusa",
+    "oblique" : -2,
+    "y" : 2,
+    "rating" : 0
+  }, {
+    "name" : "Dragon's Breath",
+    "oblique" : -5,
+    "y" : 5,
+    "rating" : 0
+  }, {
+    "name" : "Pandora's Pulse",
+    "oblique" : 7,
+    "y" : 7,
+    "rating" : 4
+  }, {
+    "name" : "Ember Drift",
+    "oblique" : 3,
+    "y" : -4,
+    "rating" : 0
+  }, {
+    "name" : "Helix",
+    "oblique" : 7,
+    "y" : 6,
+    "rating" : 0
+  }, {
+    "name" : "Horsehead",
+    "oblique" : -5,
+    "y" : -2,
+    "rating" : 0
+  }, {
+    "name" : "Scorched Veil",
+    "oblique" : 7,
+    "y" : -2,
+    "rating" : 3
+  }, {
+    "name" : "Hourglass",
+    "oblique" : 8,
+    "y" : 7,
+    "rating" : 0
+  }, {
+    "name" : "Singularity Barrage",
+    "oblique" : -7,
+    "y" : -9,
+    "rating" : 4
+  }, {
+    "name" : "Celestial Barricade",
+    "oblique" : -4,
+    "y" : 2,
+    "rating" : 2
+  }, {
+    "name" : "Inferno Drift",
+    "oblique" : -7,
+    "y" : -1,
+    "rating" : 1
+  } ],
+  "hullParameters" : [ {
+    "hullType" : "missile",
+    "arMultiplier" : 1.0,
+    "baseGuns" : 0,
+    "baseDp" : 1,
+    "baseEngines" : 0,
+    "baseScan" : 0,
+    "baseRacks" : 0,
+    "baseTonnage" : 1,
+    "baseCost" : 1,
+    "maxGuns" : 0,
+    "maxDp" : 1,
+    "maxEngines" : 0,
+    "maxScan" : 0,
+    "maxRacks" : 0,
+    "costGuns" : 1,
+    "costDp" : 1,
+    "costEngines" : 1,
+    "costScan" : 1,
+    "costRacks" : 1,
+    "tonnageGuns" : 1,
+    "tonnageDp" : 1,
+    "tonnageEngines" : 1,
+    "tonnageScan" : 1,
+    "tonnageRacks" : 1
+  }, {
+    "hullType" : "capital ship",
+    "arMultiplier" : 4.0,
+    "baseGuns" : 35,
+    "baseDp" : 40,
+    "baseEngines" : 2,
+    "baseScan" : 2,
+    "baseRacks" : 2,
+    "baseTonnage" : 30,
+    "baseCost" : 28,
+    "maxGuns" : 99999,
+    "maxDp" : 99999,
+    "maxEngines" : 99999,
+    "maxScan" : 99999,
+    "maxRacks" : 99999,
+    "costGuns" : 15,
+    "costDp" : 15,
+    "costEngines" : 1,
+    "costScan" : 1,
+    "costRacks" : 1,
+    "tonnageGuns" : 20,
+    "tonnageDp" : 20,
+    "tonnageEngines" : 5,
+    "tonnageScan" : 5,
+    "tonnageRacks" : 2
+  }, {
+    "hullType" : "device",
+    "arMultiplier" : 1.0,
+    "baseGuns" : 0,
+    "baseDp" : 1,
+    "baseEngines" : 0,
+    "baseScan" : 0,
+    "baseRacks" : 0,
+    "baseTonnage" : 1,
+    "baseCost" : 1,
+    "maxGuns" : 0,
+    "maxDp" : 1,
+    "maxEngines" : 0,
+    "maxScan" : 0,
+    "maxRacks" : 0,
+    "costGuns" : 1,
+    "costDp" : 1,
+    "costEngines" : 1,
+    "costScan" : 1,
+    "costRacks" : 1,
+    "tonnageGuns" : 1,
+    "tonnageDp" : 1,
+    "tonnageEngines" : 1,
+    "tonnageScan" : 1,
+    "tonnageRacks" : 1
+  }, {
+    "hullType" : "scout",
+    "arMultiplier" : 1.0,
+    "baseGuns" : 1,
+    "baseDp" : 1,
+    "baseEngines" : 3,
+    "baseScan" : 3,
+    "baseRacks" : 0,
+    "baseTonnage" : 2,
+    "baseCost" : 2,
+    "maxGuns" : 5,
+    "maxDp" : 5,
+    "maxEngines" : 99999,
+    "maxScan" : 99999,
+    "maxRacks" : 1,
+    "costGuns" : 5,
+    "costDp" : 5,
+    "costEngines" : 3,
+    "costScan" : 3,
+    "costRacks" : 1,
+    "tonnageGuns" : 5,
+    "tonnageDp" : 5,
+    "tonnageEngines" : 5,
+    "tonnageScan" : 5,
+    "tonnageRacks" : 2
+  }, {
+    "hullType" : "transport",
+    "arMultiplier" : 1.0,
+    "baseGuns" : 5,
+    "baseDp" : 10,
+    "baseEngines" : 2,
+    "baseScan" : 1,
+    "baseRacks" : 2,
+    "baseTonnage" : 15,
+    "baseCost" : 10,
+    "maxGuns" : 99999,
+    "maxDp" : 99999,
+    "maxEngines" : 99999,
+    "maxScan" : 99999,
+    "maxRacks" : 1,
+    "costGuns" : 5,
+    "costDp" : 10,
+    "costEngines" : 3,
+    "costScan" : 1,
+    "costRacks" : 3,
+    "tonnageGuns" : 5,
+    "tonnageDp" : 10,
+    "tonnageEngines" : 5,
+    "tonnageScan" : 5,
+    "tonnageRacks" : 2
+  }, {
+    "hullType" : "gunship",
+    "arMultiplier" : 2.0,
+    "baseGuns" : 20,
+    "baseDp" : 15,
+    "baseEngines" : 2,
+    "baseScan" : 0,
+    "baseRacks" : 0,
+    "baseTonnage" : 10,
+    "baseCost" : 15,
+    "maxGuns" : 99999,
+    "maxDp" : 99999,
+    "maxEngines" : 99999,
+    "maxScan" : 99999,
+    "maxRacks" : 1,
+    "costGuns" : 15,
+    "costDp" : 10,
+    "costEngines" : 2,
+    "costScan" : 1,
+    "costRacks" : 1,
+    "tonnageGuns" : 20,
+    "tonnageDp" : 10,
+    "tonnageEngines" : 5,
+    "tonnageScan" : 5,
+    "tonnageRacks" : 2
+  }, {
+    "hullType" : "wing",
+    "arMultiplier" : 1.0,
+    "baseGuns" : 5,
+    "baseDp" : 5,
+    "baseEngines" : 0,
+    "baseScan" : 0,
+    "baseRacks" : 0,
+    "baseTonnage" : 1,
+    "baseCost" : 1,
+    "maxGuns" : 15,
+    "maxDp" : 15,
+    "maxEngines" : 0,
+    "maxScan" : 0,
+    "maxRacks" : 0,
+    "costGuns" : 15,
+    "costDp" : 15,
+    "costEngines" : 1,
+    "costScan" : 1,
+    "costRacks" : 1,
+    "tonnageGuns" : 20,
+    "tonnageDp" : 20,
+    "tonnageEngines" : 1,
+    "tonnageScan" : 1,
+    "tonnageRacks" : 1
+  }, {
+    "hullType" : "orbital",
+    "arMultiplier" : 4.0,
+    "baseGuns" : 30,
+    "baseDp" : 40,
+    "baseEngines" : 0,
+    "baseScan" : 1,
+    "baseRacks" : 2,
+    "baseTonnage" : 20,
+    "baseCost" : 25,
+    "maxGuns" : 99999,
+    "maxDp" : 99999,
+    "maxEngines" : 0,
+    "maxScan" : 99999,
+    "maxRacks" : 1,
+    "costGuns" : 10,
+    "costDp" : 15,
+    "costEngines" : 1,
+    "costScan" : 2,
+    "costRacks" : 3,
+    "tonnageGuns" : 10,
+    "tonnageDp" : 20,
+    "tonnageEngines" : 1,
+    "tonnageScan" : 5,
+    "tonnageRacks" : 2
+  } ],
+  "shipClasses" : [ {
+    "ar" : 1,
+    "cost" : 10,
+    "dp" : 10,
+    "engines" : 2,
+    "guns" : 2,
+    "hullType" : "transport",
+    "name" : "carrier",
+    "racks" : 5,
+    "scan" : 1,
+    "tonnage" : 15
+  }, {
+    "cost" : 1,
+    "dp" : 1,
+    "hullType" : "missile",
+    "name" : "nuke",
+    "tonnage" : 1
+  }, {
+    "ar" : 16,
+    "cost" : 28,
+    "dp" : 40,
+    "engines" : 2,
+    "guns" : 35,
+    "hullType" : "capital ship",
+    "name" : "battleship",
+    "racks" : 2,
+    "scan" : 1,
+    "tonnage" : 30
+  }, {
+    "ar" : 3,
+    "cost" : 15,
+    "dp" : 15,
+    "engines" : 2,
+    "guns" : 20,
+    "hullType" : "gunship",
+    "name" : "frigate",
+    "tonnage" : 10
+  }, {
+    "ar" : 15,
+    "cost" : 999,
+    "dp" : 200,
+    "guns" : 150,
+    "hullType" : "orbital",
+    "name" : "starbase",
+    "racks" : 10,
+    "scan" : 2,
+    "tonnage" : 999
+  }, {
+    "ar" : 16,
+    "cost" : 25,
+    "dp" : 40,
+    "guns" : 30,
+    "hullType" : "orbital",
+    "name" : "station",
+    "racks" : 2,
+    "scan" : 1,
+    "tonnage" : 20
+  }, {
+    "ar" : 1,
+    "cost" : 1,
+    "dp" : 5,
+    "guns" : 5,
+    "hullType" : "wing",
+    "name" : "fighter",
+    "tonnage" : 1
+  }, {
+    "cost" : 2,
+    "dp" : 1,
+    "engines" : 3,
+    "guns" : 1,
+    "hullType" : "scout",
+    "name" : "probe",
+    "scan" : 3,
+    "tonnage" : 2
+  } ]
+}

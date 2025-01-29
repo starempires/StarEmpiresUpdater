@@ -21,10 +21,10 @@ import java.util.regex.Pattern;
 public class GiveOrder extends EmpireBasedOrder {
 
     // GIVE shipclass1 [shipclass2 ...] TO empire1 [empire2 ...]
-    private static final String CLASSES_GROUP = "classes";
-    private static final String RECIPIENT_GROUP = "recipients";
-    private static final String PARAMETERS_REGEX = "(?<" + CLASSES_GROUP + ">[\\w]+(?:\\s+[\\w]+)*>)\\s+to\\s+(?<" + RECIPIENT_GROUP + ">[\\w]+(?:\\s+[\\w]+)*)$";
-    private static final Pattern PATTERN = Pattern.compile(PARAMETERS_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final String SHIP_CLASSES_GROUP = "shipclasses";
+    private static final String SHIP_CLASSES_CAPTURE_REGEX = "(?<" + SHIP_CLASSES_GROUP + ">" + ID_LIST_REGEX + ")";
+    private static final String REGEX = SHIP_CLASSES_CAPTURE_REGEX + SPACE_REGEX + "to" + SPACE_REGEX  + RECIPIENT_LIST_CAPTURE_REGEX;
+    private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -41,8 +41,8 @@ public class GiveOrder extends EmpireBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String[] shipClassNames = matcher.group(CLASSES_GROUP).split("\\s+");
-            final String[] recipientNames = matcher.group(RECIPIENT_GROUP).split("\\s+");
+            final String[] shipClassNames = matcher.group(SHIP_CLASSES_GROUP).split(SPACE_REGEX);
+            final String[] recipientNames = matcher.group(RECIPIENT_LIST_GROUP).split(SPACE_REGEX);
             for (String shipClassName: shipClassNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipClassName);
                 if (empire.isKnownShipClass(shipClass)) {

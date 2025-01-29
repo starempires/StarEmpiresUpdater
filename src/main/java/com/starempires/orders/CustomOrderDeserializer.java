@@ -25,7 +25,7 @@ public class CustomOrderDeserializer extends JsonDeserializer<Order> {
         final String orderTypeText = node.get("orderType").asText();
         final OrderType orderType = EnumUtils.getEnumIgnoreCase(OrderType.class, orderTypeText);
         if (orderType == null) {
-            throw new RuntimeException("Unknown order type: " + orderType);
+            throw new RuntimeException("Unknown order type: " + orderTypeText);
         }
         final Class<? extends Order> orderClass = orderType.getOrderClass();
         try {

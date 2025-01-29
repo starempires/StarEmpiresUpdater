@@ -45,17 +45,15 @@ import java.util.stream.Collectors;
 @ToString
 @JsonPropertyOrder({"session", "turnNumber", "radius",
         "empires", "ships", "worlds", "portals", "storms", "hullParameters", "shipClasses"})
+@Getter
 public class TurnData {
 
-    @Getter
     private final String session;
     /**
      * turn number this data is for
      */
-    @Getter
     @Setter
     private int turnNumber;
-    @Getter
     private final int radius;
     /**
      * map of empire names to Empires
@@ -91,7 +89,6 @@ public class TurnData {
      * map of Coordinates to Sets of Storms
      */
     @JsonIgnore
-    @Getter
     private final Multimap<Coordinate, Storm> stormCoordinates = HashMultimap.create();
     /**
      * map of Coordinate to set of Ships
@@ -127,7 +124,6 @@ public class TurnData {
      * set of destroyed ships that are potentially salvageable
      */
     @JsonIgnore
-    @Getter
     private final Set<Ship> possibleSalvages = Sets.newHashSet();
     /**
      * map of Empires to home Worlds

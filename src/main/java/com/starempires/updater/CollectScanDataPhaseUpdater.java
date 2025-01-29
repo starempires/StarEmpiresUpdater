@@ -10,6 +10,7 @@ import com.starempires.objects.World;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CollectScanDataPhaseUpdater extends PhaseUpdater {
 
@@ -32,7 +33,7 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
             else {
                 scan = 0;
             }
-            final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan);
+            final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan).stream().filter(coordinate -> !turnData.isInNebula(coordinate)).collect(Collectors.toSet());
             empire.mergeScanStatus(coordinates, ScanStatus.SCANNED);
             empire.mergeScanStatus(ship, ScanStatus.VISIBLE);
         });

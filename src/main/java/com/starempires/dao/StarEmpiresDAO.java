@@ -1,6 +1,7 @@
 package com.starempires.dao;
 
 import com.starempires.TurnData;
+import com.starempires.TurnNews;
 import com.starempires.generator.EmpireSnapshot;
 import com.starempires.objects.HullParameters;
 import com.starempires.orders.Order;
@@ -20,6 +21,6 @@ public interface StarEmpiresDAO {
     void saveSnapshot(final String session, final String empire, final int turnNumber, final EmpireSnapshot snapshot) throws Exception;
     List<HullParameters> loadHullParameters(final String session) throws Exception;
     void saveColors(final String session, final Map<String, String> colors) throws Exception;
-    void saveNews(final String session, final String empire, final int turnNumber, List<String> news) throws Exception;
+    void saveNews(final String session, final TurnNews news, final int turnNumber) throws Exception;
     Map<String, String> loadColors(final String session) throws Exception;
 }

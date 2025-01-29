@@ -7,7 +7,6 @@ import com.google.common.collect.Multimap;
 import com.starempires.objects.Empire;
 import com.starempires.updater.Phase;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -15,17 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
 @Getter
 public class TurnNews {
-    private final Map<Phase, Multimap<Empire, String>> news;
-
-    public TurnNews() {
-        news = Maps.newHashMap();
-        for (Phase phase : Phase.values()) {
-            news.put(phase, ArrayListMultimap.create());
-        }
-    }
+    private final Map<Empire, Multimap<Phase, String>> news = Maps.newHashMap();
 
     public void addNews(final Phase phase, final Collection<Empire> empires, final String text) {
         empires.forEach(empire -> addNews(phase, empire, text));
@@ -33,23 +24,33 @@ public class TurnNews {
 
     public void addNews(final Phase phase, final Empire empire, final String text) {
         if (StringUtils.isNotBlank(text)) {
-            final Multimap<Empire, String> phaseNews = news.get(phase);
-            phaseNews.put(empire, text);
+            final Multimap<Phase, String> phaseNews = news.computeIfAbsent(empire, e -> ArrayListMultimap.create());
+            phaseNews.put(phase, text);
         }
     }
 
-    public void dump() {
-        final List<Phase> phases = Lists.newArrayList(news.keySet());
+    public List<String> getEmpireNews(final Empire empire) {
+        final Multimap<Phase, String> phaseNews = news.get(empire);
+        final List<String> results = Lists.newArrayList();
+        final List<Phase> phases = Lists.newArrayList(phaseNews.keySet());
         Collections.sort(phases);
-        phases.forEach(phase -> {
-            final Multimap<Empire, String> mapList = news.get(phase);
-            for (Map.Entry<Empire, Collection<String>> entry : mapList.asMap().entrySet()) {
-                final Empire empire = entry.getKey();
-                final Collection<String> texts = entry.getValue();
-                for (final String text : texts) {
-                    log.info("{}:{}: {}", phase, empire, text);
-                }
-            }
-        });
+        phases.forEach(phase -> results.addAll(phaseNews.get(phase)));
+        return results;
     }
+//
+//    public void logAllEmpireNewsByPhase() {
+//        final Multimap<Phase, String> results = ArrayListMultimap.create();
+//        final List<Empire> empires = Lists.newArrayList(news.keySet());
+//        Collections.sort(empires);
+//        empires.forEach(empire -> {
+//            final Multimap<Phase, String> mapList = news.get(empire);
+//            for (Map.Entry<Phase, Collection<String>> entry : mapList.asMap().entrySet()) {
+//                results.putAll(entry.getKey(), entry.getValue());
+//            }
+//        });
+//
+//        final List<Phase> phases = Lists.newArrayList(results.keySet());
+//        Collections.sort(phases);
+//        phases.forEach(phase -> results.get(phase).forEach(text -> log.info("{}: {}", phase, text) ));
+//    }
 }

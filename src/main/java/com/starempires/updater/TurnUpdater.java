@@ -160,13 +160,13 @@ public class TurnUpdater {
         log.info("Processed all phases for session {}", sessionName);
     }
 
-    private void saveTurnData(TurnData turnData) throws Exception {
+    private void saveTurnData(final TurnData turnData) throws Exception {
         dao.saveTurnData(sessionName, turnData);
         log.info("Saved turn data for session {} turn {}", sessionName, turnData.getTurnNumber());
     }
 
-    private void saveNews(TurnData turnData) throws Exception {
-        dao.saveTurnData(sessionName, turnData);
-        log.info("Saved turn data for session {} turn {}", sessionName, turnData.getTurnNumber());
+    private void saveNews(final TurnData turnData) throws Exception {
+        dao.saveNews(sessionName, turnData.getNews(), turnData.getTurnNumber());
+        log.info("Saved turn news for session {} turn {}", sessionName, turnData.getTurnNumber());
     }
 }
