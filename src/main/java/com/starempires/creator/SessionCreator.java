@@ -199,7 +199,7 @@ public class SessionCreator {
 
         for (final Empire empire: turnData.getAllEmpires()) {
             // init scan data and known objects for each empire
-            empire.mergeObjectScanStatuses(empire.getKnownWorlds(), ScanStatus.VISIBLE);
+            empire.mergeObjectScanStatuses(empire.getKnownWorlds(), ScanStatus.VISIBLE, 0);
             final Collection<Ship> ships = empire.getShips();
             ships.stream().filter(ship -> !ship.isLoaded()).forEach(ship -> {
                 final int scan;
@@ -212,12 +212,12 @@ public class SessionCreator {
                 final Collection<Coordinate> scanCoordinates = Coordinate.getSurroundingCoordinates(ship, scan);
                 for (Coordinate coord: scanCoordinates) {
                     if (stormCoordinates.containsKey(coord)) {
-                        empire.mergeScanStatus(coord, ScanStatus.STALE);
+                        empire.mergeScanStatus(coord, ScanStatus.STALE, 0);
                         empire.addKnownStorm(stormCoordinates.get(coord));
                         log.info("Added known storm {} for {}", stormCoordinates.get(coord), empire);
                     }
                     else {
-                        empire.mergeScanStatus(coord, ScanStatus.SCANNED);
+                        empire.mergeScanStatus(coord, ScanStatus.SCANNED, 0);
                         if (worldCoordinates.containsKey(coord)) {
                             empire.addKnownWorld(worldCoordinates.get(coord));
                             log.info("Added known world {} for {}", worldCoordinates.get(coord), empire);
@@ -228,7 +228,7 @@ public class SessionCreator {
                         }
                     }
                 }
-                empire.mergeScanStatus(ship, ScanStatus.VISIBLE);
+                empire.mergeScanStatus(ship, ScanStatus.VISIBLE, 0);
                 log.info("Initialized {} scan coordinates for {}", scanCoordinates.size(), empire);
             });
 
@@ -236,7 +236,7 @@ public class SessionCreator {
             shipClasses.forEach(empire::addKnownShipClass);
 
             // init GM
-            gm.getScanData().mergeScanStatus(galaxy.getAllCoordinates(), ScanStatus.VISIBLE);
+            gm.getScanData().mergeScanStatus(galaxy.getAllCoordinates(), ScanStatus.VISIBLE, 0);
             turnData.getAllEmpires().forEach(gm::addKnownEmpire);
             shipClasses.forEach(gm::addKnownShipClass);
             worldCoordinates.values().forEach(gm::addKnownWorld);

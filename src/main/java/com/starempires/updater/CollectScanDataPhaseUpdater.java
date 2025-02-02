@@ -20,7 +20,7 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
 
     private void markPortalsStale(final Empire empire) {
         final Set<Portal> knownPortals = empire.getKnownPortals();
-        knownPortals.forEach(portal -> empire.mergeScanStatus(portal, ScanStatus.STALE));
+        knownPortals.forEach(portal -> empire.mergeScanStatus(portal, ScanStatus.STALE, turnData.getTurnNumber()));
     }
 
     private void addShipScanData(final Empire empire) {
@@ -33,15 +33,16 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
             final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan);
             final Set<Coordinate> nebulae = coordinates.stream().filter(turnData::isInNebula).collect(Collectors.toSet());
             coordinates.removeAll(nebulae);
-            empire.mergeScanStatus(nebulae, ScanStatus.STALE);
-            empire.mergeScanStatus(coordinates, ScanStatus.SCANNED);
-            empire.mergeScanStatus(ship, ScanStatus.VISIBLE);
+            nebulae.forEach(coordinate -> empire.mergeScanStatus(coordinate, ScanStatus.STALE, empire.getLastTurnScanned(coordinate)));
+            final int scanTurnNumber = turnData.getTurnNumber();
+            empire.mergeScanStatus(coordinates, ScanStatus.SCANNED, scanTurnNumber + 1);
+            empire.mergeScanStatus(ship, ScanStatus.VISIBLE, scanTurnNumber + 1);
         });
     }
 
     private void addWorldSectors(final Empire empire) {
         final Collection<World> worlds = turnData.getOwnedWorlds(empire);
-        worlds.forEach(world -> empire.mergeScanStatus(world, ScanStatus.VISIBLE));
+        worlds.forEach(world -> empire.mergeScanStatus(world, ScanStatus.VISIBLE, turnData.getTurnNumber() + 1));
     }
 
     @Override

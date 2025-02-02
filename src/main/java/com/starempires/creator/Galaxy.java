@@ -192,7 +192,7 @@ public class Galaxy {
     }
 
     private void addWormnet(List<String> names) {
-        final int numPortals = 2 + ThreadLocalRandom.current().nextInt(maxWormnetPortals - 2);
+        final int numPortals = 2 + (maxWormnetPortals > 2 ? ThreadLocalRandom.current().nextInt(maxWormnetPortals - 2) : 0);
         log.info("Generating new wormnet with {} portals", numPortals);
         final Set<Portal> wormnetPortals = Sets.newHashSet();
         IntStream.range(0, numPortals).forEach(i -> {

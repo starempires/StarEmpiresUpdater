@@ -1,40 +1,40 @@
 Butterfly
 Carina
-Celestial Tide
-Cosmic Bloom
-Cradle of Stars
-Crimson Veil
-Dragon's Breath
-Elysian Cloud
-Ember Drift
-Eternal Drift
-Forgotten Mist
+Celestial_Tide
+Cosmic_Bloom
+Cradle_of_Stars
+Crimson_Veil
+Dragons_Breath
+Elysian_Cloud
+Ember_Drift
+Eternal_Drift
+Forgotten_Mist
 Frostveil
 Ghostlight
 Helix
 Horsehead
 Hourglass
 Medusa
-Midnight Bloom
-Nebula of Ashes
+Midnight_Bloom
+Nebula_of_Ashes
 Orion
-Phoenix Veil
-Pillars of Creation
-Radiant Abyss
-Radiant Crown
+Phoenix_Veil
+Pillars_of_Creation
+Radiant_Abyss
+Radiant_Crown
 Rosette
-Sapphire Cloud
-Shadow Cloak
-Siren’s Shroud
-Spectral Veil
+Sapphire_Cloud
+Shadow_Cloak
+Siren’s_Shroud
+Spectral_Veil
 Starspire
 Tarantula
-Tempest Coil
+Tempest_Coil
 Tempestfall
-The Lagoon
-Titan’s Breath
-Twilight Halo
-Valkyrie Mist
-Veil of Seraphim
-Voidstar Veil
-Wraith's Halo
+The_Lagoon
+Titans_Breath
+Twilight_Halo
+Valkyrie_Mist
+Veil_of_Seraphim
+Voidstar_Veil
+Wraiths_Halo

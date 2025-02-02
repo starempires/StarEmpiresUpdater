@@ -32,7 +32,7 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
                 final int remaining = world.adjustStockpile(-cost);
                 String name = null;
                 if (basename != null) {
-                    name = basename + (startingNumber + i);
+                    name = basename + (startingNumber + i + 1);
                 }
                 else if (i < names.size()) {
                     name = names.get(i);

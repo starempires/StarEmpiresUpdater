@@ -283,7 +283,7 @@ public class TurnData {
     }
 
     public void addShipClass(final ShipClass shipClass) {
-        shipClassNames.put(shipClass.getName(), shipClass);
+        shipClassNames.put(shipClass.getName().toLowerCase(), shipClass);
     }
 
     public void addShipClasses(final Collection<ShipClass> classes) {

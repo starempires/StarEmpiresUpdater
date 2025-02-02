@@ -1,6 +1,7 @@
 package com.starempires.objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class ScanRecord {
     /** current ScanStatus */
     private ScanStatus scanStatus = ScanStatus.UNKNOWN;
     /** last turn scanned (or current turn if visible) */
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int lastTurnScanned;
     /** Map of ScanStatus to empires that have shared that ScanStatus */
     @JsonIgnore

@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Empire extends IdentifiableObject {
     /**
      * two-letter abbreviation of this empire
@@ -40,35 +41,30 @@ public class Empire extends IdentifiableObject {
     /**
      * ids of empires known to this one
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> knownEmpires = Sets.newHashSet();
     /**
      * ids of ship classes known to this one
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<ShipClass> knownShipClasses = Sets.newHashSet();
     /**
      * map of worlds currently known by this empire to the corresponding last turn scanned
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<World> knownWorlds = Sets.newHashSet();
     /**
      * map of portals currently known by this empire to the corresponding last turn scanned
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> knownPortals = Sets.newHashSet();
     /**
      * map of storms currently known by this empire to the corresponding last turn scanned
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Storm> knownStorms = Sets.newHashSet();
@@ -80,7 +76,6 @@ public class Empire extends IdentifiableObject {
     /**
      * portals for which this empire currently has nav data
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Portal> portalNavData = Sets.newHashSet();
@@ -91,34 +86,29 @@ public class Empire extends IdentifiableObject {
     /**
      * map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = Coordinate.EmpireCoordinateMultimapSerializer.class)
     @JsonDeserialize(using = Coordinate.DeferredEmpireCoordinateMultimapDeserializer.class)
     private final Multimap<Empire, RadialCoordinate> shareCoordinates = HashMultimap.create();
     /**
      * map of empires to sets of Ships for which scan access has been authorized
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
     private final Multimap<Empire, Ship> shareShips = HashMultimap.create();
     /**
      * set of empires which are authorized to receive all scan data
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Empire> shareEmpires = Sets.newHashSet();
     /**
      * map of empires to Sets of ShipClasses for which scan access has been * authorized
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
     private final Multimap<Empire, ShipClass> shareShipClasses = HashMultimap.create();
     @JsonIgnore
     private final Fleet fleet = new Fleet();
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Map<String, String> mapColors = Maps.newHashMap();
 
     @Builder
@@ -207,20 +197,20 @@ public class Empire extends IdentifiableObject {
         scanData.setAllScan(status);
     }
 
-    public void mergeScanStatus(final @NonNull MappableObject object, final ScanStatus status) {
-        mergeScanStatus(object.getCoordinate(), status);
+    public void mergeScanStatus(final @NonNull MappableObject object, final ScanStatus status, final int turnNumber) {
+        mergeScanStatus(object.getCoordinate(), status, turnNumber);
     }
 
-    public void mergeObjectScanStatuses(final @NonNull Collection<? extends MappableObject> objects, final ScanStatus status) {
-        mergeScanStatus(objects.stream().map(MappableObject::getCoordinate).toList(), status);
+    public void mergeObjectScanStatuses(final @NonNull Collection<? extends MappableObject> objects, final ScanStatus status, final int turnNumber) {
+        mergeScanStatus(objects.stream().map(MappableObject::getCoordinate).toList(), status, turnNumber);
     }
 
-    public void mergeScanStatus(final Coordinate coordinate, final ScanStatus status) {
-        scanData.mergeScanStatus(coordinate, status);
+    public void mergeScanStatus(final Coordinate coordinate, final ScanStatus status, final int turnNumber) {
+        scanData.mergeScanStatus(coordinate, status, turnNumber);
     }
 
-    public void mergeScanStatus(final Collection<Coordinate> coordinates, final ScanStatus status) {
-        scanData.mergeScanStatus(coordinates, status);
+    public void mergeScanStatus(final Collection<Coordinate> coordinates, final ScanStatus status, final int turnNumber) {
+        scanData.mergeScanStatus(coordinates, status, turnNumber);
     }
 
     public void mergeScanStatusAndShare(final ScanData newScan) {

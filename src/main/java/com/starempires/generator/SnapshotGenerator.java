@@ -232,6 +232,7 @@ public class SnapshotGenerator {
                         .row(row)
                         .column(column)
                         .status(status)
+                        .lastTurnScanned(empire.getLastTurnScanned(galacticCoord))
                         .world(WorldSnapshot.fromWorld(world, empire))
                         .portals(portals.stream().map(portal -> PortalSnapshot.fromPortal(portal, empire)).toList())
                         .ships(sectorShipSnapshots)
