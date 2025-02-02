@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" monitorInterval="30">
+<Configuration status="WARN">
+    <Properties>
+        <!-- Default log level, can be overridden via system property -->
+        <Property name="logLevel">${sys:logLevel:-INFO}</Property>
+    </Properties>
+
     <Appenders>
-        <!-- Console appender to log messages to the console -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-
-        <!-- File appender to log messages to a file -->
-<!--        <File name="File" fileName="logs/app.log" append="true">-->
-<!--            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>-->
-<!--        </File>-->
     </Appenders>
 
     <Loggers>
-        <!-- Root logger: Log everything (DEBUG level and above) -->
-        <Root level="info">
+        <Root level="${logLevel}">
             <AppenderRef ref="Console"/>
-<!--            <AppenderRef ref="File"/>-->
         </Root>
-
-        <!-- Example: Custom logger for a specific package or class -->
-<!--        <Logger name="com.example.myapp" level="info" additivity="false">-->
-<!--            <AppenderRef ref="Console"/>-->
-<!--        </Logger>-->
     </Loggers>
 </Configuration>

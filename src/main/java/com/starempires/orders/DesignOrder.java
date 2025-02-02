@@ -88,7 +88,7 @@ public class DesignOrder extends WorldBasedOrder {
             order.world = world;
             order.name = designName;
             order.hullType = hullType;
-            final HullParameters  hullParameters = turnData.getHullParameters(order.hullType);
+            final HullParameters hullParameters = turnData.getHullParameters(order.hullType);
             final String[] tokens = paramText.split(" ");
             if (hullType == HullType.MISSILE) {
                 if (tokens.length != 2) {
@@ -103,9 +103,7 @@ public class DesignOrder extends WorldBasedOrder {
                     return order;
                 }
                 final int cost = hullParameters.getCost(guns, tonnage);
-                order.addResult("OK (%d RU remaining)\n".formatted(world.getStockpile()) +
-                        "  design confirmation for missile G:%d T:%d\n".formatted(guns, tonnage) +
-                        "  cost   : %d".formatted(cost));
+                order.addResult("OK\n  pending design for %s (missile) guns:%d tonnage:%d cost:%d".formatted(designName, guns, tonnage, cost));
                 order.guns = guns;
                 order.tonnage = tonnage;
                 order.dp = 1;
@@ -147,11 +145,12 @@ public class DesignOrder extends WorldBasedOrder {
                 final int tonnage = hullParameters.getTonnage(guns, dp, engines, scan, racks);
                 final int ar = Math.max(1, Math.round(dp * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
                 world.adjustStockpile(-designCost);
-                order.addResult("OK (%d RU remaining)\n".formatted(world.getStockpile()) +
-                        "  design confirmation for missile G:%d DP:%d E:%d S:%d R:%d%n".formatted(guns, dp, engines, scan, racks) +
+                order.addResult("OK\n" +
+                        "  pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d%n".formatted(designName, hullType, guns, dp, engines, scan, racks) +
                         "  cost: %d".formatted(cost) +
                         "  AR: %d".formatted(ar) +
-                        "  tonnage: %d".formatted(tonnage));
+                        "  tonnage: %d%n".formatted(tonnage) +
+                        "  design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));
                 order.guns = guns;
                 order.dp = dp;
                 order.engines = engines;

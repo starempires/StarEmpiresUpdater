@@ -132,7 +132,7 @@ public class BuildOrder extends WorldBasedOrder {
                     }
                     world.adjustStockpile(-cost);
                     empire.buildShip(shipClass, world, nextName, turnData.getTurnNumber());
-                    order.addResult("Pending build for %s ship %s (%d RU remaining)".formatted(shipClass, nextName, world.getStockpile()));
+                    order.addResult("Pending build for %s ship %s (cost %d, %d RU remaining)".formatted(shipClass, nextName, cost, world.getStockpile()));
                 }
             }
             order.world = world;

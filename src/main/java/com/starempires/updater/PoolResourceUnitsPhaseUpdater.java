@@ -35,27 +35,28 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
                         addNewsResult(order, empire, "You do not own world " + exceptWorld);
                         exceptWorlds.remove(exceptWorld);
                     }
-
-                    final AtomicInteger total = new AtomicInteger();
-                    final List<World> ownedWorlds = Lists.newArrayList(turnData.getOwnedWorlds(empire));
-                    ownedWorlds.removeAll(exceptWorlds);
-                    ownedWorlds.remove(poolWorld);
-                    ownedWorlds.sort(IDENTIFIABLE_NAME_COMPARATOR);
-                    ownedWorlds.forEach(world -> {
-                        final int stockpile = world.getStockpile();
-                        if (stockpile > 0) {
-                            if (world.isBlockaded()) {
-                                addNewsResult(order, empire, "World " + world + " is blockaded");
-                            } else {
-                                addNewsResult(order, empire, "Pooled " + stockpile + " RU from world " + world);
-                                total.addAndGet(stockpile);
-                                world.setStockpile(0);
-                            }
-                        }
-                    });
-                    poolWorld.adjustStockpile(total.get());
-                    addNewsResult(order, "Pooled %d RU from %d %s to %s (stockpile now %d)".formatted(total.get(), ownedWorlds.size(), plural(ownedWorlds.size(), "world"), poolWorld, poolWorld.getStockpile()));
                 });
+
+                final AtomicInteger total = new AtomicInteger();
+                final List<World> ownedWorlds = Lists.newArrayList(turnData.getOwnedWorlds(empire));
+                ownedWorlds.removeAll(exceptWorlds);
+                ownedWorlds.remove(poolWorld);
+                ownedWorlds.sort(IDENTIFIABLE_NAME_COMPARATOR);
+                ownedWorlds.forEach(world -> {
+                    final int stockpile = world.getStockpile();
+                    if (stockpile > 0) {
+                        if (world.isBlockaded()) {
+                            addNewsResult(order, empire, "Cannot pool RU from blockaded world %s".formatted(world));
+                        } else {
+                            addNewsResult(order, empire, "Pooled %d RU from %s to %s".formatted(stockpile, world, poolWorld));
+                            total.addAndGet(stockpile);
+                            world.setStockpile(0);
+                        }
+                    }
+                });
+                poolWorld.adjustStockpile(total.get());
+                addNewsResult(order, "Pooled %d RU from %s to %s (stockpile now %d)".formatted(total.get(),
+                        plural(ownedWorlds.size(), "world"), poolWorld, poolWorld.getStockpile()));
             }
         });
     }

@@ -26,14 +26,14 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
     private void addShipScanData(final Empire empire) {
         final Collection<Ship> ships = empire.getShips();
         ships.stream().filter(ship -> !ship.isLoaded()).forEach(ship -> {
-            final int scan;
+            int scan = 0;
             if (ship.isAlive() && !turnData.isInNebula(ship)) {
                 scan = ship.getAvailableScan();
             }
-            else {
-                scan = 0;
-            }
-            final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan).stream().filter(coordinate -> !turnData.isInNebula(coordinate)).collect(Collectors.toSet());
+            final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan);
+            final Set<Coordinate> nebulae = coordinates.stream().filter(turnData::isInNebula).collect(Collectors.toSet());
+            coordinates.removeAll(nebulae);
+            empire.mergeScanStatus(nebulae, ScanStatus.STALE);
             empire.mergeScanStatus(coordinates, ScanStatus.SCANNED);
             empire.mergeScanStatus(ship, ScanStatus.VISIBLE);
         });
@@ -44,18 +44,6 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
         worlds.forEach(world -> empire.mergeScanStatus(world, ScanStatus.VISIBLE));
     }
 
-    private void updateMapItems(final Empire empire) {
-        final Collection<World> worlds = turnData.getAllWorlds();
-        worlds.stream()
-                .filter(world -> empire.getScanStatus(world) != ScanStatus.UNKNOWN)
-                .forEach(empire::addKnownWorld);
-
-        final Collection<Portal> portals = turnData.getAllPortals();
-        portals.stream()
-                .filter(portal -> empire.getScanStatus(portal) != ScanStatus.UNKNOWN)
-                .forEach(empire::addKnownPortal);
-    }
-
     @Override
     public void update() {
         final Collection<Empire> empires = turnData.getAllEmpires();
@@ -64,7 +52,6 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
             markPortalsStale(empire);
             addShipScanData(empire);
             addWorldSectors(empire);
-            updateMapItems(empire);
         });
     }
 }

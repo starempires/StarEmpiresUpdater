@@ -1,10 +1,13 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
 import lombok.Getter;
@@ -26,7 +29,11 @@ public class TraverseOrder extends ShipBasedOrder {
     final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "portal" + SPACE_REGEX + ENTRY_CAPTURE_REGEX + EXIT_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Portal entry;
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Portal exit;
 
     public static TraverseOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
@@ -34,12 +41,13 @@ public class TraverseOrder extends ShipBasedOrder {
                 .empire(empire)
                 .orderType(OrderType.TRAVERSE)
                 .parameters(parameters)
+                .ships(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final List<Ship> movers = getLocationShips(empire, matcher, order);
-            final Coordinate coordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
-            final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == coordinate);
+            final Coordinate shipCoordinate = movers.stream().findAny().map(Ship::getCoordinate).orElse(null);
+            final boolean sameSector = movers.stream().allMatch(attacker -> attacker.getCoordinate() == shipCoordinate);
             if (!sameSector) {
                 order.addError("Movers not all in same sector");
                 order.ships.clear();
@@ -62,11 +70,23 @@ public class TraverseOrder extends ShipBasedOrder {
                 }
             }
 
-            final String entryText = matcher.group(LOCATION_GROUP);
+            if (validMovers.isEmpty()) {
+                order.addError("No valid movers");
+                order.setReady(false);
+                return order;
+            }
+            order.ships.addAll(validMovers);
+
+            final String entryText = matcher.group(ENTRY_GROUP);
             final String exitText = matcher.group(EXIT_GROUP);
             final Portal entry = turnData.getPortal(entryText);
             if (!empire.isKnownPortal(entry)) {
                 order.addError("Unknown entry portal: " + entryText);
+                order.setReady(false);
+                return order;
+            }
+            if (!entry.getCoordinate().equals(shipCoordinate)) {
+                order.addError("Ships not in same sector as Entry portal " + entry);
                 order.setReady(false);
                 return order;
             }

@@ -6,7 +6,10 @@ import com.starempires.objects.Empire;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class BuildOrderTest {
 
@@ -22,8 +25,17 @@ class BuildOrderTest {
     }
 
     @Test
-    void parse() {
+    void parsePrefix() {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe cube*");
         assertEquals("cube", order.getBasename());
+        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+    }
+
+    @Test
+    void parseNames() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        assertNull(order.getBasename());
+        assertEquals(List.of("p1", "p2"), order.getNames());
+        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
     }
 }

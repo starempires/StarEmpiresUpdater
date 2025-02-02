@@ -64,7 +64,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     public TurnData loadTurnData(final String session, final int turnNumber) throws Exception {
         final Path path = constructPath(session, "turndata", Integer.toString(turnNumber), "json");
         final Map<String, Object> jsonData = MAPPER.readValue(path.toFile(), new TypeReference<Map<String, Object>>() { });
-        log.info("Loaded data\n" + jsonData);
+        log.debug("Loaded data\n" + jsonData);
 
         final int radius = (int) jsonData.get("radius");
         TurnData turnData = TurnData.builder().session(session).turnNumber(turnNumber).radius(radius).build();
@@ -96,7 +96,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
                 if (world.isHomeworld()) {
                     turnData.setHomeworld(empire, world);
                 }
-                log.info("Set world {} owner {}", world, empire);
+                log.debug("Set world {} owner {}", world, empire);
             }
         }
     }
@@ -107,7 +107,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         for (Map<String, Object> data : objectData) {
             final ShipClass shipClass = MAPPER.convertValue(data, new TypeReference<ShipClass>() {
             });
-            log.info("Loaded ship class {}", shipClass);
+            log.debug("Loaded ship class {}", shipClass);
             shipClasses.add(shipClass);
         }
         turnData.addShipClasses(shipClasses);
@@ -119,7 +119,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         for (Map<String, Object> data : objectData) {
             final HullParameters parameters = MAPPER.convertValue(data, new TypeReference<HullParameters>() {
             });
-            log.info("Loaded hull parameters {}", parameters);
+            log.debug("Loaded hull parameters {}", parameters);
             hullParameters.add(parameters);
         }
         turnData.addHullParameters(hullParameters);
@@ -158,7 +158,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final Map<String, Portal> portals = Maps.newHashMap();
         for (final Map<String, Object> data : objectData) {
             final Portal portal = MAPPER.convertValue(data, new TypeReference<Portal>() {});
-            log.info("Loaded portal {}", portal);
+            log.debug("Loaded portal {}", portal);
             turnData.addPortal(portal);
             portals.put(portal.getName(), portal);
         }
@@ -168,7 +168,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
             final Portal portal = portals.get((String) data.get("name"));
             final Collection<String> connections = getStringCollection(data, "connections");
             connections.stream().map(portals::get).forEach(portal::addConnection);
-            log.info("Added connections {} to {}", connections, portal);
+            log.debug("Added connections {} to {}", connections, portal);
         }
     }
 
@@ -176,7 +176,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final List<Map<String, Object>> objectData = getObjectData(jsonData, "worlds");
         for (Map<String, Object> data : objectData) {
             final World world = MAPPER.convertValue(data, new TypeReference<World>() {});
-            log.info("Loaded world {}", world);
+            log.debug("Loaded world {}", world);
             turnData.addWorld(world);
         }
     }
@@ -185,7 +185,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final List<Map<String, Object>> objectData = getObjectData(jsonData, "storms");
         for (Map<String, Object> data : objectData) {
             final Storm storm = MAPPER.convertValue(data, new TypeReference<Storm>() {});
-            log.info("Loaded storm {}", storm);
+            log.debug("Loaded storm {}", storm);
             turnData.addStorm(storm);
         }
     }
@@ -199,7 +199,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
             final Empire empire = turnData.getEmpire(owner);
             ship.setOwner(empire);
             empire.addShip(ship);
-            log.info("Loaded ship {} for owner {}", ship, empire);
+            log.debug("Loaded ship {} for owner {}", ship, empire);
             ships.put(ship.getName(), ship);
         }
 
@@ -225,7 +225,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final Map<String, Empire> empires = Maps.newHashMap();
         for (Map<String, Object> data : objectData) {
             final Empire empire = MAPPER.convertValue(data, new TypeReference<Empire>() {});
-            log.info("Loaded empire {}", empire);
+            log.debug("Loaded empire {}", empire);
             empires.put(empire.getName(), empire);
         }
         turnData.addEmpires(empires.values());
@@ -236,27 +236,27 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
 
             final Collection<String> knownEmpires = getStringCollection(data, "knownEmpires");
             knownEmpires.stream().map(empires::get).forEach(empire::addKnownEmpire);
-            log.info("Added known empires {} to {}", knownEmpires, empire);
+            log.debug("Added known empires {} to {}", knownEmpires, empire);
 
             final Collection<String> knownPortals = getStringCollection(data, "knownPortals");
             knownPortals.stream().map(turnData::getPortal).forEach(empire::addKnownPortal);
-            log.info("Added known portals {} to {}", knownPortals, empire);
+            log.debug("Added known portals {} to {}", knownPortals, empire);
 
             final Collection<String> navDataPortals = getStringCollection(data, "portalNavData");
             navDataPortals.stream().map(turnData::getPortal).forEach(empire::addNavData);
-            log.info("Added nav data for portals {} to {}", navDataPortals, empire);
+            log.debug("Added nav data for portals {} to {}", navDataPortals, empire);
 
             final Collection<String> knownStorms = getStringCollection(data, "knownStorms");
             knownStorms.stream().map(turnData::getStorm).forEach(empire::addKnownStorm);
-            log.info("Added known storms {} to {}", knownStorms, empire);
+            log.debug("Added known storms {} to {}", knownStorms, empire);
 
             final Collection<String> knownWorlds = getStringCollection(data, "knownWorlds");
             knownWorlds.stream().map(turnData::getWorld).forEach(empire::addKnownWorld);
-            log.info("Added known worlds {} to {}", knownWorlds, empire);
+            log.debug("Added known worlds {} to {}", knownWorlds, empire);
 
             final Collection<String> knownShipClasses = getStringCollection(data, "knownShipClasses");
             knownShipClasses.stream().map(turnData::getShipClass).forEach(empire::addKnownShipClass);
-            log.info("Added known ship classes {} to {}", knownShipClasses, empire);
+            log.debug("Added known ship classes {} to {}", knownShipClasses, empire);
 
             final Map<String, List<String>> shareShipClasses = getStringMapList(data, "shareShipClasses");
             shareShipClasses.forEach((key, value) -> {
@@ -303,11 +303,11 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
             module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
             MAPPER.registerModule(module);
             final List<Order> orders = MAPPER.readValue(path.toFile(), new TypeReference<List<Order>>() {});
-            log.info("Loading {} orders: {}", empire, orders);
+            log.debug("Loading {} orders: {}", empire, orders);
             return orders;
         }
         else {
-            log.info("No ready orders found for empire {} turn {}", empire, turnNumber);
+            log.warn("No ready orders found for empire {} turn {}", empire, turnNumber);
             return Collections.emptyList();
         }
     }
@@ -352,7 +352,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final List<HullParameters> hullParameters = Lists.newArrayList();
         for (Map<String, Object> data : MAPPER.readValue(path.toFile(), new TypeReference<List<Map<String, Object>>>() {})) {
             final HullParameters parameters = MAPPER.convertValue(data, new TypeReference<HullParameters>() {});
-            log.info("Loaded hull parameters {}", parameters);
+            log.debug("Loaded hull parameters {}", parameters);
             hullParameters.add(parameters);
         }
         return hullParameters;
@@ -362,14 +362,14 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     public void saveColors(final String session, final Map<String, String> colors) throws Exception {
         final Path path = constructPath(session, "map-colors", "json");
         MAPPER.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), colors);
-        log.info("Wrote map colors {}", colors);
+        log.debug("Wrote map colors {} to {}", colors, path);
     }
 
     @Override
     public Map<String, String> loadColors(final String session) throws Exception {
         final Path path = constructPath(session, "map-colors", "json");
         final Map<String, String> colors = MAPPER.readValue(path.toFile(),new TypeReference<Map<String, String>>() {});
-        log.info("Loaded map colors {}", colors);
+        log.debug("Loaded map colors {} from {}", colors, path);
         return colors;
     }
 
@@ -377,7 +377,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
     public List<String> loadEmpireData(final String session) throws Exception {
         final Path path = constructPath(session, "empire-data", "txt");
         final List<String> empireData = Files.readAllLines(path);
-        log.info("Loaded empire data {} from {}", empireData, path);
+        log.debug("Loaded empire data {} from {}", empireData, path);
         return empireData;
     }
 
@@ -393,7 +393,7 @@ public class JsonStarEmpiresDAO implements StarEmpiresDAO {
         final List<String> empireNames = empireData.stream()
                 .map(str -> str.split(",")[0]) // Split and get the first value
                 .collect(Collectors.toList()); //
-        log.info("Loaded empire names {}", empireNames);
+        log.debug("Loaded empire names {}", empireNames);
         return empireNames;
     }
 

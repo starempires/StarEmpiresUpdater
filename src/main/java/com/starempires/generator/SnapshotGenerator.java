@@ -65,7 +65,7 @@ public class SnapshotGenerator {
 
     private TurnData loadTurnData() throws Exception {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
-        log.info("Loaded data for session {}, turn {}", sessionName, turnNumber);
+        log.info("Loaded turn data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
     }
 
@@ -74,13 +74,13 @@ public class SnapshotGenerator {
         final List<String> empireNames = empireData.stream()
                 .map(str -> str.split(",")[0]) // Split and get the first value
                 .collect(Collectors.toList()); //
-        log.info("Loaded empire names {}", empireNames);
+        log.debug("Loaded empire names {}", empireNames);
         return empireNames;
     }
 
     private Map<String, String> loadColors() throws Exception {
         final Map<String, String> colors = dao.loadColors(sessionName);
-        log.info("Loaded map colors for session {}, turn {}", sessionName, turnNumber);
+        log.debug("Loaded map colors for session {}, turn {}", sessionName, turnNumber);
         return colors;
     }
 
@@ -95,7 +95,7 @@ public class SnapshotGenerator {
             final Map<String, String> colors = generator.loadColors();
             final List<String> empireNames = generator.loadEmpireNames();
             for (String empireName: empireNames) {
-                log.info("Generating snapshot for {}", empireName);
+                log.debug("Generating snapshot for {}", empireName);
                 final EmpireSnapshot snapshot = generator.generate(turnData, colors, empireName);
                 generator.saveSnapshot(snapshot, empireName);
             }
@@ -115,7 +115,7 @@ public class SnapshotGenerator {
         if (allEmpireShips == null || allEmpireShips.isEmpty()) {
             return null;
         }
-        Map<String, SectorShipSnapshot> snapshots = Maps.newHashMap();
+        final Map<String, SectorShipSnapshot> snapshots = Maps.newHashMap();
         for (var entry : allEmpireShips.asMap().entrySet()) {
             final Empire empire = entry.getKey();
             final Collection<Ship> empireShips = entry.getValue();
@@ -137,7 +137,7 @@ public class SnapshotGenerator {
         final Multimap<Coordinate, Coordinate> knownConnections = HashMultimap.create();
         for (var entry : allConnections.entries()) {
             if (empire.hasNavData(entry.getKey()) && empire.hasNavData(entry.getValue())) {
-                knownConnections.put(entry.getKey().getCoordinate(), entry.getValue().getCoordinate());
+                knownConnections.put(empire.toLocal(entry.getKey().getCoordinate()), empire.toLocal(entry.getValue().getCoordinate()));
             }
         }
         return knownConnections;

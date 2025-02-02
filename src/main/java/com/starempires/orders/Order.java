@@ -25,6 +25,7 @@ import java.util.function.Function;
 @SuperBuilder
 @NoArgsConstructor
 @Log4j2
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public abstract class Order {
 
     /** empire who gave this order */
@@ -36,10 +37,10 @@ public abstract class Order {
     @JsonIgnore
     protected final List<String> results = Lists.newArrayList();
     /** was this order generated "synthetically", i.e., by the updater */
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     protected boolean synthetic;
     protected OrderType orderType;
     @Builder.Default
+    @JsonIgnore
     protected boolean ready = true;
 
     protected static final String SPACE_REGEX = "\\s+";

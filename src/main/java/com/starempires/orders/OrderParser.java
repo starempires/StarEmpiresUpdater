@@ -24,7 +24,6 @@ import java.util.List;
 @Log4j2
 public class OrderParser {
 
-
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
     private static final String ARG_SESSION_DIR = "sessiondir";
@@ -61,7 +60,7 @@ public class OrderParser {
 
     private TurnData loadTurnData() throws Exception {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
-        log.info("Loaded data for session {}, turn {}", sessionName, turnNumber);
+        log.info("Loaded turn data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
     }
 
@@ -87,14 +86,17 @@ public class OrderParser {
 
     private List<Order> parseOrders(final TurnData turnData, final Empire empire, final List<String> ordersText) {
         final List<Order> orders = Lists.newArrayList();
-        ordersText.forEach(text -> {
-            try {
-                final Order order = parseOrder(turnData, empire, text);
-                orders.add(order);
-            } catch (Exception e) {
-                log.error("Error parsing {}", text, e);
-            }
-        });
+        ordersText.stream()
+                .filter(text -> !text.isBlank())
+                .filter(text -> !text.startsWith("#"))
+                .forEach(text -> {
+                    try {
+                        final Order order = parseOrder(turnData, empire, text);
+                        orders.add(order);
+                    } catch (Exception e) {
+                        log.error("Error parsing {}", text, e);
+                    }
+                });
         return orders;
     }
 

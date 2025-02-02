@@ -33,7 +33,7 @@ public abstract class ShipBasedOrder extends Order {
     final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
     final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
     final static private String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
-    final static protected String LOCATION_CAPTURE_REGEX = "(?<" + LOCATION_GROUP + ">" + ID_REGEX + ")";
+    final static protected String LOCATION_CAPTURE_REGEX = "(?<" + LOCATION_GROUP + ">@" + ID_REGEX + ")";
     final static protected String LOCATION_EXCEPT_CAPTURE_REGEX = LOCATION_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
     final static protected String SHIP_LIST_CAPTURE_REGEX = "(?<" + SHIP_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
 
@@ -130,6 +130,7 @@ public abstract class ShipBasedOrder extends Order {
     protected static void parseReady(final JsonNode node, final TurnData turnData, final OrderType orderType, final ShipBasedOrder.ShipBasedOrderBuilder<?, ?> builder) {
         Order.parseReady(node, turnData, orderType, builder);
         final JsonNode shipsNode = node.get("ships");
-        builder.ships(getTurnDataListFromJsonNode(node, turnData::getShip));
+        final Empire empire = turnData.getEmpire(node.get("empire").asText());
+        builder.ships(getTurnDataListFromJsonNode(shipsNode, empire::getShip));
     }
 }

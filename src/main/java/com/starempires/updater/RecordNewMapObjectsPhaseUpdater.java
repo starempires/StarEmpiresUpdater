@@ -7,6 +7,7 @@ import com.starempires.objects.Empire;
 import com.starempires.objects.Portal;
 import com.starempires.objects.ScanStatus;
 import com.starempires.objects.Ship;
+import com.starempires.objects.Storm;
 import com.starempires.objects.World;
 
 import java.util.Collection;
@@ -20,22 +21,25 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
 
     private void addKnownWorlds(final Empire empire) {
         final Collection<World> worlds = turnData.getAllWorlds();
-        worlds.forEach(world -> {
-            final ScanStatus status = empire.getScanStatus(world);
-            if (status != ScanStatus.UNKNOWN) {
-                empire.addKnownWorld(world);
-            }
-        });
+        worlds.stream()
+                .filter(world -> empire.getScanStatus(world) != ScanStatus.UNKNOWN)
+                .filter(world -> empire.getScanStatus(world) != ScanStatus.STALE || empire.getLastTurnScanned(world.getCoordinate()) > 0)
+                .forEach(empire::addKnownWorld);
     }
 
     private void addKnownPortals(final Empire empire) {
         final Collection<Portal> portals = turnData.getAllPortals();
-        portals.forEach(portal -> {
-            final ScanStatus status = empire.getScanStatus(portal);
-            if (status != ScanStatus.UNKNOWN) {
-                empire.addKnownPortal(portal);
-            }
-        });
+        portals.stream()
+                .filter(portal -> empire.getScanStatus(portal) != ScanStatus.UNKNOWN)
+                .filter(portal -> empire.getScanStatus(portal) != ScanStatus.STALE || empire.getLastTurnScanned(portal.getCoordinate()) > 0)
+                .forEach(empire::addKnownPortal);
+    }
+
+    private void addKnownStorms(final Empire empire) {
+        final Collection<Storm> storms = turnData.getAllStorms();
+        storms.stream()
+                .filter(portal -> empire.getScanStatus(portal) != ScanStatus.UNKNOWN)
+                .forEach(empire::addKnownStorm);
     }
 
     private void addKnownEmpires(final Empire empire) {
@@ -51,6 +55,10 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
                 final Collection<Empire> scanEmpires = turnData.getEmpiresPresent(coordinate);
                 scanEmpires.remove(empire);
                 scanEmpires.forEach(scanEmpire -> {
+                    final World world = turnData.getWorld(coordinate);
+                    if (world.isOwned()) {
+                        knownEmpires.add(world.getOwner());
+                    }
                     final Collection<Ship> sectorShips = scanEmpire.getShips(coordinate);
                     sectorShips.stream().filter(sectorShip -> sectorShip.isTransponderSet(empire))
                             .forEach(sectorShip -> knownEmpires.add(scanEmpire));
@@ -66,6 +74,7 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
         empires.forEach(empire -> {
             addKnownWorlds(empire);
             addKnownPortals(empire);
+            addKnownStorms(empire);
             addKnownEmpires(empire);
         });
     }

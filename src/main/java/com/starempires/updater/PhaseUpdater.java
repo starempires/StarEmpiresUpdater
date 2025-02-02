@@ -10,12 +10,14 @@ import com.starempires.orders.Order;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
 
 @Getter
+@Log4j2
 public abstract class PhaseUpdater {
 
     protected static final String ALL_SHIPS_TOKEN = "all";
@@ -31,6 +33,7 @@ public abstract class PhaseUpdater {
     public abstract void update();
 
     public void preUpdate() {
+        log.debug("Running update for phase {}", phase);
         turnData.addNewsHeader(phase);
     }
 
