@@ -61,7 +61,7 @@ public class MoveOrder extends ShipBasedOrder {
                     return order;
                 }
 
-                final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == startCoordinate);
+                final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate().equals(startCoordinate));
                 if (!sameSector) {
                     order.addError("Movers not all in same sector");
                     order.ships.clear();

@@ -189,12 +189,14 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                     dpRemaining -= gunsToFire;
                     totalUnfiredGuns -= gunsToFire;
                     addNewsResult(order, empiresInSector,
-                            "Ship " + gunship + " fired " + plural(gunsToFire, "gun") + " at target " + target);
+                            "%s ship %s fired %s at target %s".formatted(gunship.getOwner(), gunship,
+                                 plural(gunsToFire, "gun"), target));
                 } else { // select a missile to fire
                     final Ship missile = selectMissile(missiles, dpRemaining);
                     final int missileGuns = turnData.fireMissile(missile, target);
                     addNewsResult(order, empiresInSector,
-                            "Missile " + missile + " hit target " + target + " for " + missileGuns + " damage");
+                            "%s missile %s inflicted %d damage against target %s".formatted(missile.getOwner(), missile,
+                            missileGuns, target));
                 }
             }
         }

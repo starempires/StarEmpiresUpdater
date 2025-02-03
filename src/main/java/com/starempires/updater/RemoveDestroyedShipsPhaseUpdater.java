@@ -19,8 +19,8 @@ public abstract class RemoveDestroyedShipsPhaseUpdater extends PhaseUpdater {
         final Collection<Ship> ships = turnData.getAllShips();
         final Set<Ship> destroyed = new HashSet<Ship>();
         ships.stream().filter(ship -> !ship.isAlive()).forEach(ship -> {
-            Collection<Empire> empires = turnData.getEmpiresPresent(ship);
-            addNews(empires, "Ship " + ship + " has been destroyed");
+            final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
+            addNews(empires, "%s ship %s has been destroyed".formatted(ship.getOwner(), ship));
             destroyed.add(ship);
         });
         turnData.removeDestroyedShips(destroyed);

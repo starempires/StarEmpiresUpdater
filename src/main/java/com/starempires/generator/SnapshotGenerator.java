@@ -111,7 +111,7 @@ public class SnapshotGenerator {
         dao = new JsonStarEmpiresDAO(sessionDir);
     }
 
-    private Map<String, SectorShipSnapshot> getSectorShipSnapshots(final Multimap<Empire, Ship> allEmpireShips) {
+    private Map<String, SectorShipSnapshot> getSectorShipSnapshots(final Multimap<Empire, Ship> allEmpireShips, final Empire snapshotEmpire) {
         if (allEmpireShips == null || allEmpireShips.isEmpty()) {
             return null;
         }
@@ -120,7 +120,7 @@ public class SnapshotGenerator {
             final Empire empire = entry.getKey();
             final Collection<Ship> empireShips = entry.getValue();
             final Map<String, ShipSnapshot> empireShipsSnapshots = empireShips.stream()
-                    .map(ship -> ShipSnapshot.fromShip(ship, empire)).collect(Collectors.toMap(ShipSnapshot::getSerialNumber, Function.identity()));
+                    .map(ship -> ShipSnapshot.fromShip(ship, snapshotEmpire == null ? ship.getOwner() : snapshotEmpire)).collect(Collectors.toMap(ShipSnapshot::getSerialNumber, Function.identity()));
             final SectorShipSnapshot sectorShipSnapshot =
                     SectorShipSnapshot.builder()
                             .count(empireShips.size())
@@ -224,7 +224,7 @@ public class SnapshotGenerator {
                     });
                 }
 
-                sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire);
+                sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire, empire);
 
                 final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
                         .oblique(localCoord.getOblique())
@@ -317,7 +317,7 @@ public class SnapshotGenerator {
                 sectorShipsByEmpire.putAll(empirePresent, empireSectorShips);
             });
 
-            sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire);
+            sectorShipSnapshots = getSectorShipSnapshots(sectorShipsByEmpire, null);
 
             final SectorSnapshot sectorSnapshot = SectorSnapshot.builder()
                         .oblique(galacticCoord.getOblique())

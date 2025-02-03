@@ -42,6 +42,7 @@ public class FireOrder extends ShipBasedOrder {
                 .empire(empire)
                 .orderType(OrderType.FIRE)
                 .parameters(parameters)
+                .ships(Lists.newArrayList())
                 .targets(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
@@ -74,7 +75,7 @@ public class FireOrder extends ShipBasedOrder {
             }
 
             order.coordinate = order.ships.stream().findAny().map(Ship::getCoordinate).orElse(null);
-            final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate() == order.coordinate);
+            final boolean sameSector = order.ships.stream().allMatch(attacker -> attacker.getCoordinate().equals(order.coordinate));
             if (!sameSector) {
                 order.addError("Attackers not all in same sector");
                 order.ships.clear();
@@ -121,7 +122,7 @@ public class FireOrder extends ShipBasedOrder {
         final var builder = FireOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.FIRE, builder);
         return builder
-             .targets(getTurnDataListFromJsonNode(node, turnData::getEmpire))
+             .targets(getTurnDataListFromJsonNode(node.get("targets"), turnData::getEmpire))
              .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
              .ascending(getBoolean(node, "ascending"))
              .build();

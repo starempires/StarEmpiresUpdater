@@ -52,17 +52,18 @@ public abstract class ShipBasedOrder extends Order {
      * @return
      */
     protected static List<Ship> getShipsFromNames(final Empire empire, final String text, final Order order) {
-        final String[] shipNames = text.split(SPACE_REGEX);
         final List<Ship> ships = Lists.newArrayList();
-        for (String shipName : shipNames) {
-            final Ship ship = empire.getShip(shipName);
-            if (ship == null) {
-                order.addError(shipName, "Unknown ship");
-            }
-            else if (!ship.isAlive()) {
-                order.addError(ship, "Ship is destroyed");
-            } else {
-                ships.add(ship);
+        if (text != null) {
+            final String[] shipNames = text.split(SPACE_REGEX);
+            for (String shipName : shipNames) {
+                final Ship ship = empire.getShip(shipName);
+                if (ship == null) {
+                    order.addError(shipName, "Unknown ship");
+                } else if (!ship.isAlive()) {
+                    order.addError(ship, "Ship is destroyed");
+                } else {
+                    ships.add(ship);
+                }
             }
         }
         return ships;

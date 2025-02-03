@@ -56,7 +56,7 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
                 scanEmpires.remove(empire);
                 scanEmpires.forEach(scanEmpire -> {
                     final World world = turnData.getWorld(coordinate);
-                    if (world.isOwned()) {
+                    if (world != null && world.isOwned()) {
                         knownEmpires.add(world.getOwner());
                     }
                     final Collection<Ship> sectorShips = scanEmpire.getShips(coordinate);
@@ -65,6 +65,9 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
                 });
             });
         });
+        final Set<Empire> existingKnownEmpires = empire.getKnownEmpires();
+        knownEmpires.removeAll(existingKnownEmpires);
+        knownEmpires.forEach(knownEmpire -> addNews(empire, "You are now in message contact with empire " + knownEmpire));
         empire.addKnownEmpires(knownEmpires);
     }
 

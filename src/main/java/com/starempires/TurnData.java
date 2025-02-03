@@ -201,6 +201,17 @@ public class TurnData {
         return portalCoordinates.get(coordinate);
     }
 
+    public MappableObject getMappableObject(final Coordinate coordinate) {
+        MappableObject object = getWorld(coordinate);
+        if (object == null) {
+            object = getPortals(coordinate).stream().findFirst().orElse(null);
+        }
+        if (object == null) {
+            object = getStorms(coordinate).stream().findFirst().orElse(null);
+        }
+        return object;
+    }
+
     public Empire getEmpire(final String name) {
         return empireNames.get(name);
     }

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 public class BuildOrder extends WorldBasedOrder {
 
-    //BUILD world {number|REMAINING} design [name* | name1 name2 …]
+    //BUILD world {number|max} design [name* | name1 name2 …]
 
     final static private String NAMES_GROUP = "names";
     final static private String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";

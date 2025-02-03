@@ -22,7 +22,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
             ship.applyDamageAccrued(ShipCondition.DESTROYED_IN_COMBAT);
             if (!ship.isOneShot()) {
                 final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;
-                addNews(ship.getOwner(), String.format("Ship %s now at %f%% OR ", ship, opRating));
+                addNews(ship.getOwner(), String.format("Ship %s now at %.1f%% OR ", ship, opRating));
                 ship.applyDamageAccrued(destroyedCondition);
             }
         });

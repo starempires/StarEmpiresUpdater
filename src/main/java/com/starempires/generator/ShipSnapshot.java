@@ -91,10 +91,11 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .name(ship.getName())
                     .owner(ship.getOwner().getName())
                     .shipClass(ship.getShipClass().getName())
-                    .opRating(ship.getOperationRating())
+                    .hull(ship.getShipClass().getHullType())
                     .conditions(ship.getConditions())
                     .dpRemaining(dpRemaining)
                     .opRating(opRating)
+                    .tonnage(ship.getShipClass().getTonnage())
                     .build();
         }
         else if (empire.getScanStatus(coordinate) == ScanStatus.SCANNED) {
@@ -105,6 +106,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                         .name(ship.getName())
                         .owner(ship.getOwner().getName())
                         .shipClass(ship.getShipClass().getName())
+                        .tonnage(ship.getShipClass().getTonnage())
                         .build();
             }
         }

@@ -29,6 +29,7 @@ public class EstablishProhibitionsPhaseUpdater extends PhaseUpdater {
         worlds.sort(OwnableObject.OWNER_COMPARATOR);
 
         worlds.forEach(world -> {
+            world.setProhibition(Prohibition.NONE); // clear existing prohibitions
             if (world.isOwned()) {
                 final Set<Ship> starbases = turnData.getStarbases(world);
                 if (CollectionUtils.isEmpty(starbases)) {
