@@ -33,7 +33,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
             if (!ship.hasCondition(ShipCondition.SELF_DESTRUCTED)) {
                 ship.inflictCombatDamage(damage);
                 final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
-                addNews(newsEmpires, "Ship " + ship + " receives " + damage + " collateral damage.");
+                addNews(newsEmpires, "%s ship %s received %d collateral damage".formatted(ship.getOwner(), ship, damage));
             }
         });
     }
@@ -67,7 +67,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
                     final Coordinate coordinate = ship.getCoordinate();
                     final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(coordinate);
                     addNewsResult(order, newsEmpires,
-                            "Ship " + ship + " (" + plural(ship.getTonnage(), "tonne") + ") self-destructed.");
+                            "%s ship %s (%s) self destructed".formatted(ship.getOwner(), ship, plural(ship.getTonnage(), "tonne")));
 
                     selfDestructs.put(coordinate, ship);
 
@@ -76,7 +76,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
                     for (Ship cargo: cargos) {
                         selfDestructs.put(coordinate, cargo);
                         addNewsResult(order, newsEmpires,
-                                "Loaded cargo " + cargo + " (" + plural(cargo.getTonnage(), "tonne") + ") self-destructed.");
+                                "Loaded cargo %s (%s) self destructed".formatted(cargo, plural(cargo.getTonnage(), "tonne")));
                     }
                 }
             };

@@ -75,7 +75,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
             final Collection<Storm> storms = entry.getValue();
             final int totalRating = storms.stream().mapToInt(Storm::getRating).sum();
             if (totalRating > 0) {
-                // get starbases within
+                // get starbases within range
                 final Set<Coordinate> surroundingCoordinates = Coordinate.getSurroundingCoordinates(coordinate, STARBASE_PROTECTION_RANGE);
                 final Set<Ship> starbases = Sets.newHashSet();
                 surroundingCoordinates.forEach(c -> starbases.addAll(turnData.getStarbases(c)));

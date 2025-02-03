@@ -19,7 +19,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Ship> damagedShips = turnData.shipsDamagedThisTurn();
         damagedShips.forEach(ship -> {
-            ship.applyDamageAccrued(ShipCondition.DESTROYED_IN_COMBAT);
+            ship.applyDamageAccrued(this.destroyedCondition);
             if (!ship.isOneShot()) {
                 final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;
                 addNews(ship.getOwner(), String.format("Ship %s now at %.1f%% OR ", ship, opRating));

@@ -1,6 +1,7 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
@@ -13,18 +14,19 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class DestructOrder extends ShipBasedOrder {
 
-    final static private Pattern PATTERN = Pattern.compile(SHIP_LIST_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
+    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX;
+    final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     public static DestructOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final DestructOrder order = DestructOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.DESTRUCT)
                 .parameters(parameters)
+                .ships(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String destructNamesText = matcher.group(SHIP_LIST_GROUP);
-            final List<Ship> destructors = getShipsFromNames(empire, destructNamesText, order);
+            final List<Ship> destructors = getLocationShips(empire, matcher, order);
             for (final Ship ship : destructors) {
                 if (ship.isStarbase()) {
                     order.addError(ship, "Starbase cannot be self-destructed");
