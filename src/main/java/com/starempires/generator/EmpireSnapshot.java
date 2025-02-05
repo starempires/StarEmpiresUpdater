@@ -24,6 +24,8 @@ import java.util.Set;
 @JsonPropertyOrder(alphabetic = true)
 public class EmpireSnapshot extends IdentifiableObjectSnapshot {
 
+    @JsonProperty("session")
+    final private String session;
     @JsonProperty("abbreviation")
     final private String abbreviation;
     @JsonProperty("radius")

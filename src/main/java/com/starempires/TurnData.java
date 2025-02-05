@@ -464,8 +464,12 @@ public class TurnData {
         return missileGuns;
     }
 
-    public List<Ship> shipsDamagedThisTurn() {
-        return getAllShips().stream().filter(Ship::hasReceivedDamage).collect(Collectors.toList());
+    public List<Ship> shipsCombatDamagedThisTurn() {
+        return getAllShips().stream().filter(Ship::hasReceivedCombatDamage).collect(Collectors.toList());
+    }
+
+    public List<Ship> shipsStormDamagedThisTurn() {
+        return getAllShips().stream().filter(Ship::hasReceivedStormDamage).collect(Collectors.toList());
     }
 
     @JsonProperty("empires")

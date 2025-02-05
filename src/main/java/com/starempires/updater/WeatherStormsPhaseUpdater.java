@@ -92,7 +92,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                 });
 
                 final Collection<Ship> allShields = turnData.getDeployedDevices(coordinate, DeviceType.ION_SHIELD);
-                allShields.removeIf(Ship::hasAccruedDamageExceededRemainingDp);
+                allShields.removeIf(Ship::hasAccruedTotalDamageExceededRemainingDp);
                 final Multimap<Empire, Ship> shieldsByEmpire = HashMultimap.create();
                 allShields.forEach(shield -> shieldsByEmpire.put(shield.getOwner(), shield));
 

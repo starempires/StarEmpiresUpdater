@@ -148,6 +148,7 @@ public class SnapshotGenerator {
         final int radius = empire.computeMaxScanExtent();
         // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
         final EmpireSnapshot empireSnapshot = EmpireSnapshot.builder()
+                .session(turnData.getSession())
                 .abbreviation(empire.getAbbreviation())
                 .name(empire.getName())
                 .radius(radius)

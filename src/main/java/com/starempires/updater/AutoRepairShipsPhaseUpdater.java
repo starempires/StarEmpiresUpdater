@@ -15,7 +15,8 @@ public class AutoRepairShipsPhaseUpdater extends PhaseUpdater {
     @Override
     public void update() {
         final Collection<Ship> ships = turnData.getAllShips();
-        ships.forEach(ship -> {
+        ships.stream().filter(Ship::isRepairable)
+                .forEach(ship -> {
             final int repaired = ship.getAutoRepair();
             if (repaired > 0) {
                 final Collection<Empire> empires = turnData.getEmpiresPresent(ship);

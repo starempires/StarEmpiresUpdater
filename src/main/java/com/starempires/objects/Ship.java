@@ -42,7 +42,9 @@ public class Ship extends OwnableObject {
     private final Set<Ship> cargo = Sets.newHashSet();
     /** damage accrued thus turn by this ship */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    private int damageAccrued;
+    private int combatDamageAccrued;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private int stormDamageAccrued;
     /** the ShipClass of this ship */
     @JsonSerialize(using = IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = DeferredIdentifiableObjectDeserializer.class)
@@ -85,7 +87,7 @@ public class Ship extends OwnableObject {
                   @JsonProperty("turnBuilt") final int turnBuilt,
                   @JsonProperty("serialNumber") final String serialNumber,
                   @JsonProperty("dpRemaining") final int dpRemaining,
-                 @JsonProperty("publicTransponder") final boolean publicTransponder) {
+                  @JsonProperty("publicTransponder") final boolean publicTransponder) {
         this (name, new Coordinate(oblique, y), null, turnBuilt, serialNumber, dpRemaining, null, null, publicTransponder);
     }
 
@@ -165,25 +167,27 @@ public class Ship extends OwnableObject {
         }
     }
 
-    private void inflictDamage(final int damage) {
-        damageAccrued += damage;
-    }
-
     public void inflictCombatDamage(final int damage) {
-        inflictDamage(damage);
+        combatDamageAccrued += damage;
         addCondition(ShipCondition.HIT_IN_COMBAT);
     }
 
     public void inflictStormDamage(final int damage) {
-        inflictDamage(damage);
+        stormDamageAccrued += damage;
         addCondition(ShipCondition.DAMAGED_BY_STORM);
     }
 
-    public void applyDamageAccrued(final ShipCondition destroyedCondition) {
-        dpRemaining -= damageAccrued;
+    public void applyCombatDamageAccrued(final ShipCondition destroyedCondition) {
+        dpRemaining -= combatDamageAccrued;
         if (dpRemaining <= 0) {
             destroy(destroyedCondition);
-            dpRemaining = 0;
+        }
+    }
+
+    public void applyStormDamageAccrued(final ShipCondition destroyedCondition) {
+        dpRemaining -= stormDamageAccrued;
+        if (dpRemaining <= 0) {
+            destroy(destroyedCondition);
         }
     }
 
@@ -369,17 +373,21 @@ public class Ship extends OwnableObject {
         return shipClass.isPortalHammer();
     }
 
-    public boolean hasReceivedDamage() {
-        return damageAccrued > 0;
+    public boolean hasReceivedCombatDamage() {
+        return combatDamageAccrued > 0;
     }
 
-    public boolean hasAccruedDamageExceededRemainingDp() {
-        return damageAccrued > dpRemaining;
+    public boolean hasReceivedStormDamage() {
+        return stormDamageAccrued > 0;
+    }
+
+    public boolean hasAccruedTotalDamageExceededRemainingDp() {
+        return combatDamageAccrued + stormDamageAccrued > dpRemaining;
     }
 
     @JsonIgnore
     public boolean isRepairable() {
-        return getMaxRepairAmount() > 0;
+        return isAlive() && getMaxRepairAmount() > 0;
     }
 
     @JsonIgnore
