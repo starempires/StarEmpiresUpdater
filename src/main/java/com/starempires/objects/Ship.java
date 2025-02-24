@@ -177,17 +177,17 @@ public class Ship extends OwnableObject {
         addCondition(ShipCondition.DAMAGED_BY_STORM);
     }
 
-    public void applyCombatDamageAccrued(final ShipCondition destroyedCondition) {
+    public void applyCombatDamageAccrued() {
         dpRemaining -= combatDamageAccrued;
         if (dpRemaining <= 0) {
-            destroy(destroyedCondition);
+            destroy(ShipCondition.DESTROYED_IN_COMBAT);
         }
     }
 
-    public void applyStormDamageAccrued(final ShipCondition destroyedCondition) {
+    public void applyStormDamageAccrued() {
         dpRemaining -= stormDamageAccrued;
         if (dpRemaining <= 0) {
-            destroy(destroyedCondition);
+            destroy(ShipCondition.DESTROYED_BY_STORM);
         }
     }
 
@@ -335,14 +335,18 @@ public class Ship extends OwnableObject {
 
     public void repair(final int amount) {
         dpRemaining = Math.min(getDp(), dpRemaining + amount);
+        addCondition(ShipCondition.REPAIRED);
     }
 
     @JsonIgnore
-    public int getAutoRepair() {
+    public int autoRepair() {
         int ar = 0;
         if (isAlive()) {
             ar = Math.min(getAr(), getMaxRepairAmount());
-            repair(ar);
+            if (ar > 0) {
+                repair(ar);
+                addCondition(ShipCondition.AUTO_REPAIRED);
+            }
         }
         return ar;
     }

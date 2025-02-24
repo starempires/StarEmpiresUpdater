@@ -9,6 +9,7 @@ import com.starempires.orders.OrderType;
 import com.starempires.orders.PoolOrder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.starempires.objects.IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR;
@@ -29,11 +30,11 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
             if (!poolWorld.isOwnedBy(empire)) {
                 addNewsResult(order, "You do not own world " + poolWorld);
             } else {
-                final List<World> exceptWorlds = order.getExceptedWorlds();
-                exceptWorlds.forEach(exceptWorld -> {
-                    if (!exceptWorld.isOwnedBy(empire)) {
-                        addNewsResult(order, empire, "You do not own world " + exceptWorld);
-                        exceptWorlds.remove(exceptWorld);
+                final List<World> exceptWorlds = Optional.ofNullable(order.getExceptedWorlds()).orElse(List.of());
+                exceptWorlds.forEach(world -> {
+                    if (!world.isOwnedBy(empire)) {
+                        addNewsResult(order, "You do not own world " + world);
+                        order.getExceptedWorlds().remove(world);
                     }
                 });
 

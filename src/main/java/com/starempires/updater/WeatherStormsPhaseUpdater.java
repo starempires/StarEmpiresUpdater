@@ -41,7 +41,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         super(Phase.WEATHER_STORMS, turnData);
     }
 
-    protected int degradeShields(final Collection<Ship> shields, final int totalRating, final Collection<Empire> empires) {
+    private int degradeShields(final Collection<Ship> shields, final int totalRating, final Collection<Empire> empires) {
         if (shields.isEmpty()) {
             return totalRating;
         }

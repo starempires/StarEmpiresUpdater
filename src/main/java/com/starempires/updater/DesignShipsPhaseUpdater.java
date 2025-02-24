@@ -47,22 +47,14 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
         final int cost = hullParameters.getCost(order.getGuns(), order.getDp(), order.getEngines(), order.getScan(), order.getRacks());
         final int tonnage = hullParameters.getTonnage(order.getGuns(), order.getDp(), order.getEngines(), order.getScan(), order.getRacks());
         final int ar = Math.max(1, Math.round(order.getDp() * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
-        final int designCost = Math.min(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
+        final int designCost = Math.max(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
 
         final World world = order.getWorld();
         final Empire empire = order.getEmpire();
-        if (!world.isOwnedBy(empire)) {
-            addNewsResult(order, empire, "You do not own world " + world);
-            return;
-        }
-        if (world.isInterdicted()) {
-            addNewsResult(order, empire, "World " + world + " is interdicted; no designs possible.");
-            return;
-        }
 
         int stockpile = world.getStockpile();
         if (designCost > stockpile) {
-            addNewsResult(order, "World " + world + " has insufficient stockpile to pay design fee " + designCost + " RU.");
+            addNewsResult(order, "World %s has insufficient stockpile (%d) to pay design fee %d".formatted(world, stockpile, designCost));
             return;
         }
 
@@ -91,6 +83,17 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.DESIGN);
         orders.forEach(o -> {
             final DesignOrder order = (DesignOrder) o;
+            final World world = order.getWorld();
+            final Empire empire = order.getEmpire();
+            if (!world.isOwnedBy(empire)) {
+                addNewsResult(order, empire, "You do not own world %s".formatted(world));
+                return;
+            }
+            if (world.isInterdicted()) {
+                addNewsResult(order, empire, "World %s is interdicted; no designs possible".formatted(world));
+                return;
+            }
+
             if (order.getHullType() == HullType.MISSILE) {
                 designMissile(order);
             } else {

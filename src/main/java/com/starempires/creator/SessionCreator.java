@@ -48,8 +48,6 @@ import static com.starempires.objects.Coordinate.COORDINATE_COMPARATOR;
 @Log4j2
 public class SessionCreator {
 
-    private static final String TEXT_EXTENSION = ".txt";
-    private static final String JSON_EXTENSION = ".json";
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private String sessionName;

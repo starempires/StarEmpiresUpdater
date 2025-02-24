@@ -3,12 +3,12 @@ package com.starempires.updater;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
-import com.starempires.objects.ShipClass;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.ToggleOrder;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ToggleTransponderModesPhaseUpdater extends PhaseUpdater {
 
@@ -20,22 +20,26 @@ public class ToggleTransponderModesPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.TOGGLE);
         orders.forEach(o -> {
-            final ToggleOrder order = (ToggleOrder)o;
+            final ToggleOrder order = (ToggleOrder) o;
             final boolean publicMode = order.isPublicMode();
             final String modeText = publicMode ? "public" : "private";
             final Empire empire = order.getEmpire();
-            for (ShipClass shipClass: order.getShipClasses()) {
-                final List<Ship> shipsOfClass = empire.getShips(shipClass).stream().filter(Ship::isAlive).toList();
-                shipsOfClass.forEach(s -> s.toggleTransponder(publicMode));
-                addNewsResult(order, "Transponder set to %s mode on %d %s-class %s".formatted(modeText, shipsOfClass.size(), shipClass, plural(shipsOfClass.size(), "ship")));
-            }
+            Optional.ofNullable(order.getShipClasses())
+                    .orElse(List.of())
+                    .forEach(shipClass -> {
+                        final int toggleCount = (int)empire.getShips(shipClass)
+                                .stream()
+                                .filter(Ship::isAlive)
+                                .peek(ship -> ship.toggleTransponder(publicMode))
+                                .count();
+                        addNewsResult(order, "Transponder set to %s mode on %d %s-class %s".formatted(modeText, toggleCount, shipClass, plural(toggleCount, "ship")));
+                    });
 
-            for (Ship ship: order.getShips()) {
+            for (Ship ship : order.getShips()) {
                 if (ship.isAlive()) {
                     ship.toggleTransponder(publicMode);
                     addNewsResult(order, "Transponder set to %s mode on %s".formatted(modeText, ship));
-                }
-                else {
+                } else {
                     addNewsResult(order, "Ship %s is destroyed".formatted(ship));
                 }
             }

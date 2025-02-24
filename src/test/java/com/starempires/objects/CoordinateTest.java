@@ -60,8 +60,7 @@ public class CoordinateTest {
         assertEquals(1, Coordinate.distance(c2, new Coordinate(2, 1)));
         assertEquals(2, Coordinate.distance(c2, new Coordinate(2, -1)));
         final Coordinate c = new Coordinate(1,1);
-        final Set<Coordinate> ring = Coordinate.getSurroundingCoordinates(new Coordinate(1,1), 1);
-        ring.remove(c);
+        final Set<Coordinate> ring = Coordinate.getSurroundingCoordinatesWithoutOrigin(new Coordinate(1,1), 1);
         for (final Coordinate coord: ring) {
             assertEquals(1, Coordinate.distance(c, coord));
         }

@@ -25,9 +25,12 @@ public class CollectScanDataPhaseUpdater extends PhaseUpdater {
 
     private void addShipScanData(final Empire empire) {
         final Collection<Ship> ships = empire.getShips();
-        ships.stream().filter(ship -> !ship.isLoaded()).forEach(ship -> {
+        ships.stream()
+                .filter(ship -> !ship.isLoaded()) // loaded ships collect no scan data
+                .filter(Ship::isAlive) // destroyed ships collect no scan data
+                .forEach(ship -> {
             int scan = 0;
-            if (ship.isAlive() && !turnData.isInNebula(ship)) {
+            if (!turnData.isInNebula(ship)) {
                 scan = ship.getAvailableScan();
             }
             final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan);

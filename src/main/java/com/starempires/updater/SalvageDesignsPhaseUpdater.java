@@ -8,7 +8,10 @@ import com.starempires.objects.ShipClass;
 import com.starempires.objects.SitRep;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.starempires.objects.IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR;
 
@@ -20,15 +23,6 @@ public class SalvageDesignsPhaseUpdater extends PhaseUpdater {
         super(Phase.SALVAGE_DESIGNS, turnData);
     }
 
-    private void salvage(final Ship ship, final Empire salvagingEmpire) {
-        final ShipClass shipClass = ship.getShipClass();
-        if (!salvagingEmpire.isKnownShipClass(shipClass)) {
-            salvagingEmpire.addKnownShipClass(shipClass);
-            addNews(salvagingEmpire, "You salvaged the design for the " + ship.getOwner() + " ship class "
-                    + shipClass + " from the debris of ship " + ship);
-        }
-    }
-
     @Override
     public void update() {
         final List<Ship> possibleSalvages = Lists.newArrayList(turnData.getPossibleSalvages());
@@ -38,15 +32,31 @@ public class SalvageDesignsPhaseUpdater extends PhaseUpdater {
             final List<SitRep> sitReps = empires.stream()
                     .map(empire -> turnData.getSitRep(empire, ship.getCoordinate()))
                     .toList();
-            final int salvageDp = sitReps.stream()
-                    .filter(sitRep -> sitRep.getEmpire().equals(ship.getOwner()))
-                    .findFirst()
-                    .map(SitRep::getFriendlyDp).orElse(0);
-            final SitRep winner = sitReps.stream()
-                    .filter(sitRep -> !sitRep.getEmpire().equals(ship.getOwner())).min((sr1, sr2) -> Integer.compare(sr1.getFriendlyGuns(), sr2.getFriendlyGuns())).orElse(null);
+            SitRep winner = sitReps.stream()
+                    .collect(Collectors.groupingBy(SitRep::getFriendlyGuns))
+                    .entrySet().stream()
+                    .max(Comparator.comparingInt(Map.Entry::getKey))
+                    .filter(entry -> entry.getValue().size() == 1)
+                    .map(entry -> entry.getValue().get(0))
+                    .orElse(null);
             if (winner != null) {
+                final int salvageDp = sitReps.stream()
+                        .filter(sitRep -> sitRep.getEmpire().equals(ship.getOwner()))
+                        .mapToInt(SitRep::getFriendlyDp)
+                        .max()
+                        .orElse(0);
                 if (winner.getFriendlyGuns() > SALVAGE_THRESHOLD * salvageDp) {
-                    salvage(ship, winner.getEmpire());
+                    final Empire salvagingEmpire = winner.getEmpire();
+                    final ShipClass shipClass = ship.getShipClass();
+                    if (!salvagingEmpire.isKnownShipClass(shipClass)) {
+                        salvagingEmpire.addKnownShipClass(shipClass);
+                        addNews(salvagingEmpire, "You salvaged the design for the %s ship class %s from the debris of ship %s"
+                                .formatted(ship.getOwner(), ship.getShipClass(), ship));
+                        final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
+                        newsEmpires.remove(salvagingEmpire);
+                        addNews(newsEmpires, "%s salvaged the design for the %s ship class %s from the debris of ship %s"
+                                .formatted(salvagingEmpire, ship.getOwner(), ship.getShipClass(), ship));
+                    }
                 }
             }
         });

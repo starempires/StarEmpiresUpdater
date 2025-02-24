@@ -23,9 +23,6 @@ public abstract class DetermineOwnershipPhaseUpdater extends PhaseUpdater {
         for (World world : turnData.getAllWorlds()) {
             final Set<Empire> empires = Sets.newHashSet();
             final Empire currentOwner = world.getOwner();
-            if (currentOwner != null) {
-                empires.add(currentOwner);
-            }
             final Collection<Ship> ships = turnData.getLiveShips(world);
             final Set<Empire> conqueringEmpires = ships.stream().filter(Ship::isConqueringShip)
                     .map(OwnableObject::getOwner)
@@ -34,7 +31,7 @@ public abstract class DetermineOwnershipPhaseUpdater extends PhaseUpdater {
 
             final Empire newOwner;
             if (empires.isEmpty()) { // no conquering ships -- no owner
-                newOwner = null;
+                newOwner = currentOwner;
             }
             else if (empires.size() == 1) { // lone empire present becomes new owner
                 newOwner = empires.stream().findFirst().get();

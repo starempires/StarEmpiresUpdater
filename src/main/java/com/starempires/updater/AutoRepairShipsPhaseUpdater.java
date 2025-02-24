@@ -17,7 +17,7 @@ public class AutoRepairShipsPhaseUpdater extends PhaseUpdater {
         final Collection<Ship> ships = turnData.getAllShips();
         ships.stream().filter(Ship::isRepairable)
                 .forEach(ship -> {
-            final int repaired = ship.getAutoRepair();
+            final int repaired = ship.autoRepair();
             if (repaired > 0) {
                 final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
                 addNews(empires, "Ship " + ship + " auto-repaired " + repaired + " DP.");

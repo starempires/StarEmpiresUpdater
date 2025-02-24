@@ -37,42 +37,47 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
         repairOrbitalCargo();
         final List<Order> orders = turnData.getOrders(OrderType.REPAIR);
         orders.forEach(o -> {
-            RepairOrder order = (RepairOrder) o;
+            final RepairOrder order = (RepairOrder) o;
             final Empire empire = order.getEmpire();
-            final Ship ship = order.getShip();
+            final Ship ship = order.getShips().get(0);
             final List<World> worlds = order.getWorlds();
-            final int dpToRepair = order.getDpToRepair();
             if (!ship.isAlive()) {
-                addNewsResult(order, empire, "Ship " + ship + " has been destroyed.");
-            } else if (ship.isRepairable()) {
-                addNewsResult(order, empire, "Ship " + ship + " needs no repairs.");
+                addNewsResult(order, "Ship " + ship + " has been destroyed.");
+            } else if (!ship.isRepairable()) {
+                addNewsResult(order, "Ship " + ship + " needs no repairs.");
             } else {
                 for (World world: worlds) {
-                    if (!world.getOwner().equals(empire)) {
-                        addNewsResult(order, empire, "You do not own world " + world);
+                    if (!world.isOwnedBy(empire)) {
+                        addNewsResult(order, "You do not own world " + world);
                     } else if (world.isInterdicted()) {
-                        addNewsResult(order, empire, "World " + world + " is interdicted; no repairs possible.");
+                        addNewsResult(order, "World " + world + " is interdicted; no repairs possible.");
                     } else if (world.isBlockaded() && !ship.isSameSector(world)) {
-                        addNewsResult(order, empire, "World " + world + " is blockaded; no offworld repairs possible.");
+                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible.");
+                    } else if (world.getStockpile() < 1) {
+                        addNewsResult(order, "No RUs stockpiled at world " + world);
+                    } else if (world.isBlockaded() && !ship.isSameSector(world)) {
+                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible.");
                     } else {
-                        final int dpPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
-                        final int stockpile = world.getStockpile();
-                        if (stockpile >= dpPerRU) {
-                            final int maxRepair = ship.getMaxRepairAmount();
-                            final int paidRepairs = dpToRepair * dpPerRU;
-                            final int amountToRepair = Math.min(maxRepair, paidRepairs);
-                            final int fee = (int) Math.min(stockpile, Math.ceil((double)amountToRepair / dpPerRU));
-                            ship.repair(amountToRepair);
-                            final Collection<Empire> newEmpires = turnData.getEmpiresPresent(ship);
-                            newEmpires.remove(empire);
-                            final int remaining = world.adjustStockpile(-fee);
-                            addNewsResult(order, "You repaired " + amountToRepair + " DP on ship " + ship
-                                            + " (" + fee + " RU fee; " + remaining + " remaining)");
-                            addNewsResult(order, newEmpires, empire + " repaired " + amountToRepair + " DP on ship " + ship);
-                        } else {
-                            addNewsResult(order, empire, "Insufficient stockpile (" + stockpile
-                                    + ") on world " + world + "; no repairs possible");
+                        int dpToRepair = order.getDpToRepair();
+                        final int maxRepair = ship.getMaxRepairAmount();
+                        if (maxRepair < dpToRepair) {
+                            addNewsResult(order, "Ship %s needs only %d DP repaired".formatted(ship, maxRepair));
+                            dpToRepair = maxRepair;
                         }
+                        final int dpRepairedPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
+                        final int stockpile = world.getStockpile();
+                        int fee = (int)Math.ceil((double)dpToRepair / dpRepairedPerRU);
+                        if (stockpile < fee) {
+                            fee = stockpile;
+                            dpToRepair = fee * dpRepairedPerRU;
+                            addNewsResult(order, "World %s can fund only %d repairs".formatted(world, dpToRepair));
+                        }
+                        ship.repair(dpToRepair);
+                        final int remaining = world.adjustStockpile(-fee);
+                        final Collection<Empire> newEmpires = turnData.getEmpiresPresent(ship);
+                        newEmpires.remove(empire);
+                        addNewsResult(order, "World %s repaired %d DP on ship %s (%d RU spent; %d remaining)".formatted(world, dpToRepair, ship, fee, remaining));
+                        addNewsResult(order, newEmpires, "%s repaired %d DP on ship %s".formatted(empire, dpToRepair, ship));
                     }
                 }
             }

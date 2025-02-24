@@ -17,8 +17,6 @@ import com.starempires.objects.EmpireType;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.HullType;
 import com.starempires.objects.MappableObject;
-import com.starempires.orders.Order;
-import com.starempires.orders.OrderType;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
@@ -26,6 +24,8 @@ import com.starempires.objects.ShipCondition;
 import com.starempires.objects.SitRep;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
 import com.starempires.updater.Phase;
 import lombok.Builder;
 import lombok.Getter;
@@ -273,9 +273,15 @@ public class TurnData {
     }
 
     public Set<Empire> getEmpiresPresent(final Coordinate coordinate) {
-        return getActiveEmpires().stream()
+        final Set<Empire> empiresPresent = Sets.newHashSet();
+        empiresPresent.addAll(getActiveEmpires().stream()
                 .filter(empire -> !empire.getShips(coordinate).isEmpty())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
+        final World world = getWorld(coordinate);
+        if (world != null && world.isOwned()) {
+            empiresPresent.add(world.getOwner());
+        }
+        return empiresPresent;
     }
 
     public int getIntParameter(final String parameter, final int defaultValue) {
@@ -454,14 +460,6 @@ public class TurnData {
         return shipClassNames.stream().map(this::getShipClass)
                 .filter(Objects::nonNull).filter(empire::isKnownShipClass)
                 .collect(Collectors.toList());
-    }
-
-    public int fireMissile(Ship missile, Ship target) {
-        final int missileGuns = missile.getAvailableGuns();
-        target.inflictCombatDamage(missileGuns);
-        missile.fireGuns(missileGuns);
-        missile.destroy(ShipCondition.DESTROYED_IN_COMBAT);
-        return missileGuns;
     }
 
     public List<Ship> shipsCombatDamagedThisTurn() {

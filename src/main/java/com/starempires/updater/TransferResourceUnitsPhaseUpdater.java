@@ -38,9 +38,11 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             if (!toWorld.isOwnedBy(toEmpire)) {
                 if (toEmpire.equals(empire)) {
                     addNewsResult(order, "You do not own world " + toWorld);
+                    return;
                 }
                 else {
                     addNewsResult(order, "World " + toWorld + " is not owned by intended recipient " + toEmpire);
+                    return;
                 }
             }
 

@@ -25,10 +25,10 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
         for (final Ship mover : possibleMovers) {
             if (!mover.isAlive()) {
                 order.addResult("Omitting destroyed ship %s".formatted(mover));
-            } else if (mover.isLoaded()) {
-                order.addResult("Omitting loaded ship %s".formatted(mover));
             } else if (mover.getGunsActuallyFired() > 0) {
-                order.addResult("Omitting attacking ship %s".formatted(mover));
+                order.addResult("Attacking ship %s cannot move".formatted(mover));
+            } else if (mover.isLoaded()) {
+                order.addResult("Loaded cargo %s will move with carrier".formatted(mover));
             } else {
                 validMovers.add(mover);
             }

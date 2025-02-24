@@ -31,7 +31,6 @@ public class ConcealShipsPhaseUpdater extends TransponderChangesPhaseUpdater {
         orders.forEach(order -> {
             final Matcher matcher = CONCEAL_PATTERN.matcher(order.getParametersAsString());
             if (matcher.matches()) {
-                final Empire empire = order.getEmpire();
                 final List<String> shipHandles = Arrays.asList(matcher.group(SHIPS_GROUP).split(" "));
                 final List<String> empireNames = Arrays.asList(matcher.group(EMPIRES_GROUP).split(" "));
                 final List<Empire> transponderEmpires = getTransponderEmpires(order, empireNames);

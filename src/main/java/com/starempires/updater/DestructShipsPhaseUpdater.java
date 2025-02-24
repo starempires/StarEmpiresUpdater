@@ -55,7 +55,6 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
         final Multimap<Coordinate, Ship> selfDestructs = HashMultimap.create();
         orders.forEach(o -> {
             final DestructOrder order = (DestructOrder) o;
-            final Empire empire = order.getEmpire();
             for (Ship ship: order.getShips()) {
                 if (ship.isStarbase()) {
                     addNewsResult(order, "Starbase " + ship + " cannot be self-destructed.");

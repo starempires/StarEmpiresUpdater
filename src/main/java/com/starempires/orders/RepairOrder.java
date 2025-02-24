@@ -29,9 +29,6 @@ public class RepairOrder extends ShipBasedOrder {
     private static final String REGEX = SHIP_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + WORLD_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
-    private Ship ship;
     private int dpToRepair;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -44,6 +41,7 @@ public class RepairOrder extends ShipBasedOrder {
                 .empire(empire)
                 .parameters(parameters)
                 .worlds(Lists.newArrayList())
+                .ships(Lists.newArrayList())
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
@@ -67,7 +65,7 @@ public class RepairOrder extends ShipBasedOrder {
             if (ship.isLoaded() && ship.getCarrier().isOrbital()) {
                 order.addWarning(ship, "Orbital carrier %s will fully repair all cargo for free".formatted(ship.getShipClass()));
             }
-            order.ship = ship;
+            order.ships.add(ship);
             final int dpPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
 
             int dpToRepair;
@@ -81,6 +79,13 @@ public class RepairOrder extends ShipBasedOrder {
                 } else if (dpToRepair > ship.getMaxRepairAmount()) {
                     order.addWarning(ship, "Only %d DP currently needed".formatted(ship.getMaxRepairAmount()));
                     dpToRepair = ship.getMaxRepairAmount();
+                }
+                else {
+                    int remainder = dpToRepair % dpPerRU;
+                    if (remainder > 0)  {
+                        dpToRepair = Math.max(dpToRepair + remainder, ship.getMaxRepairAmount());
+                        order.addWarning(ship, "Rounding up repair amount for to %d DP".formatted(dpPerRU));
+                    }
                 }
             }
             order.dpToRepair = dpToRepair;
@@ -102,7 +107,7 @@ public class RepairOrder extends ShipBasedOrder {
                     if (dpToPay > 0) {
                         world.adjustStockpile(-dpToPay);
                         dpToRepair -= dpToPay;
-                        order.addResult("World %s repairing %d DP on ship %s (%d fee, %d RU remaining)".formatted(world, dpToPay * dpPerRU, ship, dpToPay, world.getStockpile()));
+                        order.addResult("World %s will repair %d DP on ship %s (%d fee, %d RU remaining)".formatted(world, dpToPay * dpPerRU, ship, dpToPay, world.getStockpile()));
                         order.worlds.add(world);
                     } else {
                         order.addWarning(world, "No further repairs needed");
@@ -126,7 +131,7 @@ public class RepairOrder extends ShipBasedOrder {
         final var builder = RepairOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.REPAIR, builder);
         return builder
-                .ship(turnData.getShip(getString(node, "ship")))
+                .ships(List.of(turnData.getShip(getString(node, "ship"))))
                 .dpToRepair(getInt(node, "dpToRepair"))
                 .worlds(getTurnDataListFromJsonNode(node, turnData::getWorld))
                 .build();

@@ -43,19 +43,24 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.TRAVERSE);
         orders.forEach(o -> {
             TraverseOrder order = (TraverseOrder) o;
-            final Empire empire = order.getEmpire();
             final List<Ship> ships = order.getShips();
             final List<Ship> traversers = Lists.newArrayList();
             for (Ship ship : ships) {
                 if (!ship.isAlive()) {
                     addNewsResult(order, "Omitting destroyed ship " + ship);
+                } else if (ship.getAvailableEngines() < 1) {
+                    order.addResult("Ship %s has no operational engines".formatted(ship));
                 } else if (ship.isLoaded()) {
-                    order.addResult("Omitting loaded ship %s".formatted(ship));
+                    order.addResult("Loaded cargo %s will move with carrier".formatted(ship));
                 } else if (ship.getGunsActuallyFired() > 0) {
-                    order.addResult("Omitting attacking ship %s".formatted(ship));
+                    order.addResult("Attacking ship %s cannot move".formatted(ship));
                 }
-                traversers.add(ship);
+                else {
+                    traversers.add(ship);
+                }
             }
+
+
 
             if (traversers.isEmpty()) {
                 addNewsResult(order, "No valid movers found");

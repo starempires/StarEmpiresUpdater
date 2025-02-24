@@ -183,6 +183,16 @@ public class Coordinate implements Comparable<Coordinate> {
         return rv;
     }
 
+    public static @NonNull Set<Coordinate> getSurroundingCoordinatesWithoutOrigin(final @NonNull MappableObject object, final int radius) {
+        return getSurroundingCoordinatesWithoutOrigin(object.getCoordinate(), radius);
+    }
+
+    public static @NonNull Set<Coordinate> getSurroundingCoordinatesWithoutOrigin(final @NonNull Coordinate coordinate, final int radius) {
+        final Set<Coordinate> coordinates = getSurroundingCoordinates(coordinate, radius);
+        coordinates.remove(coordinate);
+        return coordinates;
+    }
+
     public static @NonNull Set<Coordinate> getSurroundingCoordinates(final @NonNull MappableObject object, final int radius) {
         return getSurroundingCoordinates(object.getCoordinate(), radius);
     }
@@ -217,7 +227,7 @@ public class Coordinate implements Comparable<Coordinate> {
     /**
      * Return List of Coordinates in the hollow "ring" out from this Coordinate at the
      * given distance. The number of Coordinates in the ring will always be the distance * 6.
-     * 
+     *
      * @param distance
      *            The distance out from a center (0,0) Coordinate
      * @return The List of Coordinates in the given ring

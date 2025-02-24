@@ -49,7 +49,9 @@ public class LoadOrder extends ShipBasedOrder {
             } else {
                 final List<Ship> cargo = getShipsFromNames(empire, matcher.group(SHIP_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
-                    if (ship.isLoaded()) {
+                    if (ship.equals(cargo)) {
+                        order.addError(ship, "Cannot load ship onto itself");
+                    } else if (ship.isLoaded()) {
                         order.addError(ship, "Already loaded onto carrier %s".formatted(carrier));
                     } else if (!ship.isSameSector(carrier)) {
                         order.addError(ship, "Not in same sector as carrier %s".formatted(carrier));

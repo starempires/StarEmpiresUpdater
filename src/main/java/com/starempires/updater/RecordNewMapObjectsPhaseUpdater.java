@@ -2,11 +2,9 @@ package com.starempires.updater;
 
 import com.google.common.collect.Sets;
 import com.starempires.TurnData;
-import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Portal;
 import com.starempires.objects.ScanStatus;
-import com.starempires.objects.Ship;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
 
@@ -43,32 +41,31 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
     }
 
     private void addKnownEmpires(final Empire empire) {
-        final Collection<Ship> ships = empire.getShips();
-        final Set<Empire> knownEmpires = Sets.newHashSet();
-        ships.forEach(ship -> {
-            final Collection<Empire> shipEmpires = turnData.getEmpiresPresent(ship);
-            shipEmpires.remove(empire);
-            knownEmpires.addAll(shipEmpires);
-            final int scan = ship.getAvailableScan();
-            final Collection<Coordinate> coordinates = Coordinate.getSurroundingCoordinates(ship, scan);
-            coordinates.forEach(coordinate -> {
-                final Collection<Empire> scanEmpires = turnData.getEmpiresPresent(coordinate);
-                scanEmpires.remove(empire);
-                scanEmpires.forEach(scanEmpire -> {
+        final Set<Empire> newKnownEmpires = Sets.newHashSet();
+        empire.getScanCoordinates()
+                .stream()
+                .filter(coordinate -> empire.getScanStatus(coordinate).isMoreVisible(ScanStatus.STALE))
+                .forEach(coordinate -> {
                     final World world = turnData.getWorld(coordinate);
                     if (world != null && world.isOwned()) {
-                        knownEmpires.add(world.getOwner());
+                        newKnownEmpires.add(world.getOwner());
                     }
-                    final Collection<Ship> sectorShips = scanEmpire.getShips(coordinate);
-                    sectorShips.stream().filter(sectorShip -> sectorShip.isTransponderSet(empire))
-                            .forEach(sectorShip -> knownEmpires.add(scanEmpire));
+                    if (empire.getScanStatus(coordinate) == ScanStatus.VISIBLE) {
+                        newKnownEmpires.addAll(turnData.getEmpiresPresent(coordinate));
+                    } else {
+                        turnData.getLiveShips(coordinate)
+                                .stream()
+                                .filter(ship -> ship.isTransponderSet(empire))
+                                .forEach(ship -> {
+                                    newKnownEmpires.add(ship.getOwner());
+                                });
+                    }
                 });
-            });
-        });
         final Set<Empire> existingKnownEmpires = empire.getKnownEmpires();
-        knownEmpires.removeAll(existingKnownEmpires);
-        knownEmpires.forEach(knownEmpire -> addNews(empire, "You are now in message contact with empire " + knownEmpire));
-        empire.addKnownEmpires(knownEmpires);
+        newKnownEmpires.removeAll(existingKnownEmpires);
+        newKnownEmpires.remove(empire);
+        newKnownEmpires.stream().sorted().forEach(knownEmpire -> addNews(empire, "You are now in contact with empire " + knownEmpire));
+        empire.addKnownEmpires(newKnownEmpires);
     }
 
     @Override

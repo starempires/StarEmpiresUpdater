@@ -7,6 +7,7 @@ Celestial_Vortex
 Cosmic_Gale
 Eclipse_Torrent
 Flux_Spire
+Gargantua
 Gravity_Shroud
 Helix_Devastation
 Hyperion_Gust
