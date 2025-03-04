@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
-import com.starempires.dao.JsonStarEmpiresDAO;
+import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -33,9 +33,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -49,20 +46,24 @@ import static com.starempires.objects.Coordinate.COORDINATE_COMPARATOR;
 public class SessionCreator {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String COLORS_FILENAME = "Colors.txt";
+    private static final String PORTAL_NAMES_FILENAME = "PortalNames.txt";
+    private static final String WORLD_NAMES_FILENAME = "WorldNames.txt";
+    private static final String STORM_NAMES_FILENAME = "StormNames.txt";
+    private static final String NEBULA_NAMES_FILENAME = "NebulaNames.txt";
+    private static final String HULL_PARAMETERS_FILENAME = "HullParameters.json";
+    private static final String SHIP_CLASSES_FILENAME = "ShipClasses.json";
 
     private String sessionName;
-    private String dataDir;
-    private String sessionDir;
+    private String gameDataDir;
+    private String sessionsDir;
     private String configFile;
-    private String shipClassFile;
-    private String hullParametersFile;
 
     private final StarEmpiresDAO dao;
 
-    public List<String> loadItems(final String dir, final String file) throws IOException {
-        final Path path = FileSystems.getDefault().getPath(dir, file);
-        log.info("Loading data from {}", path);
-        return Files.readAllLines(path);
+    public List<String> loadGameDataItems(final String filename) throws IOException {
+        final String data = dao.loadGameData(filename);
+        return Lists.newArrayList(data.split("\n"));
     }
 
     private void extractCommandLineOptions(final String[] args) throws ParseException {
@@ -70,20 +71,16 @@ public class SessionCreator {
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt("session").hasArg().desc("session name").required().build());
             options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
-            options.addOption(Option.builder("d").argName("data dir").longOpt("datadir").hasArg().desc("data dir").required().build());
-            options.addOption(Option.builder("sd").argName("session dir").longOpt("sessiondir").hasArg().desc("session dir").required().build());
-            options.addOption(Option.builder("sc").argName("ship classes").longOpt("shipclasses").hasArg().desc("ship classes").required().build());
-            options.addOption(Option.builder("hp").argName("hull parameters").longOpt("hullparameters").hasArg().desc("hull parameters").required().build());
+            options.addOption(Option.builder("gd").argName("game data dir").longOpt("gamedatadir").hasArg().desc("game data dir").required().build());
+            options.addOption(Option.builder("sd").argName("sessions dir").longOpt("sessionsdir").hasArg().desc("sessions dir").required().build());
 
             final CommandLineParser parser = new DefaultParser();
             final CommandLine cmd = parser.parse(options, args);
             // Parse command-line arguments
             sessionName = cmd.getOptionValue("session");
-            dataDir = cmd.getOptionValue("datadir");
-            sessionDir = cmd.getOptionValue("sessiondir");
+            gameDataDir = cmd.getOptionValue("gamedatadir");
+            sessionsDir = cmd.getOptionValue("sessionsdir");
             configFile = cmd.getOptionValue("config");
-            shipClassFile = cmd.getOptionValue("shipclasses");
-            hullParametersFile = cmd.getOptionValue("hullparameters");
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("SessionCreator", options);
@@ -93,7 +90,8 @@ public class SessionCreator {
 
     public SessionCreator(final String[] args) throws ParseException, IOException {
         extractCommandLineOptions(args);
-        dao = new JsonStarEmpiresDAO(sessionDir);
+//        dao = new JsonStarEmpiresDAO(sessionsDir, gameDataDir);
+        dao = new S3StarEmpiresDAO(sessionsDir, gameDataDir);
     }
 
     private List<Coordinate> sortEdgeCoordinates(final List<Coordinate> coordinates) {
@@ -129,7 +127,8 @@ public class SessionCreator {
     }
 
     public TurnData createSession(final List<String> empireData) throws Exception {
-        final PropertiesUtil galaxyProperties = new PropertiesUtil(FileSystems.getDefault().getPath(dataDir, configFile));
+        final List<String> configData = loadGameDataItems(configFile);
+        final PropertiesUtil galaxyProperties = new PropertiesUtil(configData);
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
         final TurnData turnData = TurnData.builder()
              .radius(radius)
@@ -168,12 +167,12 @@ public class SessionCreator {
         final Empire gm = Empire.builder().name("GM").abbreviation("GM").empireType(EmpireType.GM).frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE).build();
 
         // create HullParameters
-        final String hullJson = Files.readString(FileSystems.getDefault().getPath(dataDir, hullParametersFile));
+        final String hullJson = dao.loadGameData(HULL_PARAMETERS_FILENAME);
         final List<HullParameters> hullParameters = MAPPER.readValue(hullJson, new TypeReference<List<HullParameters>>() { });
         turnData.addHullParameters(hullParameters);
 
         // create ShipClasses
-        final String shipClassJson = Files.readString(FileSystems.getDefault().getPath(dataDir, shipClassFile));
+        final String shipClassJson = dao.loadGameData(SHIP_CLASSES_FILENAME);
         final List<ShipClass> shipClasses = MAPPER.readValue(shipClassJson, new TypeReference<List<ShipClass>>() { });
         turnData.addShipClasses(shipClasses);
 
@@ -251,7 +250,7 @@ public class SessionCreator {
 
     private Map<String, String> loadDefaultColors() throws IOException {
         final Map<String, String> colors = Maps.newHashMap();
-        final List<String> list = loadItems(dataDir, "Colors.txt");
+        final List<String> list = loadGameDataItems(COLORS_FILENAME);
         list.forEach( line -> {
             final String[] parts = StringUtils.split(line.trim(), ":");
             colors.put(parts[0], parts[1]);
@@ -307,10 +306,10 @@ public class SessionCreator {
     }
 
     private Galaxy generateGalaxy(final PropertiesUtil galaxyProperties, final Map<Empire, EmpireCreation> empireCreations) throws IOException {
-        final List<String> portalNames = loadItems(dataDir, "PortalNames.txt");
-        final List<String> worldNames = loadItems(dataDir, "WorldNames.txt");
-        final List<String> stormNames = loadItems(dataDir, "StormNames.txt");
-        final List<String> nebulaNames = loadItems(dataDir, "NebulaNames.txt");
+        final List<String> portalNames = loadGameDataItems(PORTAL_NAMES_FILENAME);
+        final List<String> worldNames = loadGameDataItems(WORLD_NAMES_FILENAME);
+        final List<String> stormNames = loadGameDataItems(STORM_NAMES_FILENAME);
+        final List<String> nebulaNames = loadGameDataItems(NEBULA_NAMES_FILENAME);
 
         final Galaxy galaxy = new Galaxy(galaxyProperties);
         galaxy.initHomeworlds(empireCreations);

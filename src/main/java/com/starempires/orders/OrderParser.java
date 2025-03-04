@@ -2,7 +2,7 @@ package com.starempires.orders;
 
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
-import com.starempires.dao.JsonStarEmpiresDAO;
+import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Empire;
 import com.starempires.objects.HullParameters;
@@ -119,15 +119,14 @@ public class OrderParser {
 
     public OrderParser(final String[] args) throws ParseException {
         extractCommandLineOptions(args);
-        dao = new JsonStarEmpiresDAO(sessionDir);
+//        dao = new JsonStarEmpiresDAO(sessionDir, null);
+        dao = new S3StarEmpiresDAO(sessionDir, null);
     }
 
     public static void main(final String[] args) {
         try {
             final OrderParser parser = new OrderParser(args);
             final TurnData turnData = parser.loadTurnData();
-            final List<HullParameters> hullParameters = parser.loadHullParameters();
-            turnData.addHullParameters(hullParameters);
             final Empire empire = turnData.getEmpire(parser.empireName);
             if (empire == null) {
                 final String message = "Session %s does not contain empire %s".formatted(parser.sessionName, parser.empireName);

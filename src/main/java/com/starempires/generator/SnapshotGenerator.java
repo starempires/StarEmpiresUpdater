@@ -5,7 +5,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
-import com.starempires.dao.JsonStarEmpiresDAO;
+import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -108,7 +108,8 @@ public class SnapshotGenerator {
 
     public SnapshotGenerator(String[] args) throws Exception {
         extractCommandLineOptions(args);
-        dao = new JsonStarEmpiresDAO(sessionDir);
+//        dao = new JsonStarEmpiresDAO(sessionDir, null);
+        dao = new S3StarEmpiresDAO(sessionDir, null);
     }
 
     private Map<String, SectorShipSnapshot> getSectorShipSnapshots(final Multimap<Empire, Ship> allEmpireShips, final Empire snapshotEmpire) {

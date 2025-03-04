@@ -19,7 +19,7 @@ class BuildOrderTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        JsonStarEmpiresDAO dao = new JsonStarEmpiresDAO("src/test/resources");
+        JsonStarEmpiresDAO dao = new JsonStarEmpiresDAO("src/test/resources", null);
         turnData = dao.loadTurnData("test", 0);
         empire = turnData.getEmpire(TEST_EMPIRE);
     }

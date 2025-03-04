@@ -1,7 +1,7 @@
 package com.starempires.updater;
 
 import com.starempires.TurnData;
-import com.starempires.dao.JsonStarEmpiresDAO;
+import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.orders.Order;
 import lombok.extern.log4j.Log4j2;
@@ -49,7 +49,8 @@ public class TurnUpdater {
 
     public TurnUpdater(final String[] args) throws Exception {
         extractCommandLineOptions(args);
-        dao = new JsonStarEmpiresDAO(sessionDir);
+//        dao = new JsonStarEmpiresDAO(sessionDir, null);
+        dao = new S3StarEmpiresDAO(sessionDir, null);
     }
 
     public static void main(String[] args) {

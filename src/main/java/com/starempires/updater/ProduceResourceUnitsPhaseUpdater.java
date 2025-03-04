@@ -25,13 +25,15 @@ public class ProduceResourceUnitsPhaseUpdater extends PhaseUpdater {
             final double multiplier = world.getProductionMultiplier();
             final int production = world.getProduction();
             final int amount = (int) Math.ceil(production * multiplier);
+            world.adjustStockpile(Math.max(amount, 0));
+            world.setProductionMultiplier(1.0); // reset any production modifiers after production
+
             String text = "World " + world + " produced " + amount + " RU";
             if (multiplier != 1.0) {
                 text += " (" + production + " x " + multiplier + ")";
             }
+            text += " (stockpile now " + world.getStockpile() + ")";
             addNews(newsEmpires, text);
-            world.adjustStockpile(Math.max(amount, 0));
-            world.setProductionMultiplier(1.0); // reset any production modifiers after production
         });
     }
 }

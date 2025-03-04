@@ -23,10 +23,14 @@ import com.starempires.objects.World;
 import com.starempires.orders.CustomOrderDeserializer;
 import com.starempires.orders.Order;
 import com.starempires.updater.Phase;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +38,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public abstract class StarEmpiresDAO {
 
     private static final String HULL_PARAMETERS_FILENAME = "hull-parameters.json";
@@ -51,11 +57,15 @@ public abstract class StarEmpiresDAO {
     static {
         MAPPER.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
         MAPPER.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    abstract String loadItem(final String session, final String filename) throws IOException;
+    protected final String sessionsLocation;
+    protected final String gameDataLocation;
 
-    abstract String saveItem(final String content, final String session, final String filename) throws IOException;
+    protected abstract String loadSessionData(final String session, final String filename) throws IOException;
+    protected abstract String saveSessionData(final String data, final String session, final String filename) throws IOException;
+    public abstract String loadGameData(final String filename) throws IOException;
 
     private String getSessionFilename(final String session, final String filename) {
         return StringUtils.joinWith(".", session, filename);
@@ -71,8 +81,8 @@ public abstract class StarEmpiresDAO {
 
     public TurnData loadTurnData(final String session, final int turnNumber) throws Exception {
         final String filename = getTurnFilename(session, turnNumber, TURN_DATA_FILENAME);
-        final String input = loadItem(session, filename);
-        final Map<String, Object> jsonData = MAPPER.readValue(input, new TypeReference<Map<String, Object>>() { });
+        final String data = loadSessionData(session, filename);
+        final Map<String, Object> jsonData = MAPPER.readValue(data, new TypeReference<Map<String, Object>>() { });
         log.debug("Loaded turn data\n{}", jsonData);
 
         final int radius = (int) jsonData.get("radius");
@@ -285,11 +295,11 @@ public abstract class StarEmpiresDAO {
 
     public List<HullParameters> loadHullParameters(final String session) throws Exception {
         final String filename = getSessionFilename(session, HULL_PARAMETERS_FILENAME);
-        final String input = loadItem(session, filename);
+        final String data = loadSessionData(session, filename);
         final List<HullParameters> hullParameters = Lists.newArrayList();
-        for (Map<String, Object> data : MAPPER.readValue(input, new TypeReference<List<Map<String, Object>>>() {
+        for (Map<String, Object> dataItem : MAPPER.readValue(data, new TypeReference<List<Map<String, Object>>>() {
         })) {
-            final HullParameters parameters = MAPPER.convertValue(data, new TypeReference<HullParameters>() { });
+            final HullParameters parameters = MAPPER.convertValue(dataItem, new TypeReference<HullParameters>() { });
             log.debug("Loaded hull parameters {}", parameters);
             hullParameters.add(parameters);
         }
@@ -298,24 +308,24 @@ public abstract class StarEmpiresDAO {
 
     public Map<String, String> loadColors(final String session) throws Exception {
         final String filename = getSessionFilename(session, MAP_COLORS_FILENAME);
-        final String input = loadItem(session, filename);
-        final Map<String, String> colors = MAPPER.readValue(input, new TypeReference<Map<String, String>>() { });
+        final String data = loadSessionData(session, filename);
+        final Map<String, String> colors = MAPPER.readValue(data, new TypeReference<Map<String, String>>() { });
         log.debug("Loaded map colors {}", colors);
         return colors;
     }
 
     public List<String> loadEmpireData(final String session) throws Exception {
         final String filename = getSessionFilename(session, EMPIRE_DATA_FILENAME);
-        final String input = loadItem(session, filename);
-        final List<String> empireData = List.of(input.split("\\n"));
+        final String data = loadSessionData(session, filename);
+        final List<String> empireData = List.of(data.split("\\n"));
         log.debug("Loaded empire data {}", empireData);
         return empireData;
     }
 
     public List<String> loadOrders(final String session, final String empire, final int turnNumber) throws Exception {
         final String filename = getEmpireFilename(session, empire, turnNumber, ORDERS_FILENAME);
-        final String input = loadItem(session, filename);
-        final List<String> ordersText = List.of(input.split("\\n"));
+        final String data = loadSessionData(session, filename);
+        final List<String> ordersText = List.of(data.split("\\n"));
         log.info("Loaded {} orders for empire {}, session {}, turn {}", ordersText.size(), empire, session, turnNumber);
         return ordersText;
     }
@@ -331,13 +341,13 @@ public abstract class StarEmpiresDAO {
 
     public List<Order> loadReadyOrders(final String session, final String empire, final int turnNumber, final TurnData turnData) throws Exception {
         final String filename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
-        String input = null;
+        String data = null;
         try {
-            input = loadItem(session, filename);
-        } catch (IOException ex) {
-        }
-
-        if (StringUtils.isBlank(input)) {
+            data = loadSessionData(session, filename);
+            if (StringUtils.isBlank(data)) {
+                throw new NoSuchFileException("File %s is empty".formatted(filename));
+            }
+        } catch (NoSuchFileException | NoSuchKeyException ex) {
             log.warn("No ready orders found for empire {} turn {}", empire, turnNumber);
             return Collections.emptyList();
         }
@@ -345,7 +355,7 @@ public abstract class StarEmpiresDAO {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
         MAPPER.registerModule(module);
-        final List<Order> orders = MAPPER.readValue(input, new TypeReference<List<Order>>() { });
+        final List<Order> orders = MAPPER.readValue(data, new TypeReference<List<Order>>() { });
         log.debug("Loading {} orders: {}", empire, orders);
         return orders;
     }
@@ -354,21 +364,21 @@ public abstract class StarEmpiresDAO {
         final String output = MAPPER.writeValueAsString(turnData);
         final int turnNumber = turnData.getTurnNumber();
         final String filename = getTurnFilename(session, turnNumber, TURN_DATA_FILENAME);
-        final String location = saveItem(output, session, filename);
+        final String location = saveSessionData(output, session, filename);
         log.info("Wrote {} turn {} data to {}", turnData.getSession(), turnNumber, location);
     }
 
     public void saveReadyOrders(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
         final String output = MAPPER.writeValueAsString(orders);
         final String filename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
-        final String location = saveItem(output, session, filename);
+        final String location = saveSessionData(output, session, filename);
         log.info("Wrote {} orders for empire {} turn {} to {}", orders.size(), empire, turnNumber, location);
     }
 
     public void saveSnapshot(final String session, final String empire, int turnNumber, final EmpireSnapshot snapshot) throws IOException {
         final String output = MAPPER.writeValueAsString(snapshot);
         final String filename = getEmpireFilename(session, empire, turnNumber, SNAPSHOT_FILENAME);
-        final String location = saveItem(output, session, filename);
+        final String location = saveSessionData(output, session, filename);
         log.info("Wrote snapshot for empire {} turn {} to {}", empire, turnNumber, location);
     }
 
@@ -385,14 +395,14 @@ public abstract class StarEmpiresDAO {
             }
         });
         final String filename = getEmpireFilename(session, empire, turnNumber, ORDER_RESULTS_FILENAME);
-        final String location = saveItem(StringUtils.join(lines, "\n"), session, filename);
+        final String location = saveSessionData(StringUtils.join(lines, "\n"), session, filename);
         log.info("Wrote {} order results for empire {} turn {} to {}", orders.size(), empire, turnNumber, location);
     }
 
     public void saveColors(final String session, final Map<String, String> colors) throws Exception {
         final String filename = getSessionFilename(session, MAP_COLORS_FILENAME);
         final String output = MAPPER.writeValueAsString(colors);
-        final String location = saveItem(output, session, filename);
+        final String location = saveSessionData(output, session, filename);
         log.debug("Wrote map colors {} to {}", colors, location);
     }
 
@@ -401,7 +411,7 @@ public abstract class StarEmpiresDAO {
         for (Empire empire : news.keySet()) {
             final List<String> results = turnNews.getEmpireNews(empire);
             final String filename = getEmpireFilename(session, empire.getName(), turnNumber, NEWS_FILENAME);
-            final String location = saveItem(StringUtils.join(results, "\n"), session, filename);
+            final String location = saveSessionData(StringUtils.join(results, "\n"), session, filename);
             log.info("Saved {} news for turn {} to {}", empire, turnNumber, location);
         }
     }

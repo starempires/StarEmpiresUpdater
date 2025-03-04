@@ -1,4 +1,4 @@
-package com.starempires.lambda;
+package com.starempires.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;

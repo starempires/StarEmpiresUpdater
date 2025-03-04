@@ -1,3 +1,3 @@
-package com.starempires.lambda;
+package com.starempires.aws.lambda;
 
 public record OrderParserHandlerInput(String sessionName, int turnNumber, String empireName) {}

@@ -25,8 +25,8 @@ public class BasePhaseUpdaterTest {
 
     protected static final ObjectMapper MAPPER = new ObjectMapper();
     protected static final String RESOURCE_DIR = "src/test/resources";
-    protected static final String HULL_PARAMETERS_FILE = "test.hull-parameters.json";
-    protected static final String SHIP_CLASS_FILE = "test.ship-classes.json";
+    protected static final String HULL_PARAMETERS_FILE = "test/test.hull-parameters.json";
+    protected static final String SHIP_CLASS_FILE = "test/test.ship-classes.json";
     protected static final Coordinate ZERO_COORDINATE = new Coordinate(0, 0);
     protected static final Coordinate ONE_COORDINATE = new Coordinate(1, 1);
 
