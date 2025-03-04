@@ -5,7 +5,6 @@ import com.starempires.TurnData;
 import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
 import com.starempires.objects.Empire;
-import com.starempires.objects.HullParameters;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -26,52 +25,39 @@ public class OrderParser {
 
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
-    private static final String ARG_SESSION_DIR = "sessiondir";
+    private static final String ARG_SESSION_LOCATION = "sessionlocation";
     private static final String ARG_EMPIRE = "empire";
 
     private final StarEmpiresDAO dao;
-    private String sessionName;
-    private int turnNumber;
-    private String sessionDir;
-    private String empireName;
+    private final String sessionName;
+    private final int turnNumber;
+    private final String empireName;
 
-    private final List<Class<? extends Order>> orderClasses = List.of(UnloadOrder.class, LoadOrder.class);
-
-    private void extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
             options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE).hasArg().desc("empire name").required().build());
-            options.addOption(Option.builder("sd").argName("session dir").longOpt(ARG_SESSION_DIR).hasArg().desc("session dir").required().build());
+            options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().build());
 
             final CommandLineParser parser = new DefaultParser();
-            final CommandLine cmd = parser.parse(options, args);
-            sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
-            turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
-            empireName = cmd.getOptionValue(ARG_EMPIRE);
-            sessionDir = cmd.getOptionValue(ARG_SESSION_DIR);
+            return parser.parse(options, args);
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("Updater", options);
+            formatter.printHelp("OrderParser", options);
             throw e;
         }
+    }
+
+    private List<String> loadOrders() throws Exception {
+        return dao.loadOrders(sessionName, empireName, turnNumber);
     }
 
     private TurnData loadTurnData() throws Exception {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
         log.info("Loaded turn data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
-    }
-
-    private List<HullParameters> loadHullParameters() throws Exception {
-        final List<HullParameters> hullParameters = dao.loadHullParameters(sessionName);
-        log.info("Loaded hull parameters for session {}", sessionName);
-        return hullParameters;
-    }
-
-    private List<String> loadOrders() throws Exception {
-        return dao.loadOrders(sessionName, empireName, turnNumber);
     }
 
     private Order parseOrder(final TurnData turnData, final Empire empire, final String text) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
@@ -117,29 +103,38 @@ public class OrderParser {
         });
     }
 
-    public OrderParser(final String[] args) throws ParseException {
-        extractCommandLineOptions(args);
-//        dao = new JsonStarEmpiresDAO(sessionDir, null);
-        dao = new S3StarEmpiresDAO(sessionDir, null);
+    public OrderParser(final String sessionsLocation, final String sessionName, final String empireName, final int turnNumber) {
+        this.sessionName = sessionName;
+        this.empireName = empireName;
+        this.turnNumber = turnNumber;
+        dao = new S3StarEmpiresDAO(sessionsLocation, null);
+    }
+
+    public void processOrders() throws Exception {
+        final TurnData turnData = loadTurnData();
+        final Empire empire = turnData.getEmpire(empireName);
+        if (empire == null) {
+            final String message = "Session %s does not contain empire %s".formatted(sessionName, empireName);
+            log.error(message);
+            throw new RuntimeException(message);
+        }
+        final List<String> ordersTexts = loadOrders();
+        final List<Order> orders = parseOrders(turnData, empire, ordersTexts);
+        saveOrders(orders);
     }
 
     public static void main(final String[] args) {
         try {
-            final OrderParser parser = new OrderParser(args);
-            final TurnData turnData = parser.loadTurnData();
-            final Empire empire = turnData.getEmpire(parser.empireName);
-            if (empire == null) {
-                final String message = "Session %s does not contain empire %s".formatted(parser.sessionName, parser.empireName);
-                log.error(message);
-                throw new RuntimeException(message);
-            }
-            final List<String> ordersTexts = parser.loadOrders();
-            final List<Order> orders = parser.parseOrders(turnData, empire, ordersTexts);
-            parser.saveOrders(orders);
+            final CommandLine cmd = extractCommandLineOptions(args);
+            final String sessionsLocation = cmd.getOptionValue(ARG_SESSION_LOCATION);
+            final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
+            final String empireName = cmd.getOptionValue(ARG_EMPIRE);
+            final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
+            parser.processOrders();
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }
-
     }
 
 }
