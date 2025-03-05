@@ -2,7 +2,7 @@
 <Configuration status="WARN">
     <Properties>
         <!-- Default log level, can be overridden via system property -->
-        <Property name="logLevel">${sys:logLevel:-INFO}</Property>
+        <Property name="logLevel">${env:LOG_LEVEL:-INFO}</Property>
     </Properties>
 
     <Appenders>

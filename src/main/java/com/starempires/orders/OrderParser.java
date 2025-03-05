@@ -86,21 +86,30 @@ public class OrderParser {
         return orders;
     }
 
+    private List<String> formatResults(final List<Order> orders) {
+        final List<String> results = Lists.newArrayList();
+        orders.forEach(order -> {
+            final List<String> messages = order.getResults();
+            String result;
+            if (messages.isEmpty()) {
+                result = "%s: OK".formatted(order);
+            }
+            else if (messages.size() == 1) {
+                result = "%s: %s".formatted(order, messages.get(0));
+            }
+            else {
+                result = "{}:\n {}".formatted(order, StringUtils.join(messages, "\n "));
+            }
+            log.info(result);
+            results.add(result);
+        });
+        return results;
+    }
+
     private void saveOrders(final List<Order> orders) throws Exception {
         dao.saveReadyOrders(sessionName, empireName, turnNumber, orders);
         dao.saveOrderResults(sessionName, empireName, turnNumber, orders);
-        orders.forEach(order -> {
-            final List<String> messages = order.getResults();
-            if (messages.isEmpty()) {
-                log.info("{}: OK", order);
-            }
-            else if (messages.size() == 1) {
-                log.info("{}: {}", order, messages.get(0));
-            }
-            else {
-                log.info("{}:\n {}", order, StringUtils.join(messages, "\n "));
-            }
-        });
+
     }
 
     public OrderParser(final String sessionsLocation, final String sessionName, final String empireName, final int turnNumber) {
@@ -110,7 +119,7 @@ public class OrderParser {
         dao = new S3StarEmpiresDAO(sessionsLocation, null);
     }
 
-    public void processOrders() throws Exception {
+    public List<String> processOrders() throws Exception {
         final TurnData turnData = loadTurnData();
         final Empire empire = turnData.getEmpire(empireName);
         if (empire == null) {
@@ -121,6 +130,7 @@ public class OrderParser {
         final List<String> ordersTexts = loadOrders();
         final List<Order> orders = parseOrders(turnData, empire, ordersTexts);
         saveOrders(orders);
+        return formatResults(orders);
     }
 
     public static void main(final String[] args) {
@@ -131,7 +141,9 @@ public class OrderParser {
             final String empireName = cmd.getOptionValue(ARG_EMPIRE);
             final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
             final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
-            parser.processOrders();
+            final List<String> results = parser.processOrders();
+            log.info("Processed %d orders for empire %s, session %s, turn %d"
+                    .formatted(results.size(), empireName, sessionName, turnNumber));
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }

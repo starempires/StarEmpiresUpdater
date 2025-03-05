@@ -6,6 +6,8 @@ import com.starempires.orders.OrderParser;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.utils.Validate;
 
+import java.util.List;
+
 @Log4j2
 public class OrderParserHandler implements RequestHandler<OrderParserHandlerInput, String> {
 
@@ -26,9 +28,11 @@ public class OrderParserHandler implements RequestHandler<OrderParserHandlerInpu
             Validate.notEmpty(empireName, "Missing empireName");
 
             final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
-            parser.processOrders();
-            return "Processed orders for empire %s, session %s, turn %d"
-                    .formatted(empireName, sessionName, turnNumber);
+            final List<String> results = parser.processOrders();
+            final String message = "Processed %d orders for empire %s, session %s, turn %d"
+                    .formatted(results.size(), empireName, sessionName, turnNumber);
+            log.info(message);
+            return message + "\n" + String.join("\n", results);
         } catch (Exception exception) {
             log.error("Update failed", exception);
             return "Error: Update failed - " + exception.getMessage();
