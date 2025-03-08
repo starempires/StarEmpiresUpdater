@@ -1,41 +1,47 @@
 package com.starempires.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.starempires.orders.OrderParser;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.utils.Validate;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
-public class OrderParserHandler implements RequestHandler<OrderParserHandlerInput, String> {
+public class OrderParserHandler extends BaseLambdaHandler {
 
     @Override
-    public String handleRequest(OrderParserHandlerInput input, Context context) {
+    public Map<String, Object> handleRequest(Map<String, Object> event, Context context) {
         try {
-            context.getLogger().log("Received input: " + input);
-            final String sessionsLocation = input.sessionsLocation();
+            final String body = getBody(event);
+
+            // Convert JSON body into OrderParserHandlerInput record
+            OrderParserHandlerInput input = OBJECT_MAPPER.readValue(body, OrderParserHandlerInput.class);
+
             final String sessionName = input.sessionName();
             final String empireName = input.empireName();
             final int turnNumber = input.turnNumber();
-            context.getLogger().log("sessionsLocation: " + sessionsLocation);
-            context.getLogger().log("sessionName: " + sessionName);
-            context.getLogger().log("empireName: " + empireName);
-            context.getLogger().log("turnNumber: " + turnNumber);
+            final String ordersText = input.ordersText();
+            log.info("sessionName: {}",  sessionName);
+            log.info("empireName: {}", empireName);
+            log.info("turnNumber: {}", turnNumber);
 
             Validate.notEmpty(sessionName, "Missing sessionName");
             Validate.notEmpty(empireName, "Missing empireName");
 
-            final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
-            final List<String> results = parser.processOrders();
+            final List<String> orders = List.of(ordersText.split("\n"));
+
+            final OrderParser parser = new OrderParser(SESSIONS_LOCATION, sessionName, empireName, turnNumber);
+            final List<String> results = parser.processOrders(orders);
             final String message = "Processed %d orders for empire %s, session %s, turn %d"
                     .formatted(results.size(), empireName, sessionName, turnNumber);
             log.info(message);
-            return message + "\n" + String.join("\n", results);
-        } catch (Exception exception) {
-            log.error("Update failed", exception);
-            return "Error: Update failed - " + exception.getMessage();
+            final String response = message + "\n" + String.join("\n", results) + "\n";
+            return createResponse(200, response);
+        } catch (Exception ex) {
+            log.error("Update failed", ex);
+            return createResponse(500, "Error parsing request: " + ex.getMessage());
         }
     }
 }

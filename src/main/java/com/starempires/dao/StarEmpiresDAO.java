@@ -382,6 +382,21 @@ public abstract class StarEmpiresDAO {
         log.info("Wrote snapshot for empire {} turn {} to {}", empire, turnNumber, location);
     }
 
+    public String loadSnapshot(final String session, final String empire, int turnNumber) throws IOException {
+        final String filename = getEmpireFilename(session, empire, turnNumber, SNAPSHOT_FILENAME);
+        return loadSessionData(session, filename);
+    }
+
+    public String loadOrderResults(final String session, final String empire, int turnNumber) throws IOException {
+        final String filename = getEmpireFilename(session, empire, turnNumber, ORDER_RESULTS_FILENAME);
+        return loadSessionData(session, filename);
+    }
+
+    public String loadNews(final String session, final String empire, int turnNumber) throws IOException {
+        final String filename = getEmpireFilename(session, empire, turnNumber, NEWS_FILENAME);
+        return loadSessionData(session, filename);
+    }
+
     public void saveOrderResults(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
         final List<String> lines = Lists.newArrayList();
         orders.forEach(order -> {

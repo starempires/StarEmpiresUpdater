@@ -98,7 +98,7 @@ public class OrderParser {
                 result = "%s: %s".formatted(order, messages.get(0));
             }
             else {
-                result = "{}:\n {}".formatted(order, StringUtils.join(messages, "\n "));
+                result = "%s:\n %s".formatted(order, StringUtils.join(messages, "\n "));
             }
             log.info(result);
             results.add(result);
@@ -109,7 +109,6 @@ public class OrderParser {
     private void saveOrders(final List<Order> orders) throws Exception {
         dao.saveReadyOrders(sessionName, empireName, turnNumber, orders);
         dao.saveOrderResults(sessionName, empireName, turnNumber, orders);
-
     }
 
     public OrderParser(final String sessionsLocation, final String sessionName, final String empireName, final int turnNumber) {
@@ -119,7 +118,7 @@ public class OrderParser {
         dao = new S3StarEmpiresDAO(sessionsLocation, null);
     }
 
-    public List<String> processOrders() throws Exception {
+    public List<String> processOrders(final List<String> orders) throws Exception {
         final TurnData turnData = loadTurnData();
         final Empire empire = turnData.getEmpire(empireName);
         if (empire == null) {
@@ -127,10 +126,9 @@ public class OrderParser {
             log.error(message);
             throw new RuntimeException(message);
         }
-        final List<String> ordersTexts = loadOrders();
-        final List<Order> orders = parseOrders(turnData, empire, ordersTexts);
-        saveOrders(orders);
-        return formatResults(orders);
+        final List<Order> parsedOrders = parseOrders(turnData, empire, orders);
+        saveOrders(parsedOrders);
+        return formatResults(parsedOrders);
     }
 
     public static void main(final String[] args) {
@@ -141,7 +139,8 @@ public class OrderParser {
             final String empireName = cmd.getOptionValue(ARG_EMPIRE);
             final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
             final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
-            final List<String> results = parser.processOrders();
+            final List<String> orders = parser.loadOrders();
+            final List<String> results = parser.processOrders(orders);
             log.info("Processed %d orders for empire %s, session %s, turn %d"
                     .formatted(results.size(), empireName, sessionName, turnNumber));
         } catch (Exception exception) {
