@@ -28,6 +28,9 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of("Content-Type", "application/json"),
+                "Access-Control-Allow-Origin", "*", // Allow all origins
+                "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
+                "Access-Control-Allow-Headers", "Content-Type,Authorization",
                 "body", "{\"message\": \"" + message + "\"}"
         );
     }
@@ -38,7 +41,10 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
                 "statusCode", statusCode,
                 "headers", Map.of(
                         "Content-Type", "application/json",
-                        "Content-Disposition", "attachment; filename=\"response.json\""
+                        "Content-Disposition", "attachment; filename=\"response.json\"",
+                        "Access-Control-Allow-Origin", "*", // Allow all origins
+                        "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers", "Content-Type,Authorization"
                 ),
                 "body", jsonContent
         );
