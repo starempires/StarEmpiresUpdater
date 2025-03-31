@@ -73,8 +73,8 @@ public class OrderParser {
     private List<Order> parseOrders(final TurnData turnData, final Empire empire, final List<String> ordersText) {
         final List<Order> orders = Lists.newArrayList();
         ordersText.stream()
+                .map(text -> text.replaceAll("#.*", ""))
                 .filter(text -> !text.isBlank())
-                .filter(text -> !text.startsWith("#"))
                 .forEach(text -> {
                     try {
                         final Order order = parseOrder(turnData, empire, text);
@@ -147,5 +147,4 @@ public class OrderParser {
             log.error("Update failed", exception);
         }
     }
-
 }
