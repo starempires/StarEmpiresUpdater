@@ -27,10 +27,12 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
     protected Map<String, Object> createResponse(final int statusCode, final String message) {
         return Map.of(
                 "statusCode", statusCode,
-                "headers", Map.of("Content-Type", "application/json"),
-                "Access-Control-Allow-Origin", "*", // Allow all origins
-                "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
-                "Access-Control-Allow-Headers", "Content-Type,Authorization",
+                "headers", Map.of(
+                       "Content-Type", "application/json",
+                       "Access-Control-Allow-Origin", "*", // Allow all origins
+                       "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
+                       "Access-Control-Allow-Headers", "Content-Type,Authorization"
+                   ),
                 "body", "{\"message\": \"" + message + "\"}"
         );
     }
