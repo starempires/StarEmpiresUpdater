@@ -110,7 +110,7 @@ public class FireOrder extends ShipBasedOrder {
                 return order;
             }
         } else {
-            order.addError("Invalid fire order: " + parameters);
+            order.addError("Invalid FIRE order: " + parameters);
             order.setReady(false);
         }
 

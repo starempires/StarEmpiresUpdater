@@ -15,7 +15,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +74,8 @@ public abstract class Order {
         results.add("%s: OK".formatted(object));
     }
 
-    @JsonIgnore
-    public String getResultText() {
-        return StringUtils.join("\\n", results);
+    public void addOKResult() {
+        results.add("OK");
     }
 
     //TODO remove

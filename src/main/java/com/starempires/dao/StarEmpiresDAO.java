@@ -406,7 +406,7 @@ public abstract class StarEmpiresDAO {
             } else if (messages.size() == 1) {
                 lines.add(String.format("%s: %s", order, messages.get(0)));
             } else {
-                lines.add(String.format("%s:%n %s", order, StringUtils.join(messages, "\n ")));
+                lines.add(String.format("%s: %s", order, StringUtils.join(messages, "\n ")));
             }
         });
         final String filename = getEmpireFilename(session, empire, turnNumber, ORDER_RESULTS_FILENAME);

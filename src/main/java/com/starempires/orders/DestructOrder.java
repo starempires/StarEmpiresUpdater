@@ -45,7 +45,7 @@ public class DestructOrder extends ShipBasedOrder {
 
             order.setReady(!order.ships.isEmpty());
         } else {
-            order.addError("Invalid destruct order: " + parameters);
+            order.addError("Invalid DESTRUCT order: " + parameters);
             order.setReady(false);
         }
         return order;

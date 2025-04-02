@@ -103,7 +103,8 @@ public class DesignOrder extends WorldBasedOrder {
                     return order;
                 }
                 final int cost = hullParameters.getCost(guns, tonnage);
-                order.addResult("OK\n  pending design for %s (missile) guns:%d tonnage:%d cost:%d".formatted(designName, guns, tonnage, cost));
+                order.addOKResult();
+                order.addResult("  pending design for %s (missile) guns:%d tonnage:%d cost:%d".formatted(designName, guns, tonnage, cost));
                 order.guns = guns;
                 order.tonnage = tonnage;
                 order.dp = 1;
@@ -145,12 +146,12 @@ public class DesignOrder extends WorldBasedOrder {
                 final int tonnage = hullParameters.getTonnage(guns, dp, engines, scan, racks);
                 final int ar = Math.max(1, Math.round(dp * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
                 world.adjustStockpile(-designCost);
-                order.addResult("OK\n" +
-                        "  pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d%n".formatted(designName, hullType, guns, dp, engines, scan, racks) +
-                        "  cost: %d".formatted(cost) +
-                        "  AR: %d".formatted(ar) +
-                        "  tonnage: %d%n".formatted(tonnage) +
-                        "  design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));
+                order.addOKResult();
+                order.addResult("  pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d".formatted(designName, hullType, guns, dp, engines, scan, racks));
+                order.addResult("  cost: %d".formatted(cost));
+                order.addResult("  AR: %d".formatted(ar));
+                order.addResult("  tonnage: %d".formatted(tonnage));
+                order.addResult("  design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));;
                 order.guns = guns;
                 order.dp = dp;
                 order.engines = engines;
@@ -173,7 +174,7 @@ public class DesignOrder extends WorldBasedOrder {
             }
         }
         else {
-            order.addError("Invalid design order: " + parameters);
+            order.addError("Invalid DESIGN order: " + parameters);
             order.setReady(false);
         }
         return order;

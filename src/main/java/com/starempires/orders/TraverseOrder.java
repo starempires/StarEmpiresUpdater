@@ -117,7 +117,7 @@ public class TraverseOrder extends ShipBasedOrder {
             validMovers.forEach(order::addOKResult);
         }
         else {
-            order.addError("Invalid traverse order: " + parameters);
+            order.addError("Invalid TRAVERSE order: " + parameters);
             order.setReady(false);
         }
         return order;

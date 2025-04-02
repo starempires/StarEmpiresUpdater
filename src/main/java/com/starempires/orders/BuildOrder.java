@@ -143,7 +143,7 @@ public class BuildOrder extends WorldBasedOrder {
             order.names = names;
         }
         else {
-            order.addError("Invalid build order: " + parameters);
+            order.addError("Invalid BUILD order: " + parameters);
             order.setReady(false);
         }
         return order;

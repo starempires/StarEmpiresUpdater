@@ -37,7 +37,7 @@ public class UnloadOrder extends ShipBasedOrder {
             order.setReady(!order.ships.isEmpty());
         }
         else {
-            order.addError("Invalid unload order: " + parameters);
+            order.addError("Invalid UNLOAD order: " + parameters);
             order.setReady(false);
         }
         return order;

@@ -18,6 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @Log4j2
@@ -27,6 +30,7 @@ public class OrderParser {
     private static final String ARG_TURN_NUMBER = "turn";
     private static final String ARG_SESSION_LOCATION = "sessionlocation";
     private static final String ARG_EMPIRE = "empire";
+    private static final String ARG_ORDERS_FILE = "orders";
 
     private final StarEmpiresDAO dao;
     private final String sessionName;
@@ -40,6 +44,7 @@ public class OrderParser {
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
             options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE).hasArg().desc("empire name").required().build());
             options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().build());
+            options.addOption(Option.builder("o").argName("orders file").longOpt(ARG_ORDERS_FILE).hasArg().desc("orders file").required().build());
 
             final CommandLineParser parser = new DefaultParser();
             return parser.parse(options, args);
@@ -50,8 +55,12 @@ public class OrderParser {
         }
     }
 
-    private List<String> loadOrders() throws Exception {
-        return dao.loadOrders(sessionName, empireName, turnNumber);
+    private List<String> loadOrders(final String ordersFile) throws Exception {
+        final Path path = FileSystems.getDefault().getPath(ordersFile);
+        final String data = Files.readString(path);
+        final List<String> ordersText = List.of(data.split("\\n"));
+        log.info("Loaded {} orders for empire {}, session {}, turn {}", ordersText.size(), empireName, sessionName, turnNumber);
+        return ordersText;
     }
 
     private TurnData loadTurnData() throws Exception {
@@ -92,13 +101,13 @@ public class OrderParser {
             final List<String> messages = order.getResults();
             String result;
             if (messages.isEmpty()) {
-                result = "%s: OK".formatted(order);
+                result = "%s # OK".formatted(order);
             }
             else if (messages.size() == 1) {
-                result = "%s: %s".formatted(order, messages.get(0));
+                result = "%s # %s".formatted(order, messages.get(0));
             }
             else {
-                result = "%s:\n %s".formatted(order, StringUtils.join(messages, "\n "));
+                result = "%s # %s".formatted(order, StringUtils.join(messages, "\n #"));
             }
             log.info(result);
             results.add(result);
@@ -138,8 +147,9 @@ public class OrderParser {
             final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
             final String empireName = cmd.getOptionValue(ARG_EMPIRE);
             final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            final String ordersFile = cmd.getOptionValue(ARG_ORDERS_FILE);
             final OrderParser parser = new OrderParser(sessionsLocation, sessionName, empireName, turnNumber);
-            final List<String> orders = parser.loadOrders();
+            final List<String> orders = parser.loadOrders(ordersFile);
             final List<String> results = parser.processOrders(orders);
             log.info("Processed %d orders for empire %s, session %s, turn %d"
                     .formatted(results.size(), empireName, sessionName, turnNumber));

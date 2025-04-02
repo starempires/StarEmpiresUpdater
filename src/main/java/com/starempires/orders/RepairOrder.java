@@ -121,7 +121,7 @@ public class RepairOrder extends ShipBasedOrder {
                 order.setReady(false);
             }
         } else {
-            order.addError("Invalid repair order: " + parameters);
+            order.addError("Invalid REPAIR order: " + parameters);
             order.setReady(false);
         }
         return order;

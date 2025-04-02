@@ -95,7 +95,7 @@ public class TransferOrder extends WorldBasedOrder {
             order.toWorld = toWorld;
             order.toEmpire = toEmpire;
         } else {
-            order.addError("Invalid transfer order: " + parameters);
+            order.addError("Invalid TRANSFER order: " + parameters);
             order.setReady(false);
         }
         return order;

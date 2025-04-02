@@ -66,7 +66,7 @@ public class LoadOrder extends ShipBasedOrder {
                 order.setReady(!order.ships.isEmpty());
             }
         } else {
-            order.addError("Invalid load order: " + parameters);
+            order.addError("Invalid LOAD order: " + parameters);
             order.setReady(false);
         }
         return order;

@@ -62,7 +62,7 @@ public class ToggleOrder extends ShipBasedOrder {
             }
             order.setReady(!order.ships.isEmpty() && !order.shipClasses.isEmpty());
         } else {
-            order.addError("Invalid toggle order: " + parameters);
+            order.addError("Invalid TOGGLE order: " + parameters);
             order.setReady(false);
         }
 

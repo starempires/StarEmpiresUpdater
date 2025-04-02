@@ -96,7 +96,7 @@ public class MoveOrder extends ShipBasedOrder {
             }
         }
         else {
-            order.addError("Invalid move order: " + parameters);
+            order.addError("Invalid MOVE order: " + parameters);
             order.setReady(false);
         }
 

@@ -29,6 +29,7 @@ public class DeployOrder extends ShipBasedOrder {
                 } else {
                     final Set<Ship> starbases = turnData.getStarbases(device);
                     if (CollectionUtils.isEmpty(starbases)) {
+                        order.addOKResult(device);
                         if (device.isLoaded()) {
                             order.addWarning(device, "Device will be unloaded");
                         }
@@ -43,7 +44,7 @@ public class DeployOrder extends ShipBasedOrder {
             order.setReady(!order.ships.isEmpty());
         }
         else {
-            order.addError("Invalid deploy order: " + parameters);
+            order.addError("Invalid DEPLOY order: " + parameters);
             order.setReady(false);
         }
         return order;
