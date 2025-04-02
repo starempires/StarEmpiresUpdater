@@ -36,15 +36,15 @@ public class GetSessionObjectHandler extends BaseLambdaHandler {
                     final String news = dao.loadNews(sessionName, empireName, turnNumber);
                     final String message = "News for empire %s, session %s, turn %d"
                             .formatted(empireName, sessionName, turnNumber);
-                    final String info = message + "\n" + String.join("\n", news) + "\n";
-                    response = createResponse(200, info);
+                    final String data = String.join("\n", news);
+                    response = createResponse(200, message, data);
                 }
                 case ORDERS -> {
                     final String orders = dao.loadOrderResults(sessionName, empireName, turnNumber);
                     final String message = "Orders for empire %s, session %s, turn %d"
                             .formatted(empireName, sessionName, turnNumber);
-                    final String info = message + "\n" + String.join("\n", orders) + "\n";
-                    response = createResponse(200, info);
+                    final String data = String.join("\n", orders);
+                    response = createResponse(200, message, data);
                 }
                 case SNAPSHOT -> {
                     final String snapshot = dao.loadSnapshot(sessionName, empireName, turnNumber);
@@ -55,7 +55,7 @@ public class GetSessionObjectHandler extends BaseLambdaHandler {
 
             return response;
         } catch (Exception e) {
-            return createResponse(500, "Error processing request: " + e.getMessage());
+            return createResponse(500, "Error processing request: " + e.getMessage(), "");
         }
     }
 }

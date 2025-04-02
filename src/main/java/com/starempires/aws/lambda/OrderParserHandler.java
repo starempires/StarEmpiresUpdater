@@ -37,11 +37,11 @@ public class OrderParserHandler extends BaseLambdaHandler {
             final String message = "Processed %d orders for empire %s, session %s, turn %d"
                     .formatted(results.size(), empireName, sessionName, turnNumber);
             log.info(message);
-            final String response = message + "\n" + String.join("\n", results) + "\n";
-            return createResponse(200, response);
+            final String data = String.join("\n", results);
+            return createResponse(200, message, data);
         } catch (Exception ex) {
             log.error("Update failed", ex);
-            return createResponse(500, "Error parsing request: " + ex.getMessage());
+            return createResponse(500, "Error parsing request: " + ex.getMessage(), "");
         }
     }
 }
