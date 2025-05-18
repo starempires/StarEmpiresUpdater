@@ -10,11 +10,11 @@ import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +38,8 @@ public abstract class Order {
     /** was this order generated "synthetically", i.e., by the updater */
     protected boolean synthetic;
     protected OrderType orderType;
-    @Builder.Default
     @JsonIgnore
-    protected boolean ready = true;
+    protected boolean ready;
 
     protected static final String SPACE_REGEX = "\\s+";
     protected static final String ID_REGEX = "\\w+";
@@ -72,10 +71,6 @@ public abstract class Order {
 
     public void addOKResult(final Object object) {
         results.add("%s: OK".formatted(object));
-    }
-
-    public void addOKResult() {
-        results.add("OK");
     }
 
     //TODO remove
@@ -157,5 +152,16 @@ public abstract class Order {
            .parameters(getString(node, "parameters"))
            .synthetic(getBoolean(node, "synthetic"))
            .orderType(orderType);
+    }
+
+    public String formatResults() {
+        final String formatted;
+        if (results.isEmpty()) {
+            formatted = "%s # %s".formatted(this, isReady() ? "OK" : "Error");
+        }
+        else {
+            formatted = "%s\n # %s".formatted(this, StringUtils.join(results, "\n # "));
+        }
+        return formatted;
     }
 }

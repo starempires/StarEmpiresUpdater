@@ -54,7 +54,6 @@ public class GiveOrder extends EmpireBasedOrder {
 
             if (order.shipClasses.isEmpty()) {
                 order.addError("No valid ship classes to give");
-                order.setReady(false);
                 return order;
             }
 
@@ -77,12 +76,13 @@ public class GiveOrder extends EmpireBasedOrder {
 
             if (order.recipients.isEmpty()) {
                 order.addError("No valid recipients");
-                order.setReady(false);
+            }
+            else {
+                order.setReady(true);
             }
             return order;
         } else {
             order.addError("Invalid GIVE order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

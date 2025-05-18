@@ -51,12 +51,10 @@ public class RepairOrder extends ShipBasedOrder {
             final Ship ship = empire.getShip(shipName);
             if (ship == null) {
                 order.addError("Unknown ship : " + shipName);
-                order.setReady(false);
                 return order;
             }
             if (!ship.isAlive()) {
                 order.addError("Ship %s is destroyed".formatted(shipName));
-                order.setReady(false);
                 return order;
             }
             if (!ship.isRepairable()) {
@@ -75,7 +73,7 @@ public class RepairOrder extends ShipBasedOrder {
                 dpToRepair = Integer.parseInt(dpText);
                 if (dpToRepair < 1) {
                     order.addError("Invalid repair amount: " + dpToRepair);
-                    order.setReady(false);
+                    return order;
                 } else if (dpToRepair > ship.getMaxRepairAmount()) {
                     order.addWarning(ship, "Only %d DP currently needed".formatted(ship.getMaxRepairAmount()));
                     dpToRepair = ship.getMaxRepairAmount();
@@ -118,11 +116,12 @@ public class RepairOrder extends ShipBasedOrder {
 
             if (order.worlds.isEmpty()) {
                 order.addError("No valid repair worlds found");
-                order.setReady(false);
+            }
+            else {
+                order.setReady(true);
             }
         } else {
             order.addError("Invalid REPAIR order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

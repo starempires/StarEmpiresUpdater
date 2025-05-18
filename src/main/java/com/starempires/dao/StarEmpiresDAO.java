@@ -398,17 +398,7 @@ public abstract class StarEmpiresDAO {
     }
 
     public void saveOrderResults(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
-        final List<String> lines = Lists.newArrayList();
-        orders.forEach(order -> {
-            final List<String> messages = order.getResults();
-            if (messages.isEmpty()) {
-                lines.add(String.format("%s: OK", order));
-            } else if (messages.size() == 1) {
-                lines.add(String.format("%s: %s", order, messages.get(0)));
-            } else {
-                lines.add(String.format("%s: %s", order, StringUtils.join(messages, "\n ")));
-            }
-        });
+        final List<String> lines = orders.stream().map(Order::formatResults).collect(Collectors.toList());
         final String filename = getEmpireFilename(session, empire, turnNumber, ORDER_RESULTS_FILENAME);
         final String location = saveSessionData(StringUtils.join(lines, "\n"), session, filename);
         log.info("Wrote {} order results for empire {} turn {} to {}", orders.size(), empire, turnNumber, location);

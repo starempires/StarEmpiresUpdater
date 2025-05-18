@@ -52,12 +52,10 @@ public class MoveOrder extends ShipBasedOrder {
                     order.destination = getCoordinateFromMapObject(empire, locationText);
                     if (order.destination == null) {
                         order.addError("Unknown destination: " + locationText);
-                        order.setReady(false);
                         return order;
                     }
                 } else {
                     order.addError("No valid destination found: " + parameters);
-                    order.setReady(false);
                     return order;
                 }
 
@@ -65,7 +63,6 @@ public class MoveOrder extends ShipBasedOrder {
                 if (!sameSector) {
                     order.addError("Movers not all in same sector");
                     order.ships.clear();
-                    order.setReady(false);
                     return order;
                 }
 
@@ -92,12 +89,13 @@ public class MoveOrder extends ShipBasedOrder {
 
             if (order.ships.isEmpty()) {
                 order.addError("No valid movers");
-                order.setReady(false);
+            }
+            else {
+                order.setReady(true);
             }
         }
         else {
             order.addError("Invalid MOVE order: " + parameters);
-            order.setReady(false);
         }
 
         return order;

@@ -38,25 +38,22 @@ public class TransferOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            String fromWorldName = matcher.group(WORLD_GROUP);
-            String toWorldName = matcher.group(TO_WORLD_GROUP);
-            String amountText = matcher.group(AMOUNT_GROUP);
-            String toEmpireName = matcher.group(RECIPIENT_GROUP);
-            World fromWorld = turnData.getWorld(fromWorldName);
+            final String fromWorldName = matcher.group(WORLD_GROUP);
+            final String toWorldName = matcher.group(TO_WORLD_GROUP);
+            final String amountText = matcher.group(AMOUNT_GROUP);
+            final String toEmpireName = matcher.group(RECIPIENT_GROUP);
+            final World fromWorld = turnData.getWorld(fromWorldName);
             if (fromWorld == null || !empire.isKnownWorld(fromWorld) || !fromWorld.isOwnedBy(empire)) {
                 order.addError("You do not own world " + fromWorldName);
-                order.setReady(false);
                 return order;
             }
-            World toWorld = turnData.getWorld(fromWorldName);
+            final World toWorld = turnData.getWorld(fromWorldName);
             if (toWorld == null || !empire.isKnownWorld(toWorld)) {
                 order.addError("Unknown world: " + toWorldName);
-                order.setReady(false);
                 return order;
             }
             if (fromWorld.equals(toWorld)) {
                 order.addError(fromWorld, "Cannot transfer to same world");
-                order.setReady(false);
                 return order;
             }
 
@@ -65,7 +62,6 @@ public class TransferOrder extends WorldBasedOrder {
                 toEmpire = turnData.getEmpire(toEmpireName);
                 if (toEmpire == null || empire.isKnownEmpire(toEmpire)) {
                     order.addError("You have no contact with empire " + toEmpireName);
-                    order.setReady(false);
                     return order;
                 }
                 if (!toWorld.isOwnedBy(toEmpire)) {
@@ -82,7 +78,6 @@ public class TransferOrder extends WorldBasedOrder {
                 amount = Integer.parseInt(amountText);
                 if (amount < 1) {
                     order.addError(fromWorld, "Invalid transfer amount transfer %d".formatted(amount));
-                    order.setReady(false);
                     return order;
                 }
                 if (amount > fromWorld.getStockpile()) {
@@ -94,9 +89,9 @@ public class TransferOrder extends WorldBasedOrder {
             order.fromWorld = fromWorld;
             order.toWorld = toWorld;
             order.toEmpire = toEmpire;
+            order.setReady(true);
         } else {
             order.addError("Invalid TRANSFER order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

@@ -37,8 +37,21 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
         );
     }
 
+    protected Map<String, Object> createJsonResponse(final int statusCode, final String message, final String data) {
+        return Map.of(
+                "statusCode", statusCode,
+                "headers", Map.of(
+                        "Content-Type", "application/json",
+                        "Access-Control-Allow-Origin", "*", // Allow all origins
+                        "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers", "Content-Type,Authorization"
+                ),
+                "body", "{\"message\": \"" + message + "\", \"data\":" + data + "}"
+        );
+    }
+
     // Helper method to return JSON as a downloadable file
-    protected Map<String, Object> createFileResponse(final int statusCode, final String jsonContent) {
+    protected Map<String, Object> createFileResponse(final int statusCode, final String message, final String data) {
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of(
@@ -48,7 +61,7 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
                         "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
                         "Access-Control-Allow-Headers", "Content-Type,Authorization"
                 ),
-                "body", jsonContent
+                "body", "{\"message\": \"" + message + "\", \"data\": \"" + data + "\"}"
         );
     }
 

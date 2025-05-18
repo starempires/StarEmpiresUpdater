@@ -66,7 +66,6 @@ public class BuildOrder extends WorldBasedOrder {
                 count = Integer.parseInt(numberText);
                 if (count < 1) {
                     order.addError("Invalid build count: " + count);
-                    order.setReady(false);
                     return order;
                 }
             }
@@ -74,7 +73,6 @@ public class BuildOrder extends WorldBasedOrder {
             final World world = turnData.getWorld(worldName);
             if (world == null || !empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
-                order.setReady(false);
                 return order;
             }
             if (world.isInterdicted()) {
@@ -89,7 +87,6 @@ public class BuildOrder extends WorldBasedOrder {
             else {
                 if (shipClass.isStarbase()) {
                     order.addError("Cannot build additional starbases");
-                    order.setReady(false);
                     return order;
                 }
                 final int cost = shipClass.getCost();
@@ -98,13 +95,11 @@ public class BuildOrder extends WorldBasedOrder {
                     count = (int) (stockpile / cost);
                     if (count < 1) {
                         order.addError(world, "Insufficient stockpile (%d) to build any ships of class %s".formatted(stockpile, shipClass));
-                        order.setReady(false);
                         return order;
                     }
                 } else {
                     if (cost * count > stockpile) {
                         order.addError(world, "Insufficient stockpile (%d) to build %d ships of class %s".formatted(world.getStockpile(), count, shipClass));
-                        order.setReady(false);
                         return order;
                     }
                 }
@@ -141,10 +136,10 @@ public class BuildOrder extends WorldBasedOrder {
             order.count = count;
             order.basename = basename;
             order.names = names;
+            order.setReady(true);
         }
         else {
             order.addError("Invalid BUILD order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

@@ -12,14 +12,14 @@ import java.util.Map;
 public class GetSessionObjectHandler extends BaseLambdaHandler {
 
     @Override
-    public Map<String, Object> handleRequest(Map<String, Object> event, Context context) {
+    public Map<String, Object> handleRequest(final Map<String, Object> event, final Context context) {
         try {
             final String body = getBody(event);
 
             // Parse JSON input into a Map
             GetSessionObjectHandlerInput input = OBJECT_MAPPER.readValue(body, GetSessionObjectHandlerInput.class);
 
-            log.info("input: " + input);
+            log.info("input: {}", input);
             final String sessionName = input.sessionName();
             final String empireName = input.empireName();
             final int turnNumber = input.turnNumber();
@@ -30,28 +30,40 @@ public class GetSessionObjectHandler extends BaseLambdaHandler {
             Validate.notNull(sessionObject, "Missing sessionObject");
 
             final StarEmpiresDAO dao = new S3StarEmpiresDAO(SESSIONS_LOCATION, null);
-            Map<String, Object> response;
+            log.info("Fetching turn {} {} for empire {}, session {}", turnNumber, sessionObject, empireName, sessionName);
+            final String data;
+            boolean isJson = false;
             switch (sessionObject) {
                 case NEWS -> {
-                    final String news = dao.loadNews(sessionName, empireName, turnNumber);
-                    final String message = "News for empire %s, session %s, turn %d"
-                            .formatted(empireName, sessionName, turnNumber);
-                    final String data = String.join("\n", news);
-                    response = createResponse(200, message, data);
+                    data = dao.loadNews(sessionName, empireName, turnNumber);
                 }
                 case ORDERS -> {
-                    final String orders = dao.loadOrderResults(sessionName, empireName, turnNumber);
-                    final String message = "Orders for empire %s, session %s, turn %d"
-                            .formatted(empireName, sessionName, turnNumber);
-                    final String data = String.join("\n", orders);
-                    response = createResponse(200, message, data);
+                    data = dao.loadOrderResults(sessionName, empireName, turnNumber);
                 }
                 case SNAPSHOT -> {
-                    final String snapshot = dao.loadSnapshot(sessionName, empireName, turnNumber);
-                    response = createFileResponse(200, snapshot);
+                    data = dao.loadSnapshot(sessionName, empireName, turnNumber);
+                    isJson = true;
                 }
                 default -> throw new IllegalArgumentException("Unknown sessionObject: " + sessionObject);
             }
+            final String message;
+            final Map<String, Object> response;
+            if (data == null) {
+                message = "No turn %d %s found for empire %s, session %s"
+                        .formatted(turnNumber, sessionObject.toString().toLowerCase(), empireName, sessionName);
+                response = createResponse(404, message, "");
+            }
+            else {
+                message = "Turn %d %s for empire %s, session %s"
+                        .formatted(turnNumber, sessionObject.toString().toLowerCase(), empireName, sessionName);
+                 if (isJson) {
+                    response = createJsonResponse(200, message, data);
+                 }
+                 else {
+                     response = createResponse(200, message, data);
+                 }
+            }
+            log.debug("Response {}", response);
 
             return response;
         } catch (Exception e) {

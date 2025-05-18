@@ -14,7 +14,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -98,19 +97,9 @@ public class OrderParser {
     private List<String> formatResults(final List<Order> orders) {
         final List<String> results = Lists.newArrayList();
         orders.forEach(order -> {
-            final List<String> messages = order.getResults();
-            String result;
-            if (messages.isEmpty()) {
-                result = "%s # OK".formatted(order);
-            }
-            else if (messages.size() == 1) {
-                result = "%s # %s".formatted(order, messages.get(0));
-            }
-            else {
-                result = "%s # %s".formatted(order, StringUtils.join(messages, "\n #"));
-            }
-            log.info(result);
-            results.add(result);
+            final String formatted = order.formatResults();
+            log.info(formatted);
+            results.add(formatted);
         });
         return results;
     }

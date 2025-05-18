@@ -103,7 +103,6 @@ public class DesignOrder extends WorldBasedOrder {
                     return order;
                 }
                 final int cost = hullParameters.getCost(guns, tonnage);
-                order.addOKResult();
                 order.addResult("  pending design for %s (missile) guns:%d tonnage:%d cost:%d".formatted(designName, guns, tonnage, cost));
                 order.guns = guns;
                 order.tonnage = tonnage;
@@ -121,7 +120,6 @@ public class DesignOrder extends WorldBasedOrder {
             else {
                 if (tokens.length != 5) {
                     order.addError("Incorrect number of parameters for ship design: " + parameters);
-                    order.setReady(false);
                     return order;
                 }
                 final int guns = Integer.parseInt(tokens[0]);
@@ -140,18 +138,16 @@ public class DesignOrder extends WorldBasedOrder {
                 final int designCost = Math.min(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
                 if (designCost > world.getStockpile()) {
                     order.addError(world, "Insufficient stockpile (%d) to pay %s design cost (%d)".formatted(world.getStockpile(), hullType, designCost));
-                    order.setReady(false);
                     return order;
                 }
                 final int tonnage = hullParameters.getTonnage(guns, dp, engines, scan, racks);
                 final int ar = Math.max(1, Math.round(dp * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
                 world.adjustStockpile(-designCost);
-                order.addOKResult();
-                order.addResult("  pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d".formatted(designName, hullType, guns, dp, engines, scan, racks));
-                order.addResult("  cost: %d".formatted(cost));
-                order.addResult("  AR: %d".formatted(ar));
-                order.addResult("  tonnage: %d".formatted(tonnage));
-                order.addResult("  design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));;
+                order.addResult("Pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d".formatted(designName, hullType, guns, dp, engines, scan, racks));
+                order.addResult("Cost: %d".formatted(cost));
+                order.addResult("AR: %d".formatted(ar));
+                order.addResult("Tonnage: %d".formatted(tonnage));
+                order.addResult("Design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));;
                 order.guns = guns;
                 order.dp = dp;
                 order.engines = engines;
@@ -172,10 +168,10 @@ public class DesignOrder extends WorldBasedOrder {
                 turnData.addShipClass(shipClass);
                 empire.addKnownShipClass(shipClass);
             }
+            order.setReady(true);
         }
         else {
             order.addError("Invalid DESIGN order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

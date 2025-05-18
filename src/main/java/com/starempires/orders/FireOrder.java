@@ -83,7 +83,6 @@ public class FireOrder extends ShipBasedOrder {
 
             if (order.ships.isEmpty()) {
                 order.addError("No valid attackers");
-                order.setReady(false);
                 return order;
             }
 
@@ -106,12 +105,10 @@ public class FireOrder extends ShipBasedOrder {
 
             if (order.targets.isEmpty()) {
                 order.addError("No valid targets");
-                order.setReady(false);
                 return order;
             }
         } else {
             order.addError("Invalid FIRE order: " + parameters);
-            order.setReady(false);
         }
 
         order.setReady(!order.ships.isEmpty());

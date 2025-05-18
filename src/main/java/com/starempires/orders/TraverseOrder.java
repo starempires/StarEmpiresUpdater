@@ -51,7 +51,6 @@ public class TraverseOrder extends ShipBasedOrder {
             if (!sameSector) {
                 order.addError("Movers not all in same sector");
                 order.ships.clear();
-                order.setReady(false);
                 return order;
             }
 
@@ -72,7 +71,6 @@ public class TraverseOrder extends ShipBasedOrder {
 
             if (validMovers.isEmpty()) {
                 order.addError("No valid movers");
-                order.setReady(false);
                 return order;
             }
             order.ships.addAll(validMovers);
@@ -82,12 +80,10 @@ public class TraverseOrder extends ShipBasedOrder {
             final Portal entry = turnData.getPortal(entryText);
             if (!empire.isKnownPortal(entry)) {
                 order.addError("Unknown entry portal: " + entryText);
-                order.setReady(false);
                 return order;
             }
             if (!entry.getCoordinate().equals(shipCoordinate)) {
                 order.addError("Ships not in same sector as Entry portal " + entry);
-                order.setReady(false);
                 return order;
             }
             if (entry.isCollapsed()) {
@@ -99,7 +95,6 @@ public class TraverseOrder extends ShipBasedOrder {
                 final Portal exit = turnData.getPortal(exitText);
                 if (exit == null) {
                     order.addError("Unknown exit portal: " + exitText);
-                    order.setReady(false);
                     return order;
                 }
                 if (empire.hasNavData(exit)) {
@@ -113,12 +108,11 @@ public class TraverseOrder extends ShipBasedOrder {
                     order.addWarning(exit, "No nav data for exit portal");
                 }
             }
-
             validMovers.forEach(order::addOKResult);
+            order.setReady(true);
         }
         else {
             order.addError("Invalid TRAVERSE order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

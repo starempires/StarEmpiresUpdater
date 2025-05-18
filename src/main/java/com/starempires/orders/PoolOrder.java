@@ -43,10 +43,8 @@ public class PoolOrder extends WorldBasedOrder {
             final World world = turnData.getWorld(worldName);
             if (world == null || !empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
-                order.setReady(false);
                 return order;
             }
-            order.addOKResult();
             order.world = world;
 
             final String exceptText = matcher.group(WORLD_LIST_GROUP);
@@ -64,10 +62,10 @@ public class PoolOrder extends WorldBasedOrder {
                     }
                 }
             }
+            order.setReady(true);
         }
         else {
             order.addError("Invalid POOL order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

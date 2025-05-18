@@ -45,7 +45,6 @@ public class DeployOrder extends ShipBasedOrder {
         }
         else {
             order.addError("Invalid DEPLOY order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }

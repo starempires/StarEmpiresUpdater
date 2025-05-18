@@ -45,7 +45,6 @@ public class LoadOrder extends ShipBasedOrder {
             final Ship carrier = empire.getShip(carrierName);
             if (carrier == null) {
                 order.addError("You do not own carrier " + carrierName);
-                order.setReady(false);
             } else {
                 final List<Ship> cargo = getShipsFromNames(empire, matcher.group(SHIP_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
@@ -67,7 +66,6 @@ public class LoadOrder extends ShipBasedOrder {
             }
         } else {
             order.addError("Invalid LOAD order: " + parameters);
-            order.setReady(false);
         }
         return order;
     }
