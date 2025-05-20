@@ -3,6 +3,8 @@ package com.starempires.aws.lambda;
 enum SessionObject {
     NEWS,
     ORDERS,
+    ORDERS_STATUS,
+    ORDERS_LOCK_STATUS,
     SNAPSHOT
 }
 

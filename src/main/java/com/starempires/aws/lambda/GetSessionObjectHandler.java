@@ -11,6 +11,8 @@ import java.util.Map;
 @Log4j2
 public class GetSessionObjectHandler extends BaseLambdaHandler {
 
+    private static final StarEmpiresDAO DAO = new S3StarEmpiresDAO(SESSIONS_LOCATION, null);
+
     @Override
     public Map<String, Object> handleRequest(final Map<String, Object> event, final Context context) {
         try {
@@ -29,19 +31,22 @@ public class GetSessionObjectHandler extends BaseLambdaHandler {
             Validate.notEmpty(empireName, "Missing empireName");
             Validate.notNull(sessionObject, "Missing sessionObject");
 
-            final StarEmpiresDAO dao = new S3StarEmpiresDAO(SESSIONS_LOCATION, null);
             log.info("Fetching turn {} {} for empire {}, session {}", turnNumber, sessionObject, empireName, sessionName);
             final String data;
             boolean isJson = false;
             switch (sessionObject) {
                 case NEWS -> {
-                    data = dao.loadNews(sessionName, empireName, turnNumber);
+                    data = DAO.loadNews(sessionName, empireName, turnNumber);
                 }
                 case ORDERS -> {
-                    data = dao.loadOrderResults(sessionName, empireName, turnNumber);
+                    data = DAO.loadOrderResults(sessionName, empireName, turnNumber);
+                }
+                case ORDERS_STATUS -> {
+                    final StarEmpiresDAO.OrderStatus status = DAO.getOrderStatus(sessionName, empireName, turnNumber);
+                    data = status.toString();
                 }
                 case SNAPSHOT -> {
-                    data = dao.loadSnapshot(sessionName, empireName, turnNumber);
+                    data = DAO.loadSnapshot(sessionName, empireName, turnNumber);
                     isJson = true;
                 }
                 default -> throw new IllegalArgumentException("Unknown sessionObject: " + sessionObject);
@@ -56,12 +61,12 @@ public class GetSessionObjectHandler extends BaseLambdaHandler {
             else {
                 message = "Turn %d %s for empire %s, session %s"
                         .formatted(turnNumber, sessionObject.toString().toLowerCase(), empireName, sessionName);
-                 if (isJson) {
+                if (isJson) {
                     response = createJsonResponse(200, message, data);
-                 }
-                 else {
-                     response = createResponse(200, message, data);
-                 }
+                }
+                else {
+                    response = createResponse(200, message, data);
+                }
             }
             log.debug("Response {}", response);
 

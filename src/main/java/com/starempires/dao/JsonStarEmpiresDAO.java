@@ -19,9 +19,19 @@ public class JsonStarEmpiresDAO extends StarEmpiresDAO {
         return Files.readString(path);
     }
 
+    protected boolean doesSessionDataExist(final String session, final String filename) throws IOException {
+        final Path path = FileSystems.getDefault().getPath(sessionsLocation, session, filename);
+        return Files.exists(path);
+    }
+
     protected String saveSessionData(final String data, final String session, final String filename) throws IOException {
         final Path path = FileSystems.getDefault().getPath(sessionsLocation, session, filename);
         return Files.writeString(path, data).toAbsolutePath().toString();
+    }
+
+    protected void removeSessionData(final String session, final String filename) throws IOException {
+        final Path path = FileSystems.getDefault().getPath(sessionsLocation, session, filename);
+        Files.delete(path);
     }
 
     @Override

@@ -31,6 +31,8 @@ import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,11 +44,15 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(force = true)
 public abstract class StarEmpiresDAO {
 
+    // session-independent game data
     private static final String HULL_PARAMETERS_FILENAME = "hull-parameters.json";
     private static final String MAP_COLORS_FILENAME = "map-colors.json";
+
+    // session-specific game data
     private static final String NEWS_FILENAME = "news.txt";
     private static final String ORDERS_FILENAME = "orders.txt";
     private static final String ORDER_RESULTS_FILENAME = "order-results.txt";
+    private static final String ORDER_LOCK_FILENAME = "order-lock.txt";
     private static final String TURN_DATA_FILENAME = "turn-data.json";
     private static final String READY_ORDERS_FILENAME = "ready-orders.json";
     private static final String SNAPSHOT_FILENAME = "snapshot.json";
@@ -64,8 +70,16 @@ public abstract class StarEmpiresDAO {
     protected final String gameDataLocation;
 
     protected abstract String loadSessionData(final String session, final String filename) throws IOException;
+    protected abstract boolean doesSessionDataExist(final String session, final String filename) throws IOException;
     protected abstract String saveSessionData(final String data, final String session, final String filename) throws IOException;
+    protected abstract void removeSessionData(final String session, final String filename) throws IOException;
     public abstract String loadGameData(final String filename) throws IOException;
+
+    public enum OrderStatus {
+        NONE,
+        EXIST,
+        LOCKED
+    }
 
     private String getSessionFilename(final String session, final String filename) {
         return StringUtils.joinWith(".", session, filename);
@@ -339,6 +353,19 @@ public abstract class StarEmpiresDAO {
         return empireNames;
     }
 
+    public OrderStatus getOrderStatus(final String session, final String empire, final int turnNumber) throws Exception {
+        final String readyOrdersFilename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
+        if (doesSessionDataExist(session, readyOrdersFilename)) {
+            final String orderLockFilename = getEmpireFilename(session, empire, turnNumber, ORDER_LOCK_FILENAME);
+            if (doesSessionDataExist(session, orderLockFilename)) {
+                return OrderStatus.LOCKED;
+            } else {
+                return OrderStatus.EXIST;
+            }
+        }
+        return OrderStatus.NONE;
+    }
+
     public List<Order> loadReadyOrders(final String session, final String empire, final int turnNumber, final TurnData turnData) throws Exception {
         final String filename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
         String data = null;
@@ -397,7 +424,7 @@ public abstract class StarEmpiresDAO {
         return loadSessionData(session, filename);
     }
 
-    public void saveOrderResults(final String session, final String empire, int turnNumber, final List<Order> orders) throws IOException {
+    public void saveOrderResults(final String session, final String empire, final int turnNumber, final List<Order> orders) throws IOException {
         final List<String> lines = orders.stream().map(Order::formatResults).collect(Collectors.toList());
         final String filename = getEmpireFilename(session, empire, turnNumber, ORDER_RESULTS_FILENAME);
         final String location = saveSessionData(StringUtils.join(lines, "\n"), session, filename);
@@ -411,7 +438,7 @@ public abstract class StarEmpiresDAO {
         log.debug("Wrote map colors {} to {}", colors, location);
     }
 
-    public void saveNews(String session, TurnNews turnNews, int turnNumber) throws Exception {
+    public void saveNews(final String session, final TurnNews turnNews, final int turnNumber) throws Exception {
         final Map<Empire, Multimap<Phase, String>> news = turnNews.getNews();
         for (Empire empire : news.keySet()) {
             final List<String> results = turnNews.getEmpireNews(empire);
@@ -419,5 +446,16 @@ public abstract class StarEmpiresDAO {
             final String location = saveSessionData(StringUtils.join(results, "\n"), session, filename);
             log.info("Saved {} news for turn {} to {}", empire, turnNumber, location);
         }
+    }
+
+    public void lockOrders(final String session, final String empire, final int turnNumber) throws IOException {
+        final String orderLockFilename = getEmpireFilename(session, empire, turnNumber, ORDER_LOCK_FILENAME);
+        final String date = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        saveSessionData(date, session, orderLockFilename);
+    }
+
+    public void unlockOrders(final String session, final String empire, final int turnNumber) throws IOException {
+        final String orderLockFilename = getEmpireFilename(session, empire, turnNumber, ORDER_LOCK_FILENAME);
+        removeSessionData(session, orderLockFilename);
     }
 }

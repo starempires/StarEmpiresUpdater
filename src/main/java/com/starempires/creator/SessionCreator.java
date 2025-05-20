@@ -70,8 +70,11 @@ public class SessionCreator {
         final Options options = new Options();
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt("session").hasArg().desc("session name").required().build());
-            options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
+            // location where session creation data and other session-independent files are found
             options.addOption(Option.builder("gd").argName("game data dir").longOpt("gamedatadir").hasArg().desc("game data dir").required().build());
+            // config properties for how sessions are created, should be found in found in game data dir
+            options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
+            // location where individual session folders are found
             options.addOption(Option.builder("sd").argName("sessions dir").longOpt("sessionsdir").hasArg().desc("sessions dir").required().build());
 
             final CommandLineParser parser = new DefaultParser();

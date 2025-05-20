@@ -56,6 +56,20 @@ public class S3StarEmpiresDAO extends StarEmpiresDAO {
         return loadData(sessionsLocation, key);
     }
 
+    protected boolean doesSessionDataExist(final String session, final String filename) throws IOException {
+        final String key = session + "/" + filename;
+        try {
+            S3_CLIENT.headObject(b -> b.bucket(sessionsLocation).key(key));
+            return true;
+        } catch (NoSuchKeyException e) {
+            log.info("Object not found: {}/{}", sessionsLocation, key);
+            return false;
+        } catch (Exception e) {
+            log.error("Error checking S3 object existence: {}/{}", sessionsLocation, key, e);
+            throw e;
+        }
+    }
+
     @Override
     public String loadGameData(final String filename) throws IOException {
         return loadData(gameDataLocation, filename);
@@ -65,5 +79,15 @@ public class S3StarEmpiresDAO extends StarEmpiresDAO {
     protected String saveSessionData(final String data, final String session, final String filename) throws IOException {
         final String key = session + "/" + filename;
         return saveData(sessionsLocation, key, data);
+    }
+
+    protected void removeSessionData(final String session, final String filename) throws IOException {
+        final String key = session + "/" + filename;
+        try {
+            S3_CLIENT.deleteObject(b -> b.bucket(sessionsLocation).key(key));
+            log.info("Deleted object: {}/{}", sessionsLocation, key);
+        } catch (Exception e) {
+            throw new IOException("Failed to delete object: " + key, e);
+        }
     }
 }
