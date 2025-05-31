@@ -18,7 +18,6 @@ public class Constants {
     public static final float DEFAULT_DESIGN_MULTIPLIER = 0.5f;
     public static final float DEFAULT_AUTO_REPAIR_MULTIPLIER = 0.1f;
     public static final float DEFAULT_INTERDICTION_THRESHOLD = 3.0f;
-    public static final float DEFAULT_MISSILE_TONNAGE_COST = 13.5f;
     public static final int DEFAULT_ORBITAL_REPAIR_DP_PER_RU = 3;
     public static final float DEFAULT_PRODUCTION_MULTIPLIER = 1.0f;
     public static final int DEFAULT_REPAIR_DP_PER_RU = 2;

@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class HullParameters {
 
-    public static final float MISSILE_TONNAGE_COST = 13.5f;
+    public static final float MISSILE_TONNAGE_COST = 10.0f;
 
     private final HullType hullType;
     private final double arMultiplier;
