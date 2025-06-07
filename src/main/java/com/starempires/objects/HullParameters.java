@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class HullParameters {
 
-    public static final float MISSILE_TONNAGE_COST = 10.0f;
+    public static final float MISSILE_TONNAGE_COST = 5.0f;
 
     private final HullType hullType;
     private final double arMultiplier;
@@ -45,7 +45,7 @@ public class HullParameters {
     }
 
     public int getCost(final int guns, final int tonnage) {
-        return (int) Math.round(Math.exp(guns / MISSILE_TONNAGE_COST * tonnage));
+        return (int) Math.round(Math.max(1, Math.exp(guns / (MISSILE_TONNAGE_COST * tonnage))));
     }
 
     public int getCost(final int guns, final int dp, final int engines, final int scan, final int racks) {

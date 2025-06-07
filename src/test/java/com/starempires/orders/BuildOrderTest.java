@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BuildOrderTest {
 
@@ -25,17 +27,46 @@ class BuildOrderTest {
     }
 
     @Test
-    void parsePrefix() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe cube*");
-        assertEquals("cube", order.getBasename());
-        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+    void testBadOrder() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS");
+        assertFalse(order.isReady());
     }
 
     @Test
-    void parseNames() {
+    void testParsePrefix() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe cube*");
+        assertEquals("cube", order.getBasename());
+        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testParseNames() {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
         assertNull(order.getBasename());
         assertEquals(List.of("p1", "p2"), order.getNames());
         assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testInvalidBuildCount() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 0 probe p1 p2");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testUnknownBuildWorld() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "Unknown 2 probe p1 p2");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testBuildMax() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS max probe p*");
+        assertEquals("p", order.getBasename());
+        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertTrue(order.isBuildMax());
+        assertTrue(order.isReady());
     }
 }

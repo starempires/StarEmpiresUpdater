@@ -98,6 +98,8 @@ class DesignShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
 
     @Test
     void updateDesignMissile() {
+        final int missileGuns = 15;
+        final int missileTonnage = 2;
         final String name = "supernuke";
         final World world2 = createWorld("world2", ZERO_COORDINATE, 10);
         world2.setOwner(empire);
@@ -105,18 +107,18 @@ class DesignShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
         order = DesignOrder.builder()
                 .empire(empire)
                 .orderType(OrderType.DESIGN)
-                .parameters("world2 cruiser gunship 15 2")
+                .parameters("world2 supernuke missile 15 2")
                 .hullType(HullType.MISSILE)
                 .name(name)
-                .guns(GUNS)
-                .tonnage(2)
+                .guns(missileGuns)
+                .tonnage(missileTonnage)
                 .world(world2)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
         updater.update();
         final ShipClass missileClass = turnData.getShipClass(name);
         assertNotNull(missileClass);
-        assertEquals(GUNS, missileClass.getGuns());
+        assertEquals(missileGuns, missileClass.getGuns());
         assertEquals(1, missileClass.getDp());
         assertEquals(0, missileClass.getEngines());
         assertEquals(0, missileClass.getScan());
@@ -124,8 +126,8 @@ class DesignShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
         assertEquals(0, missileClass.getAr());
         assertEquals(HullType.MISSILE, missileClass.getHullType());
         assertEquals(name, missileClass.getName());
-        assertEquals(19, missileClass.getCost());
-        assertEquals(2, missileClass.getTonnage());
+        assertEquals(4, missileClass.getCost());
+        assertEquals(missileTonnage, missileClass.getTonnage());
         assertTrue(empire.getKnownShipClasses().contains(missileClass));
         assertEquals(20, world2.getStockpile());
     }

@@ -28,10 +28,11 @@ public class UpdateTurnHandler extends BaseLambdaHandler {
 
             final TurnUpdater updater = new TurnUpdater(SESSIONS_LOCATION, sessionName, turnNumber);
             final TurnData turnData = updater.updateTurn();
-            final SnapshotGenerator generator = new SnapshotGenerator(SESSIONS_LOCATION, sessionName, turnNumber);
-            generator.generateSnapshots(turnData);
             final String message = "Updated turn %s for session %s".formatted(turnNumber, sessionName);
             log.info(message);
+            final SnapshotGenerator generator = new SnapshotGenerator(SESSIONS_LOCATION, sessionName, turnNumber + 1);
+            generator.generateSnapshots(turnData);
+            log.info("Generated snapshots for session {}, turn {}", sessionName, turnNumber);
             return createResponse(200, message, "OK");
         } catch (Exception e) {
             return createResponse(500, "Error processing request: " + e.getMessage(), "");
