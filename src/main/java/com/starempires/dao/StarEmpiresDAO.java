@@ -448,6 +448,13 @@ public abstract class StarEmpiresDAO {
         }
     }
 
+    public void saveHullParameters(final String sessionName, final List<HullParameters> hullParameters) throws IOException {
+        final String filename = getSessionFilename(sessionName, HULL_PARAMETERS_FILENAME);
+        final String output = MAPPER.writeValueAsString(hullParameters);
+        final String location = saveSessionData(output, sessionName, filename);
+        log.debug("Wrote hull parameters to {}", location);
+    }
+
     public void lockOrders(final String session, final String empire, final int turnNumber) throws IOException {
         final String orderLockFilename = getEmpireFilename(session, empire, turnNumber, ORDER_LOCK_FILENAME);
         final String date = ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);

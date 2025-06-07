@@ -21,25 +21,21 @@ public class TurnUpdater {
 
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
-    private static final String ARG_SESSION_DIR = "sessiondir";
+    private static final String ARG_SESSION_LOCATION = "sessionlocation";
 
     private final StarEmpiresDAO dao;
-    private String sessionName;
-    private int turnNumber;
-    private String sessionDir;
+    private final String sessionName;
+    private final int turnNumber;
 
-    private void extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
-            options.addOption(Option.builder("sd").argName("session dir").longOpt(ARG_SESSION_DIR).hasArg().desc("session dir").required().build());
+            options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().build());
 
             final CommandLineParser parser = new DefaultParser();
-            final CommandLine cmd = parser.parse(options, args);
-            sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
-            turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
-            sessionDir = cmd.getOptionValue(ARG_SESSION_DIR);
+            return parser.parse(options, args);
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("TurnUpdater", options);
@@ -47,21 +43,31 @@ public class TurnUpdater {
         }
     }
 
-    public TurnUpdater(final String[] args) throws Exception {
-        extractCommandLineOptions(args);
-//        dao = new JsonStarEmpiresDAO(sessionDir, null);
-        dao = new S3StarEmpiresDAO(sessionDir, null);
+    public TurnUpdater(final String sessionsLocation, final String sessionName, final int turnNumber) {
+        this.sessionName = sessionName;
+        this.turnNumber = turnNumber;
+//        dao = new JsonStarEmpiresDAO(sessionsLocation, null);
+        dao = new S3StarEmpiresDAO(sessionsLocation, null);
     }
 
-    public static void main(String[] args) {
+    public TurnData updateTurn() throws Exception {
+        final TurnData turnData = loadTurnData();
+        loadReadyOrders(turnData);
+        processTurn(turnData);
+        turnData.setTurnNumber(turnData.getTurnNumber() + 1);
+        saveTurnData(turnData);
+        saveNews(turnData);
+        return turnData;
+    }
+
+    public static void main(final String[] args) {
         try {
-            final TurnUpdater turnUpdater = new TurnUpdater(args);
-            final TurnData turnData = turnUpdater.loadTurnData();
-            turnUpdater.loadReadyOrders(turnData);
-            turnUpdater.processTurn(turnData);
-            turnData.setTurnNumber(turnData.getTurnNumber() + 1);
-            turnUpdater.saveTurnData(turnData);
-            turnUpdater.saveNews(turnData);
+            final CommandLine cmd = extractCommandLineOptions(args);
+            final String sessionsLocation = cmd.getOptionValue(ARG_SESSION_LOCATION);
+            final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
+            final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            final TurnUpdater turnUpdater = new TurnUpdater(sessionsLocation, sessionName, turnNumber);
+            turnUpdater.updateTurn();
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }

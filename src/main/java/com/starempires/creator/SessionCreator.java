@@ -173,6 +173,7 @@ public class SessionCreator {
         final String hullJson = dao.loadGameData(HULL_PARAMETERS_FILENAME);
         final List<HullParameters> hullParameters = MAPPER.readValue(hullJson, new TypeReference<List<HullParameters>>() { });
         turnData.addHullParameters(hullParameters);
+        dao.saveHullParameters(sessionName, hullParameters);
 
         // create ShipClasses
         final String shipClassJson = dao.loadGameData(SHIP_CLASSES_FILENAME);

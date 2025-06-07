@@ -24,7 +24,7 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
     }
 
     // Helper method to create a normal API Gateway response
-    protected Map<String, Object> createResponse(final int statusCode, final String message, final String data) {
+    Map<String, Object> createResponse(final int statusCode, final String message, final String data) {
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of(
@@ -37,7 +37,7 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
         );
     }
 
-    protected Map<String, Object> createJsonResponse(final int statusCode, final String message, final String data) {
+    Map<String, Object> createJsonResponse(final int statusCode, final String message, final String data) {
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of(
@@ -51,7 +51,7 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
     }
 
     // Helper method to return JSON as a downloadable file
-    protected Map<String, Object> createFileResponse(final int statusCode, final String message, final String data) {
+    Map<String, Object> createFileResponse(final int statusCode, final String message, final String data) {
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of(
@@ -64,5 +64,4 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
                 "body", "{\"message\": \"" + message + "\", \"data\": \"" + data + "\"}"
         );
     }
-
 }

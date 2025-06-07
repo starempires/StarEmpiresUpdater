@@ -37,25 +37,21 @@ import java.util.stream.Collectors;
 public class SnapshotGenerator {
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
-    private static final String ARG_SESSION_DIR = "sessiondir";
+    private static final String ARG_SESSION_LOCATION = "sessionlocation";
 
     private final StarEmpiresDAO dao;
-    private String sessionName;
-    private int turnNumber;
-    private String sessionDir;
+    private final String sessionName;
+    private final int turnNumber;
 
-    private void extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
-            options.addOption(Option.builder("sd").argName("session dir").longOpt(ARG_SESSION_DIR).hasArg().desc("session dir").required().build());
+            options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().build());
 
             final CommandLineParser parser = new DefaultParser();
-            final CommandLine cmd = parser.parse(options, args);
-            sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
-            turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
-            sessionDir = cmd.getOptionValue(ARG_SESSION_DIR);
+            return parser.parse(options, args);
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("SnapshotGenerator", options);
@@ -88,28 +84,37 @@ public class SnapshotGenerator {
         dao.saveSnapshot(sessionName, empireName, turnNumber, snapshot);
     }
 
+    public void generateSnapshots(final TurnData turnData) throws Exception {
+        final Map<String, String> colors = loadColors();
+        final List<String> empireNames = loadEmpireNames();
+        for (String empireName: empireNames) {
+            log.debug("Generating snapshot for {}", empireName);
+            final EmpireSnapshot snapshot = generate(turnData, colors, empireName);
+            saveSnapshot(snapshot, empireName);
+        }
+        final EmpireSnapshot snapshot = generateGM(turnData, colors);
+        saveSnapshot(snapshot, "GM");
+    }
+
     public static void main(final String[] args) {
         try {
-            final SnapshotGenerator generator = new SnapshotGenerator(args);
+            final CommandLine cmd = extractCommandLineOptions(args);
+            final String sessionsLocation = cmd.getOptionValue(ARG_SESSION_LOCATION);
+            final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
+            final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            final SnapshotGenerator generator = new SnapshotGenerator(sessionsLocation, sessionName, turnNumber);
             final TurnData turnData = generator.loadTurnData();
-            final Map<String, String> colors = generator.loadColors();
-            final List<String> empireNames = generator.loadEmpireNames();
-            for (String empireName: empireNames) {
-                log.debug("Generating snapshot for {}", empireName);
-                final EmpireSnapshot snapshot = generator.generate(turnData, colors, empireName);
-                generator.saveSnapshot(snapshot, empireName);
-            }
-            final EmpireSnapshot snapshot = generator.generateGM(turnData, colors);
-            generator.saveSnapshot(snapshot, "GM");
+            generator.generateSnapshots(turnData);
         } catch (Exception exception) {
             log.error("Error generating snapshots", exception);
         }
     }
 
-    public SnapshotGenerator(String[] args) throws Exception {
-        extractCommandLineOptions(args);
+    public SnapshotGenerator(final String sessionsLocation, final String sessionName, final int turnNumber) throws Exception {
+        this.sessionName = sessionName;
+        this.turnNumber = turnNumber;
 //        dao = new JsonStarEmpiresDAO(sessionDir, null);
-        dao = new S3StarEmpiresDAO(sessionDir, null);
+        dao = new S3StarEmpiresDAO(sessionsLocation, null);
     }
 
     private Map<String, SectorShipSnapshot> getSectorShipSnapshots(final Multimap<Empire, Ship> allEmpireShips, final Empire snapshotEmpire) {
