@@ -25,6 +25,11 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
 
     // Helper method to create a normal API Gateway response
     Map<String, Object> createResponse(final int statusCode, final String message, final String data) {
+        final String jsonSafeData = data
+                .replace("\\", "\\\\")  // Escape backslashes
+                .replace("\"", "\\\"")  // Escape quotes
+                .replace("\r", "\\r")   // Escape carriage return
+                .replace("\n", "\\n");
         return Map.of(
                 "statusCode", statusCode,
                 "headers", Map.of(
@@ -33,7 +38,8 @@ public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Ob
                        "Access-Control-Allow-Methods", "OPTIONS,POST,GET",
                        "Access-Control-Allow-Headers", "Content-Type,Authorization"
                    ),
-                "body", "{\"message\": \"" + message + "\", \"data\": \"" + data + "\"}"
+                "body", "{\"message\": \"" + message + "\", " +
+                        "\"data\": \"" + jsonSafeData + "\"}"
         );
     }
 

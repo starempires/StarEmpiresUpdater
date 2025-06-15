@@ -237,7 +237,6 @@ public class TurnData {
 
     public void addNewsFooter(final Phase phase) {
         addNews(phase, "");
-        addNews(phase, Constants.DASHES);
     }
 
     public List<Order> getOrders(final OrderType orderType) {
