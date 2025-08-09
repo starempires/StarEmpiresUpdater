@@ -63,10 +63,10 @@ class DesignShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
         assertEquals(1, cruiserClass.getAr());
         assertEquals(HullType.GUNSHIP, cruiserClass.getHullType());
         assertEquals(NAME, cruiserClass.getName());
-        assertEquals(26, cruiserClass.getCost());
+        assertEquals(29, cruiserClass.getCost());
         assertEquals(13, cruiserClass.getTonnage());
         assertTrue(empire.getKnownShipClasses().contains(cruiserClass));
-        assertEquals(7, world.getStockpile());
+        assertEquals(5, world.getStockpile());
     }
 
     @Test

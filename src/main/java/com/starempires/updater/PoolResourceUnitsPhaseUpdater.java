@@ -57,7 +57,7 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
                 });
                 poolWorld.adjustStockpile(total.get());
                 addNewsResult(order, "Pooled %d RU from %s to %s (stockpile now %d)".formatted(total.get(),
-                        plural(ownedWorlds.size(), "world"), poolWorld, poolWorld.getStockpile()));
+                        plural(ownedWorlds.size(), "other world"), poolWorld, poolWorld.getStockpile()));
             }
         });
     }

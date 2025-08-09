@@ -37,13 +37,13 @@ class DesignOrderTest {
 
     @Test
     void parseDesignShip() {
-        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS attackcube gunship 12 12 4 1 0");
-        assertEquals(HullType.GUNSHIP, order.getHullType());
-        assertEquals(12, order.getGuns());
-        assertEquals(12, order.getDp());
-        assertEquals(4, order.getEngines());
-        assertEquals(1, order.getScan());
-        assertEquals(0, order.getRacks());
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 1 3 3 1");
+        assertEquals(HullType.SCOUT, order.getHullType());
+        assertEquals(1, order.getGuns());
+        assertEquals(3, order.getEngines());
+        assertEquals(3, order.getScan());
+        assertEquals(1, order.getDp());
+        assertEquals(1, order.getRacks());
     }
 
     @Test
