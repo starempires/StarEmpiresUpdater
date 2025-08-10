@@ -17,9 +17,8 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
         super(Phase.BUILD_SHIPS, turnData);
     }
 
-    private void buildShips(final BuildOrder order) {
+    private void buildShips(final BuildOrder order, final ShipClass shipClass) {
         final Empire empire = order.getEmpire();
-        final ShipClass shipClass = order.getShipClass();
         final World world = order.getWorld();
         final int startingNumber = empire.getLargestBasenameNumber(order.getBasename());
         final int count = order.getCount();
@@ -54,18 +53,18 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
         orders.forEach(o -> {
             final BuildOrder order = (BuildOrder) o;
             final Empire empire = order.getEmpire();
-            final ShipClass shipClass = order.getShipClass();
+            final ShipClass shipClass = turnData.getShipClass(order.getShipClassName());
             final World world = order.getWorld();
 
-            if (!empire.isKnownShipClass(shipClass)) {
-                addNewsResult(order, "You have no design information for ship class " + shipClass);
+            if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
+                addNewsResult(order, "You have no design information for ship class " + order.getShipClassName());
             } else {
                 if (!world.isOwnedBy(empire)) {
                     addNewsResult(order, "You do not own world " + world);
                 } else if (world.isInterdicted()) {
                     addNewsResult(order, "World " + world + " is interdicted; no builds possible.");
                 } else {
-                    buildShips(order);
+                    buildShips(order, shipClass);
                 }
             }
         });

@@ -1,17 +1,13 @@
 package com.starempires.objects;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmpireTest {
 
     private final Empire empire = Empire.builder().name("The Culture").empireType(EmpireType.ACTIVE).abbreviation("CU").frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE).build();
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void owns() {

@@ -36,7 +36,7 @@ class BuildOrderTest {
     void testParsePrefix() {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe cube*");
         assertEquals("cube", order.getBasename());
-        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertEquals("probe", order.getShipClassName());
         assertTrue(order.isReady());
     }
 
@@ -45,7 +45,7 @@ class BuildOrderTest {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
         assertNull(order.getBasename());
         assertEquals(List.of("p1", "p2"), order.getNames());
-        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertEquals("probe", order.getShipClassName());
         assertTrue(order.isReady());
     }
 
@@ -65,7 +65,7 @@ class BuildOrderTest {
     void testBuildMax() {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS max probe p*");
         assertEquals("p", order.getBasename());
-        assertEquals(turnData.getShipClass("probe"), order.getShipClass());
+        assertEquals("probe", order.getShipClassName());
         assertTrue(order.isBuildMax());
         assertTrue(order.isReady());
     }

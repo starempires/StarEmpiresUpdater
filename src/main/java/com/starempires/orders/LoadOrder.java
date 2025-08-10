@@ -30,7 +30,7 @@ public class LoadOrder extends ShipBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
-    private final Ship carrier;
+    private Ship carrier;
 
     public static LoadOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final LoadOrder order = LoadOrder.builder()
@@ -48,7 +48,7 @@ public class LoadOrder extends ShipBasedOrder {
             } else {
                 final List<Ship> cargo = getShipsFromNames(empire, matcher.group(SHIP_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
-                    if (ship.equals(cargo)) {
+                    if (ship.equals(carrier)) {
                         order.addError(ship, "Cannot load ship onto itself");
                     } else if (ship.isLoaded()) {
                         order.addError(ship, "Already loaded onto carrier %s".formatted(carrier));
@@ -60,6 +60,7 @@ public class LoadOrder extends ShipBasedOrder {
                         order.ships.add(ship);
                         ship.loadOntoCarrier(carrier);
                         order.addOKResult(ship);
+                        order.carrier = carrier;
                     }
                 }
                 order.setReady(!order.ships.isEmpty());
