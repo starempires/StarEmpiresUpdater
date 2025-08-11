@@ -129,8 +129,11 @@ public class RepairOrder extends ShipBasedOrder {
     public static RepairOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = RepairOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.REPAIR, builder);
+        final String shipName = getString(node, "ship");
+        final String empireName = getString(node, "empire");
+        final Empire empire = turnData.getEmpire(empireName);
         return builder
-                .ships(List.of(turnData.getShip(getString(node, "ship"))))
+                .ships(List.of(empire.getShip(shipName)))
                 .dpToRepair(getInt(node, "dpToRepair"))
                 .worlds(getTurnDataListFromJsonNode(node, turnData::getWorld))
                 .build();

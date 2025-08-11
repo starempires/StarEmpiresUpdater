@@ -74,9 +74,11 @@ public class LoadOrder extends ShipBasedOrder {
     public static LoadOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = LoadOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.LOAD, builder);
-        final String name = getString(node, "carrier");
+        final String carrierName = getString(node, "carrier");
+        final String empireName = getString(node, "empire");
+        final Empire empire = turnData.getEmpire(empireName);
         return builder
-                .carrier(name == null ? null : turnData.getShip(name))
+                .carrier(carrierName == null ? null : empire.getShip(carrierName))
                 .build();
     }
 }

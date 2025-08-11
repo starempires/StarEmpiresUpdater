@@ -172,31 +172,41 @@ public abstract class StarEmpiresDAO {
 
     private void addShips(final Map<String, Object> jsonData, final TurnData turnData) {
         final List<Map<String, Object>> objectData = getObjectData(jsonData, "ships");
-        final Map<String, Ship> ships = Maps.newHashMap();
+        final Map<Empire, Map<String, Ship>> ships = Maps.newHashMap();
         for (Map<String, Object> data : objectData) {
             final Ship ship = MAPPER.convertValue(data, new TypeReference<Ship>() { });
-            final String owner = (String) data.get("owner");
-            final Empire empire = turnData.getEmpire(owner);
-            ship.setOwner(empire);
-            empire.addShip(ship);
-            log.debug("Loaded ship {} for owner {}", ship, empire);
-            ships.put(ship.getName(), ship);
-        }
-
-        // set ship references
-        for (Map<String, Object> data : objectData) {
-            final String name = (String) data.get("name");
-            final Ship ship = ships.get(name);
-            ship.setCarrier(ships.get((String) data.get("carrier")));
 
             final String shipClass = (String) data.get("shipClass");
             ship.setShipClass(turnData.getShipClass(shipClass));
 
-            final Collection<String> cargo = getStringCollection(data, "cargo");
-            cargo.stream().map(ships::get).forEach(ship::addCargo);
+            final String owner = (String) data.get("owner");
+            final Empire empire = turnData.getEmpire(owner);
+            ship.setOwner(empire);
 
             final Collection<String> transponders = getStringCollection(data, "transponders");
             transponders.stream().map(turnData::getEmpire).forEach(ship::addTransponder);
+
+            empire.addShip(ship);
+            log.debug("Loaded ship {} for owner {}", ship, empire);
+            final Map<String, Ship> empireShips = ships.computeIfAbsent(empire, k -> Maps.newHashMap());
+            empireShips.put(ship.getName(), ship);
+        }
+
+        // add cargo and carriers once all ships have been instantiated
+        for (Map<String, Object> data : objectData) {
+            final String name = (String) data.get("name");
+            final String owner = (String) data.get("owner");
+            final Empire empire = turnData.getEmpire(owner);
+            final Ship ship = empire.getShip(name);
+
+            final String carrierName = (String) data.get("carrier");
+            if (carrierName != null) {
+                final Ship carrier = empire.getShip(carrierName);
+                ship.setCarrier(carrier);
+            }
+
+            final Collection<String> cargo = getStringCollection(data, "cargo");
+            cargo.stream().map(empire::getShip).forEach(ship::addCargo);
         }
     }
 

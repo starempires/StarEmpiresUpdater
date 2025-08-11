@@ -239,14 +239,15 @@ public class Ship extends OwnableObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getHandle());
+        return Objects.hash(getHandle(), owner);
     }
 
     @Override
     public boolean equals(final Object obj) {
         boolean rv = false;
         if (obj instanceof Ship ship) {
-            if (StringUtils.equals(getHandle(), ship.getHandle())) {
+            if (StringUtils.equals(getHandle(), ship.getHandle()) &&
+                    Objects.equals(owner, ship.getOwner())) {
                 rv = true;
             }
         }

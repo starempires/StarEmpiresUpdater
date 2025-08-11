@@ -253,20 +253,6 @@ public class TurnData {
                 .collect(Collectors.toSet());
     }
 
-    public Ship getShip(final String empireHandle) {
-        Ship ship = null;
-        final String[] tokens = empireHandle.split(":");
-        if (tokens.length == 2) {
-            final String empireName = tokens[0].trim();
-            final String handle = tokens[1].trim();
-            final Empire empire = getEmpire(empireName);
-            if (empire != null) {
-                ship = empire.getShip(handle);
-            }
-        }
-        return ship;
-    }
-
     public Set<Empire> getEmpiresPresent(final MappableObject object) {
         return getEmpiresPresent(object.getCoordinate());
     }
