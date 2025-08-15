@@ -5,6 +5,7 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.orders.MoveOrder;
 import com.starempires.orders.OrderType;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MoveShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     private MoveShipsPhaseUpdater updater;
 

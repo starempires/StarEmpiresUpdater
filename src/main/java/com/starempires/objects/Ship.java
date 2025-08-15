@@ -13,7 +13,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -57,9 +56,9 @@ public class Ship extends OwnableObject {
     /** is this ship transponder public? */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean publicTransponder;
-    /** guns ordered to fire */
+    /** ship was ordered to fire */
     @JsonIgnore
-    private int gunsOrderedToFire;
+    private boolean orderedToFire;
     /** guns fired this turn by this ship */
     @JsonIgnore
     private int gunsActuallyFired;
@@ -91,13 +90,6 @@ public class Ship extends OwnableObject {
         this (name, new Coordinate(oblique, y), null, turnBuilt, serialNumber, dpRemaining, null, null, publicTransponder);
     }
 
-    public void setCarrier(final Ship carrier) {
-        this.carrier = carrier;
-        if (carrier != null) {
-            carrier.addCargo(this);
-        }
-    }
-
     /**
      * @return This ship plus all its cargo
      */
@@ -116,14 +108,21 @@ public class Ship extends OwnableObject {
         return conditions.contains(condition);
     }
 
-    public void unloadCargo(final Ship ship) {
-        if (cargo.remove(ship)) {
-            addCondition(ShipCondition.UNLOADED_CARGO);
-        }
-    }
+    /* Add/remove cargo methods manipulate cargo list without setting conditions */
 
     public void addCargo(final Ship ship) {
         cargo.add(ship);
+    }
+
+    public boolean removeCargo(final Ship ship) {
+        return cargo.remove(ship);
+    }
+
+    /* load/unload methods manipulate cargo list and set conditions */
+    public void unloadCargo(final Ship ship) {
+        if (removeCargo(ship)) {
+            addCondition(ShipCondition.UNLOADED_CARGO);
+        }
     }
 
     public void loadCargo(final Ship ship) {
@@ -144,16 +143,17 @@ public class Ship extends OwnableObject {
         return conditions.contains(ShipCondition.UNLOADED_FROM_CARRIER);
     }
 
+    @JsonIgnore
+    public String getHandle() {
+        return ObjectUtils.firstNonNull(name, serialNumber);
+    }
+
+    // loadOnto/unloadFromCarrier update carrier and set condition
     public void unloadFromCarrier() {
         if (isLoaded()) {
             carrier = null;
             addCondition(ShipCondition.UNLOADED_FROM_CARRIER);
         }
-    }
-
-    @JsonIgnore
-    public String getHandle() {
-        return ObjectUtils.firstNonNull(name, serialNumber);
     }
 
     public void loadOntoCarrier(final Ship carrier) {
@@ -180,6 +180,7 @@ public class Ship extends OwnableObject {
     public void applyCombatDamageAccrued() {
         dpRemaining -= combatDamageAccrued;
         if (dpRemaining <= 0) {
+            dpRemaining = 0;
             destroy(ShipCondition.DESTROYED_IN_COMBAT);
         }
     }
@@ -187,6 +188,7 @@ public class Ship extends OwnableObject {
     public void applyStormDamageAccrued() {
         dpRemaining -= stormDamageAccrued;
         if (dpRemaining <= 0) {
+            dpRemaining = 0;
             destroy(ShipCondition.DESTROYED_BY_STORM);
         }
     }
@@ -321,7 +323,7 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public boolean isConqueringShip() {
-        return getAvailableGuns() > 0;
+        return isAlive() && !isOneShot() && getAvailableGuns() > 0;
     }
 
     @JsonIgnore
@@ -331,7 +333,7 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public int getMaxRepairAmount() {
-        return getDp() - dpRemaining;
+        return getDp() - Math.max(0, dpRemaining);
     }
 
     public void repair(final int amount) {
@@ -364,8 +366,8 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public boolean isSalvageable() {
-        return !isAlive() && ! conditions.contains(ShipCondition.SELF_DESTRUCTED)
-                && (! conditions.contains(ShipCondition.FIRED_GUNS) || !isMissile());
+        return !isAlive() && !conditions.contains(ShipCondition.SELF_DESTRUCTED)
+                && (!conditions.contains(ShipCondition.FIRED_GUNS) || !isMissile());
     }
 
     @JsonIgnore
@@ -408,14 +410,6 @@ public class Ship extends OwnableObject {
         transponders.remove(empire);
     }
 
-    public void removeAllTransponders() {
-        transponders.clear();
-    }
-
-    public void addTransponders(final Collection<Empire> empires) {
-        transponders.addAll(empires);
-    }
-
     public boolean isTransponderSet(final Empire empire) {
         boolean rv = false;
         if (isPublicTransponder()) {
@@ -425,10 +419,6 @@ public class Ship extends OwnableObject {
             rv = transponders.contains(empire);
         }
         return rv;
-    }
-
-    public boolean isDeviceOfType(final DeviceType type) {
-        return shipClass.isDeviceOfType(type);
     }
 
     @JsonIgnore
@@ -447,17 +437,19 @@ public class Ship extends OwnableObject {
         }
     }
 
-    public void orderGunsToFire(final int gunsToFire) {
-        this.gunsOrderedToFire = Math.max(gunsToFire, getUnfiredGuns());
-    }
-
     public boolean hasUnfiredGuns() {
         return getUnfiredGuns() > 0;
     }
 
+    /**
+     Determine if the given empire can see this ship. It's visible to the empire if
+     - it is owned by the empire
+     - it is not loaded and either has visible status or scanned status with transponder set
+     */
     public boolean isVisibleToEmpire(final Empire empire) {
         return isOwnedBy(empire) ||
-                empire.getScanStatus(this) == ScanStatus.VISIBLE ||
-                empire.getScanStatus(this) == ScanStatus.SCANNED && isTransponderSet(empire);
+                (!isLoaded() &&
+                  (empire.getScanStatus(this) == ScanStatus.VISIBLE ||
+                          (empire.getScanStatus(this) == ScanStatus.SCANNED && isTransponderSet(empire))));
     }
 }

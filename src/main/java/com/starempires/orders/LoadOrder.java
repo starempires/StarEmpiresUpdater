@@ -58,7 +58,7 @@ public class LoadOrder extends ShipBasedOrder {
                         order.addError(ship, "Carrier %s has insufficient free racks (%d) to load ship (tonnage %d)".formatted(carrier, carrier.getEmptyRacks(), ship.getTonnage()));
                     } else {
                         order.ships.add(ship);
-                        ship.loadOntoCarrier(carrier);
+                        turnData.load(ship, carrier);
                         order.addOKResult(ship);
                         order.carrier = carrier;
                     }

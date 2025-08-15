@@ -60,7 +60,7 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
             if (ship.isLoaded()) {
                 empires.add(ship.getOwner());
                 empires.add(ship.getCarrier().getOwner());
-                ship.getCarrier().unloadCargo(ship);
+                turnData.unload(ship);
             } else {
                 empires.addAll(turnData.getEmpiresPresent(ship));
             }

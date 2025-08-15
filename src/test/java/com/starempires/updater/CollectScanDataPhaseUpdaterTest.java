@@ -7,12 +7,13 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CollectScanDataPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class CollectScanDataPhaseUpdaterTest extends BaseTest {
 
     private CollectScanDataPhaseUpdater updater;
 

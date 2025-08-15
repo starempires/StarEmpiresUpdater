@@ -227,7 +227,11 @@ public class SnapshotGenerator {
                 } else {
                     empiresPresent.forEach(empirePresent -> {
                         final Collection<Ship> empireSectorShips = empirePresent.getShips(galacticCoord);
-                        sectorShipsByEmpire.putAll(empirePresent, empireSectorShips);
+                        for (final Ship ship : empireSectorShips) {
+                            if (ship.isVisibleToEmpire(empire)) {
+                                sectorShipsByEmpire.put(empirePresent, ship);
+                            }
+                        }
                     });
                 }
 

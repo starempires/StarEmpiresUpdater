@@ -4,6 +4,7 @@ import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.ShipCondition;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SalvageDesignsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class SalvageDesignsPhaseUpdaterTest extends BaseTest {
 
     private SalvageDesignsPhaseUpdater updater;
     private static final ShipClass NEW_CLASS = ShipClass.builder()

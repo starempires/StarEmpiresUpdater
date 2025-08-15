@@ -309,15 +309,15 @@ public class TurnData {
         return hullParameters.get(hullType);
     }
 
-    public void unload(Ship ship) {
-        Ship carrier = ship.getCarrier();
+    public void unload(final Ship ship) {
+        final Ship carrier = ship.getCarrier();
         if (carrier != null) {
             carrier.unloadCargo(ship);
         }
         ship.unloadFromCarrier();
     }
 
-    public void load(Ship cargo, Ship carrier) {
+    public void load(final Ship cargo, final Ship carrier) {
         cargo.loadOntoCarrier(carrier);
         carrier.loadCargo(cargo);
     }

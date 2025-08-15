@@ -30,7 +30,7 @@ public class UnloadOrder extends ShipBasedOrder {
                     order.addError(ship, "Ship is not loaded");
                 } else {
                     order.ships.add(ship);
-                    ship.unloadFromCarrier();
+                    turnData.unload(ship);
                     order.addOKResult(ship);
                 }
             }

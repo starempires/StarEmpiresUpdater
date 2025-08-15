@@ -5,6 +5,7 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.ToggleOrder;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ToggleTransponderModesPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
 
     private Ship ship;
     private ToggleTransponderModesPhaseUpdater updater;

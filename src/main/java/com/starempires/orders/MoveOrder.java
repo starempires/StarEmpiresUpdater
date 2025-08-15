@@ -73,7 +73,7 @@ public class MoveOrder extends ShipBasedOrder {
                         order.addError(ship, "Ship has been destroyed");
                     } else if (ship.getAvailableEngines() < 1) {
                         order.addError(ship, "No operational engines");
-                    } else if (ship.getGunsOrderedToFire() > 0) {
+                    } else if (ship.isOrderedToFire()) {
                         order.addError(ship, "Ships ordered to fire cannot move");
                     } else {
                         int distance = ship.distanceTo(order.destination);

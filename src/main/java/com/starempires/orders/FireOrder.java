@@ -112,6 +112,7 @@ public class FireOrder extends ShipBasedOrder {
         }
 
         order.setReady(!order.ships.isEmpty());
+        order.ships.forEach(ship -> ship.setOrderedToFire(true));
         return order;
     }
 

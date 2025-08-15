@@ -6,13 +6,14 @@ import com.starempires.objects.ScanStatus;
 import com.starempires.objects.Ship;
 import com.starempires.objects.Storm;
 import com.starempires.objects.World;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RecordNewMapObjectsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class RecordNewMapObjectsPhaseUpdaterTest extends BaseTest {
 
     private RecordNewMapObjectsPhaseUpdater updater;
     private World world;

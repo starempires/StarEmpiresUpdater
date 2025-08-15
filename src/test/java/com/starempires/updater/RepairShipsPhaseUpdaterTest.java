@@ -7,6 +7,7 @@ import com.starempires.objects.ShipCondition;
 import com.starempires.objects.World;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.RepairOrder;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RepairShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class RepairShipsPhaseUpdaterTest extends BaseTest {
 
     private RepairShipsPhaseUpdater updater;
     private World world;

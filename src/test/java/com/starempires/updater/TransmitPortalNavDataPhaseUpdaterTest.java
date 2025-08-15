@@ -5,13 +5,14 @@ import com.starempires.objects.Empire;
 import com.starempires.objects.Portal;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.TransmitOrder;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TransmitPortalNavDataPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class TransmitPortalNavDataPhaseUpdaterTest extends BaseTest {
 
     private TransmitPortalNavDataPhaseUpdater updater;
 

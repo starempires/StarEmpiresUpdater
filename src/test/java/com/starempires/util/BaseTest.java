@@ -1,4 +1,4 @@
-package com.starempires.updater;
+package com.starempires.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,6 @@ import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.EmpireType;
-import com.starempires.objects.FrameOfReference;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
@@ -21,7 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.List;
 
-public class BasePhaseUpdaterTest {
+public class BaseTest {
 
     protected static final ObjectMapper MAPPER = new ObjectMapper();
     protected static final String RESOURCE_DIR = "src/test/resources";
@@ -30,8 +29,8 @@ public class BasePhaseUpdaterTest {
     protected static final Coordinate ZERO_COORDINATE = new Coordinate(0, 0);
     protected static final Coordinate ONE_COORDINATE = new Coordinate(1, 1);
 
-    private static List<HullParameters> hullParameters;
-    private static List<ShipClass> shipClasses;
+    protected static List<HullParameters> hullParameters;
+    protected static List<ShipClass> shipClasses;
 
     protected TurnData turnData;
     protected ShipClass probeClass;
@@ -39,7 +38,9 @@ public class BasePhaseUpdaterTest {
     protected ShipClass starbaseClass;
     protected ShipClass missileClass;
     protected ShipClass fighterClass;
+    protected ShipClass frigateClass;
     protected Empire empire;
+
 
     @BeforeAll
     public static void beforeAll() throws Exception {
@@ -54,7 +55,7 @@ public class BasePhaseUpdaterTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void before() {
         turnData = TurnData
                 .builder()
                 .turnNumber(1)
@@ -68,11 +69,9 @@ public class BasePhaseUpdaterTest {
         starbaseClass = turnData.getShipClass("starbase");
         missileClass = turnData.getShipClass("nuke");
         fighterClass = turnData.getShipClass("fighter");
-
-        final FrameOfReference frame = FrameOfReference
-                .builder()
-                .build();
+        frigateClass = turnData.getShipClass("frigate");
         empire = createEmpire("test");
+
     }
 
     protected Ship createShip(final ShipClass shipClass, final Coordinate coordinate, final String name, final Empire owner) {

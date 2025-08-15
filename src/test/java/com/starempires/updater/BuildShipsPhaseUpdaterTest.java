@@ -4,6 +4,7 @@ import com.starempires.objects.Prohibition;
 import com.starempires.objects.World;
 import com.starempires.orders.BuildOrder;
 import com.starempires.orders.OrderType;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class BuildShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class BuildShipsPhaseUpdaterTest extends BaseTest {
 
     private BuildShipsPhaseUpdater updater;
     private World world;

@@ -3,13 +3,14 @@ package com.starempires.updater;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.objects.World;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DetermineOwnershipPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class DetermineOwnershipPhaseUpdaterTest extends BaseTest {
 
     private DetermineOwnershipIPhaseUpdater updater;
     private Empire empire1;

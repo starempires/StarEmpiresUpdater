@@ -1,13 +1,14 @@
 package com.starempires.updater;
 
 import com.starempires.objects.Portal;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AcquireNavDataPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class AcquireNavDataPhaseUpdaterTest extends BaseTest {
 
     private AcquireNavDataPhaseUpdater updater;
 

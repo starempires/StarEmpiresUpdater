@@ -44,10 +44,6 @@ public abstract class OwnableObject extends MappableObject {
         this.owner = owner;
     }
 
-    public boolean hasSameOwner(final OwnableObject object) {
-        return isOwnedBy(object.owner);
-    }
-
     public boolean isOwnedBy(final Empire empire) {
         return Objects.equals(owner, empire);
     }

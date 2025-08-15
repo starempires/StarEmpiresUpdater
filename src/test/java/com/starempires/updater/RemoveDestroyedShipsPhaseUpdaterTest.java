@@ -1,6 +1,7 @@
 package com.starempires.updater;
 
 import com.starempires.objects.Ship;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class RemoveDestroyedShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class RemoveDestroyedShipsPhaseUpdaterTest extends BaseTest {
 
     private RemoveDestroyedShipsIPhaseUpdater updater;
 

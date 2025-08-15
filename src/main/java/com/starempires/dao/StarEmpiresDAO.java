@@ -203,6 +203,7 @@ public abstract class StarEmpiresDAO {
             if (carrierName != null) {
                 final Ship carrier = empire.getShip(carrierName);
                 ship.setCarrier(carrier);
+                carrier.addCargo(ship);
             }
 
             final Collection<String> cargo = getStringCollection(data, "cargo");

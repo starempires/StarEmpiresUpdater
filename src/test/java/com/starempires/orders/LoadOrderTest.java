@@ -92,7 +92,7 @@ public class LoadOrderTest {
     void parseCargoLoaded() {
         // When
         cargo.setCarrier(carrier);
-        LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
+        final LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
 
         // Then
         assertNotNull(order);

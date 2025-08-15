@@ -4,6 +4,7 @@ import com.starempires.objects.Empire;
 import com.starempires.objects.ShipClass;
 import com.starempires.orders.GiveOrder;
 import com.starempires.orders.OrderType;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GiveDesignsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class GiveDesignsPhaseUpdaterTest extends BaseTest {
 
     private GiveDesignsPhaseUpdater updater;
 

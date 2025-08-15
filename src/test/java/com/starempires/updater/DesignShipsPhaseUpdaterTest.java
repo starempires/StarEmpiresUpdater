@@ -7,6 +7,7 @@ import com.starempires.objects.ShipClass;
 import com.starempires.objects.World;
 import com.starempires.orders.DesignOrder;
 import com.starempires.orders.OrderType;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DesignShipsPhaseUpdaterTest extends BasePhaseUpdaterTest {
+class DesignShipsPhaseUpdaterTest extends BaseTest {
 
     private static final String NAME = "cruiser";
     private static final int GUNS = 20;
