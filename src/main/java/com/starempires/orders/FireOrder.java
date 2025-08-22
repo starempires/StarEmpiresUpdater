@@ -98,7 +98,6 @@ public class FireOrder extends ShipBasedOrder {
                     }
                     else {
                         order.targets.add(target);
-                        order.addOKResult(target);
                     }
                 }
             }

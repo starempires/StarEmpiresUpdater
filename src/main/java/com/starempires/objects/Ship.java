@@ -366,8 +366,13 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public boolean isSalvageable() {
-        return !isAlive() && !conditions.contains(ShipCondition.SELF_DESTRUCTED)
+        return !isAlive() && !isSelfDestructed()
                 && (!conditions.contains(ShipCondition.FIRED_GUNS) || !isMissile());
+    }
+
+    @JsonIgnore
+    public boolean isSelfDestructed() {
+        return conditions.contains(ShipCondition.SELF_DESTRUCTED);
     }
 
     @JsonIgnore
@@ -451,5 +456,19 @@ public class Ship extends OwnableObject {
                 (!isLoaded() &&
                   (empire.getScanStatus(this) == ScanStatus.VISIBLE ||
                           (empire.getScanStatus(this) == ScanStatus.SCANNED && isTransponderSet(empire))));
+    }
+
+    @JsonIgnore
+    public boolean isTargetable() {
+        if (!isAlive()) {
+            return false;
+        }
+        if (isLoaded()) {
+            return false;
+        }
+        if (isMissile() && wasJustUnloaded()) {
+            return false;
+        }
+        return true;
     }
 }

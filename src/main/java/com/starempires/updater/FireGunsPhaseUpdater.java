@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.stream.Collectors;
 
 public class FireGunsPhaseUpdater extends PhaseUpdater {
 
@@ -181,7 +182,8 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         final TargetComparator targetComparator = new TargetComparator(order.isAscending() ? TargetOrder.ASCENDING : TargetOrder.DESCENDING);
         final List<Ship> validTargets = Lists.newArrayList();
         for (final Empire empire : targets) {
-            final List<Ship> empireTargets = Lists.newArrayList(empire.getShips(order.getCoordinate()));
+            final List<Ship> possibleTargets = Lists.newArrayList(empire.getShips(order.getCoordinate()));
+            final List<Ship> empireTargets = possibleTargets.stream().filter(Ship::isTargetable).collect(Collectors.toList());
             order.addResult("Found %d targets for empire %s".formatted(empireTargets.size(), empire));
             empireTargets.sort(targetComparator);
             validTargets.addAll(empireTargets);

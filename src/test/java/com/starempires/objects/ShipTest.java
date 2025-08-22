@@ -23,6 +23,7 @@ class ShipTest extends BaseTest {
 
     private Ship fighter;
     private Ship carrier;
+    private Ship missile;
 
     @BeforeEach
     void setUp() {
@@ -32,6 +33,7 @@ class ShipTest extends BaseTest {
         // Common ships
         fighter = createShip(fighterClass, ZERO_COORDINATE, "fighter", empire);
         carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
     }
 
     @Test
@@ -210,7 +212,6 @@ class ShipTest extends BaseTest {
     @Test
     void isMissile() {
         assertFalse(carrier.isMissile());
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "device", empire);
         assertTrue(missile.isMissile());
     }
 
@@ -223,7 +224,6 @@ class ShipTest extends BaseTest {
 
     @Test
     void isConqueringShip() {
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
         assertFalse(missile.isConqueringShip());
 
         assertTrue(carrier.isConqueringShip());
@@ -314,7 +314,6 @@ class ShipTest extends BaseTest {
 
     @Test
     void testIsSalvageableFiredMissile() {
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
         missile.destroy(ShipCondition.DESTROYED_IN_COMBAT);
         assertTrue(missile.isSalvageable());
         missile.fireGuns(missile.getGuns());
@@ -354,7 +353,6 @@ class ShipTest extends BaseTest {
     @Test
     void isOneShot() {
         assertFalse(carrier.isOneShot());
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
         assertTrue(missile.isOneShot());
 
         final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire);
@@ -431,5 +429,31 @@ class ShipTest extends BaseTest {
         otherCargo.addTransponder(empire);
         assertTrue(otherCargo.isVisibleToEmpire(empire));
         assertFalse(otherCarrier.isVisibleToEmpire(empire));
+    }
+
+    @Test
+    void testIsTargetableDestroyed() {
+        fighter.setDpRemaining(0);
+        assertFalse(fighter.isTargetable());
+        carrier.destruct();
+        assertFalse(carrier.isTargetable());
+    }
+
+    @Test
+    void testIsTargetableLoaded() {
+        fighter.setCarrier(carrier);
+        assertFalse(fighter.isTargetable());
+    }
+
+    @Test
+    void testMissile() {
+        assertTrue(missile.isTargetable());
+        missile.addCondition(ShipCondition.UNLOADED_FROM_CARRIER);
+        assertFalse(missile.isTargetable());
+    }
+
+    @Test
+    void testTargetable() {
+        assertTrue(carrier.isTargetable());
     }
 }
