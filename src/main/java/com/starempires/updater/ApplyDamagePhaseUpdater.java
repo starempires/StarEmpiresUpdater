@@ -33,7 +33,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
                     .forEach(s -> {
                            s.setDpRemaining(0);
                            action.accept(s);
-                           addNews(empires, " Loaded %s cargo %s has been destroyed".formatted(s.getOwner(), s));
+                           addNews(empires, "Loaded %s cargo %s has been destroyed".formatted(s.getOwner(), s));
                      });
             }
             else if (!ship.isOneShot()) {

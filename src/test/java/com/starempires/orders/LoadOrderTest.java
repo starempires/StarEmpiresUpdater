@@ -1,53 +1,26 @@
 package com.starempires.orders;
 
-import com.starempires.objects.Coordinate;
-import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
-import com.starempires.objects.ShipClass;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-public class LoadOrderTest {
-
-    private static final Coordinate COORDINATE_ZERO = new Coordinate(0, 0);
-    private static final Coordinate COORDINATE_ONE = new Coordinate(1, 1);
-    private static final ShipClass ONE_TONNER = ShipClass.builder().tonnage(1).build();
-    @Mock
-    private Empire empire;
+public class LoadOrderTest extends BaseTest {
 
     private Ship carrier;
-    private Ship cargo;
-
-    private static final String PARAMS = "cargo onto carrier";
+    private Ship probe;
 
     @BeforeEach
     public void before() {
-        carrier = Ship.builder()
-                .name("carrier")
-                .coordinate(COORDINATE_ZERO)
-                .owner(empire)
-                .dpRemaining(1)
-                .shipClass(ShipClass.builder().racks(1).build())
-                .build();
-        cargo = Ship.builder()
-                .name("cargo")
-                .coordinate(COORDINATE_ZERO)
-                .owner(empire)
-                .dpRemaining(1)
-                .shipClass(ONE_TONNER)
-                .build();
-        lenient().when(empire.getShip("cargo")).thenReturn(cargo);
-        lenient().when(empire.getShip("carrier")).thenReturn(carrier);
-        lenient().when(empire.getName()).thenReturn("MCRN");
+        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        probe = createShip(probeClass, ZERO_COORDINATE, "probe", empire);
     }
 
     @Test
@@ -56,7 +29,7 @@ public class LoadOrderTest {
         String params = "cargo to carrier"; // uses "to" instead of "onto" and invalid ship list format
 
         // When
-        LoadOrder order = LoadOrder.parse(null, empire, params);
+        LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);
@@ -67,8 +40,9 @@ public class LoadOrderTest {
     @Test
     void parseUnknownCarrier() {
         // When
-        lenient().when(empire.getShip("carrier")).thenReturn(null);
-        LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
+        final String params = "probe onto unknown"; // uses "to" instead of "onto" and invalid ship list format
+
+        LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);
@@ -80,7 +54,7 @@ public class LoadOrderTest {
     void parseCargoIsCarrier() {
         final String params = "carrier onto carrier";
         // When
-        LoadOrder order = LoadOrder.parse(null, empire, params);
+        LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);
@@ -91,8 +65,11 @@ public class LoadOrderTest {
     @Test
     void parseCargoLoaded() {
         // When
-        cargo.setCarrier(carrier);
-        final LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
+
+        carrier.loadCargo(probe);
+        probe.loadOntoCarrier(carrier);
+        final String params = "probe onto carrier";
+        final LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);
@@ -103,8 +80,9 @@ public class LoadOrderTest {
     @Test
     void parseCargoCarrierDifferentSectors() {
         // When
-        cargo.setCoordinate(COORDINATE_ONE);
-        LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
+        probe.setCoordinate(ONE_COORDINATE);
+        final String params = "probe onto carrier";
+        LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);
@@ -114,8 +92,12 @@ public class LoadOrderTest {
 
     @Test
     void parseCarrierNoFreeRacks() {
-        carrier.loadCargo(Ship.builder().dpRemaining(1).shipClass(ONE_TONNER).build());
-        LoadOrder order = LoadOrder.parse(null, empire, PARAMS);
+        final Ship missile1 = createShip(missileClass, ZERO_COORDINATE, "m1", empire);
+        final Ship missile2 = createShip(missileClass, ZERO_COORDINATE, "m2", empire);
+        probe.loadCargo(missile1);
+
+        final String params = "m2 onto probe";
+        LoadOrder order = LoadOrder.parse(turnData, empire, params);
 
         // Then
         assertNotNull(order);

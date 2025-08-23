@@ -1,26 +1,27 @@
 package com.starempires.orders;
 
-import com.starempires.TurnData;
-import com.starempires.dao.JsonStarEmpiresDAO;
-import com.starempires.objects.Empire;
 import com.starempires.objects.HullType;
-import org.junit.jupiter.api.BeforeAll;
+import com.starempires.objects.Prohibition;
+import com.starempires.objects.World;
+import com.starempires.util.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DesignOrderTest {
+class DesignOrderTest extends BaseTest {
 
-    private static TurnData turnData;
-    private static final String TEST_EMPIRE = "KRATOS";
-    private static Empire empire;
+    private World world;
 
-    @BeforeAll
-    static void beforeAll() throws Exception {
-        final JsonStarEmpiresDAO dao = new JsonStarEmpiresDAO("src/test/resources", null);
-        turnData = dao.loadTurnData("test", 0);
-        empire = turnData.getEmpire(TEST_EMPIRE);
+    @BeforeEach
+    void before() throws Exception {
+        world = createWorld("KRATOS", ZERO_COORDINATE, 12);
+        world.setOwner(empire);
+        world.setStockpile(12);
+        empire.addKnownWorld(world);
+        empire.addKnownShipClass(probeClass);
     }
 
     @Test
@@ -47,8 +48,50 @@ class DesignOrderTest {
     }
 
     @Test
-    void parseDesignShipUnknownWorld() {
+    void parseDesignShipTooFewAttribute() {
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 0 3 3 1");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void parseDesignShipTooManyAttribute() {
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 1 3 3 10");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void parseDesignShipNonExistentWorld() {
         final DesignOrder order = DesignOrder.parse(turnData, empire, "unknown attackcube gunship 12 12 4 1 0");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testUnknownBuildWorld() {
+        empire.removeKnownWorld(world);
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 1 3 3 1");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testUnownedBuildWorld() {
+        world.setOwner(null);
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 1 3 3 1");
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("do not currently own")));
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testInterdictedDesignWorld() {
+        world.setProhibition(Prohibition.INTERDICTED);
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS lander scout 1 1 3 3 1");
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("interdicted")));
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testDuplicateDesignWorld() {
+        final DesignOrder order = DesignOrder.parse(turnData, empire, "KRATOS probe scout 1 1 3 3 1");
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Duplicate")));
         assertFalse(order.isReady());
     }
 }

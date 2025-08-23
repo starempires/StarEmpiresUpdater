@@ -70,6 +70,9 @@ public class BuildOrder extends WorldBasedOrder {
                 order.addError("Unknown world: " + worldName);
                 return order;
             }
+            if (!world.isOwnedBy(empire)) {
+                order.addWarning(world, "You do not currently own world " + world);
+            }
             if (world.isInterdicted()) {
                 order.addWarning(world, "Currently interdicted");
             }

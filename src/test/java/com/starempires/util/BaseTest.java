@@ -41,9 +41,8 @@ public class BaseTest {
     protected ShipClass frigateClass;
     protected Empire empire;
 
-
     @BeforeAll
-    public static void beforeAll() throws Exception {
+    public static void beforeAllBaseTest() throws Exception {
         // create HullParameters
         final String hullJson = Files.readString(FileSystems.getDefault().getPath(RESOURCE_DIR, HULL_PARAMETERS_FILE));
         hullParameters = MAPPER.readValue(hullJson, new TypeReference<List<HullParameters>>() {
@@ -55,7 +54,7 @@ public class BaseTest {
     }
 
     @BeforeEach
-    public void before() {
+    public void beforeBaseTest() {
         turnData = TurnData
                 .builder()
                 .turnNumber(1)
@@ -71,7 +70,6 @@ public class BaseTest {
         fighterClass = turnData.getShipClass("fighter");
         frigateClass = turnData.getShipClass("frigate");
         empire = createEmpire("test");
-
     }
 
     protected Ship createShip(final ShipClass shipClass, final Coordinate coordinate, final String name, final Empire owner) {

@@ -71,6 +71,9 @@ public class DesignOrder extends WorldBasedOrder {
                 order.setReady(false);
                 return order;
             }
+            if (!world.isOwnedBy(empire)) {
+                order.addWarning(world, "You do not currently own world " + world);
+            }
             if (world.isInterdicted()) {
                 order.addWarning(world, "Currently interdicted");
             }

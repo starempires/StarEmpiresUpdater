@@ -1,6 +1,7 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
@@ -20,7 +21,13 @@ public class UnloadOrder extends ShipBasedOrder {
     final static private Pattern PATTERN = Pattern.compile(SHIP_LIST_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
 
     public static UnloadOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
-        final UnloadOrder order = UnloadOrder.builder().orderType(OrderType.UNLOAD).empire(empire).parameters(parameters).build();
+        final UnloadOrder order = UnloadOrder
+                .builder()
+                .orderType(OrderType.UNLOAD)
+                .empire(empire)
+                .parameters(parameters)
+                .ships(Lists.newArrayList())
+                .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String unloadNamesText = matcher.group(SHIP_LIST_GROUP);

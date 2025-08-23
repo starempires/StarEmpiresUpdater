@@ -1,9 +1,9 @@
 package com.starempires.orders;
 
-import com.starempires.TurnData;
-import com.starempires.dao.JsonStarEmpiresDAO;
-import com.starempires.objects.Empire;
-import org.junit.jupiter.api.BeforeAll;
+import com.starempires.objects.Prohibition;
+import com.starempires.objects.World;
+import com.starempires.util.BaseTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BuildOrderTest {
+class BuildOrderTest extends BaseTest {
 
-    private static TurnData turnData;
-    private static final String TEST_EMPIRE = "KRATOS";
-    private static Empire empire;
+    private World world;
 
-    @BeforeAll
-    static void beforeAll() throws Exception {
-        final JsonStarEmpiresDAO dao = new JsonStarEmpiresDAO("src/test/resources", null);
-        turnData = dao.loadTurnData("test", 0);
-        empire = turnData.getEmpire(TEST_EMPIRE);
+    @BeforeEach
+    void before() throws Exception {
+        world = createWorld("KRATOS", ZERO_COORDINATE, 12);
+        world.setOwner(empire);
+        world.setStockpile(12);
+        empire.addKnownWorld(world);
+        empire.addKnownShipClass(probeClass);
     }
 
     @Test
@@ -56,9 +56,32 @@ class BuildOrderTest {
     }
 
     @Test
-    void testUnknownBuildWorld() {
+    void testNonExistentBuildWorld() {
         final BuildOrder order = BuildOrder.parse(turnData, empire, "Unknown 2 probe p1 p2");
         assertFalse(order.isReady());
+    }
+
+    @Test
+    void testUnknownBuildWorld() {
+        empire.removeKnownWorld(world);
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testUnownedBuildWorld() {
+        world.setOwner(null);
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("do not currently own")));
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testInterdictedBuildWorld() {
+        world.setProhibition(Prohibition.INTERDICTED);
+        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("interdicted")));
+        assertTrue(order.isReady());
     }
 
     @Test
