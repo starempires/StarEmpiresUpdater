@@ -260,7 +260,7 @@ public class TurnData {
     public Set<Empire> getEmpiresPresent(final Coordinate coordinate) {
         final Set<Empire> empiresPresent = Sets.newHashSet();
         empiresPresent.addAll(getActiveEmpires().stream()
-                .filter(empire -> !empire.getShips(coordinate).isEmpty())
+                .filter(empire -> !empire.getLiveShips(coordinate).isEmpty())
                 .collect(Collectors.toSet()));
         final World world = getWorld(coordinate);
         if (world != null && world.isOwned()) {

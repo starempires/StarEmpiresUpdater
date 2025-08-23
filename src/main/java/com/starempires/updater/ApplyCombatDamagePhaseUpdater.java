@@ -5,7 +5,7 @@ import com.starempires.objects.Ship;
 
 import java.util.List;
 
-public class ApplyCombatDamagePhaseUpdater extends PhaseUpdater {
+public class ApplyCombatDamagePhaseUpdater extends ApplyDamagePhaseUpdater {
 
     public ApplyCombatDamagePhaseUpdater(final TurnData turnData) {
         super(Phase.APPLY_COMBAT_DAMAGE, turnData);
@@ -14,12 +14,6 @@ public class ApplyCombatDamagePhaseUpdater extends PhaseUpdater {
     @Override
     public void update() {
         final List<Ship> damagedShips = turnData.shipsCombatDamagedThisTurn();
-        damagedShips.forEach(ship -> {
-            ship.applyCombatDamageAccrued();
-            if (!ship.isOneShot()) {
-                final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;
-                addNews(ship.getOwner(), String.format("Ship %s now at %.1f%% OR ", ship, opRating));
-            }
-        });
+        update(damagedShips, Ship::applyCombatDamageAccrued);
     }
 }
