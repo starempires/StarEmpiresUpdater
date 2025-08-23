@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Ship;
 
 import java.util.Collection;
@@ -26,6 +27,14 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
             if (!ship.isAlive()) {
                 final Collection<Empire> empires = newsEmpires.get(ship);
                 addNews(empires, "%s ship %s has been destroyed".formatted(ship.getOwner(), ship));
+                ship.getCargo()
+                    .stream()
+                    .sorted(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR)
+                    .forEach(s -> {
+                           s.setDpRemaining(0);
+                           action.accept(s);
+                           addNews(empires, " Loaded %s cargo %s has been destroyed".formatted(s.getOwner(), s));
+                     });
             }
             else if (!ship.isOneShot()) {
                 final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;

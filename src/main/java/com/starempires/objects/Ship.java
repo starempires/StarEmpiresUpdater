@@ -177,20 +177,20 @@ public class Ship extends OwnableObject {
         addCondition(ShipCondition.DAMAGED_BY_STORM);
     }
 
+    private void checkDestroyed(ShipCondition condition) {
+        if (dpRemaining <= 0) {
+            destroy(condition);
+        }
+    }
+
     public void applyCombatDamageAccrued() {
         dpRemaining -= combatDamageAccrued;
-        if (dpRemaining <= 0) {
-            dpRemaining = 0;
-            destroy(ShipCondition.DESTROYED_IN_COMBAT);
-        }
+        checkDestroyed(ShipCondition.DESTROYED_IN_COMBAT);
     }
 
     public void applyStormDamageAccrued() {
         dpRemaining -= stormDamageAccrued;
-        if (dpRemaining <= 0) {
-            dpRemaining = 0;
-            destroy(ShipCondition.DESTROYED_BY_STORM);
-        }
+        checkDestroyed(ShipCondition.DESTROYED_BY_STORM);
     }
 
     public void destroy(final ShipCondition destroyedCondition) {
