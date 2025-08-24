@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class WeatherStormsPhaseUpdater extends PhaseUpdater {
 
@@ -80,7 +81,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                 final Set<Ship> starbases = Sets.newHashSet();
                 surroundingCoordinates.forEach(c -> starbases.addAll(turnData.getStarbases(c)));
                 final Collection<Empire> empires = turnData.getEmpiresPresent(coordinate);
-                final Collection<Ship> ships = turnData.getLiveShips(coordinate);
+                final Collection<Ship> ships = turnData.getLiveShips(coordinate).stream().filter(s -> !s.isLoaded()).collect(Collectors.toSet());
                 ships.removeAll(starbases);
 
                 final Multimap<Empire, Ship> shipsByEmpire = HashMultimap.create();

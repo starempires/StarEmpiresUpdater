@@ -54,9 +54,4 @@ public abstract class MappableObject extends IdentifiableObject {
     public void addDrift(final int step, final HexDirection direction) {
         drift.add(direction);
     }
-
-    @Override
-    public String toString() {
-        return super.toString() + " " + coordinate;
-    }
 }

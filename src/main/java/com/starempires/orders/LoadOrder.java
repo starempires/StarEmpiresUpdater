@@ -59,7 +59,7 @@ public class LoadOrder extends ShipBasedOrder {
                     } else {
                         order.ships.add(ship);
                         turnData.load(ship, carrier);
-                        order.addOKResult(ship);
+                        order.addResult("%s: OK (%d empty racks remaining)".formatted(ship, carrier.getEmptyRacks()));
                         order.carrier = carrier;
                     }
                 }
