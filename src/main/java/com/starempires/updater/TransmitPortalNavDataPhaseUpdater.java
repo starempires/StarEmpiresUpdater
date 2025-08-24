@@ -28,7 +28,7 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
                             recipient.addKnownPortal(portal);
                             recipient.addNavData(portal);
                             addNewsResult(order, empire,
-                                    "Navigation data for portal " + portal + " given to " + recipient);
+                                    "You gave navigation data for portal " + portal + " given to " + recipient);
                             addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
                         }
                         else {

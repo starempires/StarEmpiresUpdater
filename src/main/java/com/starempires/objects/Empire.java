@@ -173,6 +173,10 @@ public class Empire extends IdentifiableObject {
         portalNavData.add(portal);
     }
 
+    public void removeNavData(final Portal portal) {
+        portalNavData.remove(portal);
+    }
+
     public boolean isKnownEmpire(final Empire empire) {
         return empire == this || knownEmpires.contains(empire);
     }

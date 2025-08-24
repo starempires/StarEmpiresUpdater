@@ -9,7 +9,8 @@
     "tonnage": 999,
     "cost": 999,
     "ar": 15,
-    "hullType": "orbital"
+    "hullType": "orbital",
+    "buildable": false
   },
   {
     "name": "battleship",
@@ -21,7 +22,8 @@
     "tonnage": 30,
     "cost": 28,
     "ar": 16,
-    "hullType": "capital ship"
+    "hullType": "capital ship",
+    "buildable": true
   },
   {
     "name": "probe",
@@ -33,7 +35,8 @@
     "tonnage": 2,
     "cost": 2,
     "ar": 0,
-    "hullType": "scout"
+    "hullType": "scout",
+    "buildable": true
   },
   {
     "name": "carrier",
@@ -45,7 +48,8 @@
     "tonnage": 15,
     "cost": 10,
     "ar": 1,
-    "hullType": "transport"
+    "hullType": "transport",
+    "buildable": true
   },
   {
     "name": "station",
@@ -57,7 +61,8 @@
     "tonnage": 20,
     "cost": 25,
     "ar": 16,
-    "hullType": "orbital"
+    "hullType": "orbital",
+    "buildable": true
   },
   {
     "name": "frigate",
@@ -69,7 +74,8 @@
     "tonnage": 10,
     "cost": 15,
     "ar": 3,
-    "hullType": "gunship"
+    "hullType": "gunship",
+    "buildable": true
   },
   {
     "name": "fighter",
@@ -81,7 +87,8 @@
     "tonnage": 1,
     "cost": 1,
     "ar": 1,
-    "hullType": "wing"
+    "hullType": "wing",
+    "buildable": true
   },
   {
     "name": "nuke",
@@ -93,6 +100,7 @@
     "tonnage": 1,
     "cost": 1,
     "ar": 0,
-    "hullType": "missile"
+    "hullType": "missile",
+    "buildable": true
   }
 ]

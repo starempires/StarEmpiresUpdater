@@ -42,11 +42,11 @@ public class DesignOrder extends WorldBasedOrder {
     private boolean checkAttribute(final int value, final int min, final int max, final String name, final HullType hullType) {
         boolean rv = true;
         if (value < min) {
-            addError(("%s designs must have at least %d %s".formatted(hullType, min, StarEmpiresUtils.plural(min, name))));
+            addError(("%s designs must have at least %s".formatted(hullType, StarEmpiresUtils.plural(min, name))));
             rv = false;
         }
         if (value > max) {
-            addError(("%s designs cannot have more than %d %s".formatted(hullType, max, StarEmpiresUtils.plural(max, name))));
+            addError(("%s designs cannot have more than %s".formatted(hullType, StarEmpiresUtils.plural(max, name))));
             rv = false;
         }
         return rv;

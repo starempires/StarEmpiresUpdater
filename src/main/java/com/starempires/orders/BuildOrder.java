@@ -83,8 +83,8 @@ public class BuildOrder extends WorldBasedOrder {
                 order.addWarning(shipClass, "Unknown ship class");
             }
             else {
-                if (shipClass.isStarbase()) {
-                    order.addError("Cannot build additional starbases");
+                if (shipClass.isBuildable()) {
+                    order.addError("Cannot build additional %s class ships".formatted(shipClass));
                     return order;
                 }
                 final int cost = shipClass.getCost();

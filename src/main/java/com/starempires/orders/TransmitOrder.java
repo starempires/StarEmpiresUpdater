@@ -45,7 +45,7 @@ public class TransmitOrder extends EmpireBasedOrder {
             final String[] recipientNames = matcher.group(RECIPIENT_LIST_GROUP).split(SPACE_REGEX);
             for (String portalName: portalNames) {
                 final Portal portal = turnData.getPortal(portalName);
-                if (empire.isKnownPortal(portal)) {
+                if (!empire.isKnownPortal(portal)) {
                     order.addError("Unknown portal: " + portalName);
                 } else if (!empire.hasNavData(portal)) {
                     order.addError("You do not have navigation data for portal: " + portal);
@@ -61,11 +61,11 @@ public class TransmitOrder extends EmpireBasedOrder {
 
             for (String recipientName: recipientNames) {
                 final Empire recipient = turnData.getEmpire(recipientName);
-                if (empire.isKnownEmpire(recipient)) {
+                if (!empire.isKnownEmpire(recipient)) {
                     order.addError("You are not in message contact with empire %s".formatted(recipientName));
                 } else if (empire.equals(recipient)) {
                     order.addError("No need to transmit portal nav data to yourself");
-                } else if (empire.isGM()) {
+                } else if (recipient.isGM()) {
                     order.addError("The GM politely declines your offer");
                 } else {
                     order.recipients.add(recipient);

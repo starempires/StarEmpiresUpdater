@@ -35,6 +35,7 @@ public class ShipClass extends IdentifiableObject {
     private final int tonnage;
     private final int cost;
     private final int ar;
+    private final boolean buildable;
 
     @JsonIgnore
     public boolean isDevice() {

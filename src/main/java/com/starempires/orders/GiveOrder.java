@@ -45,7 +45,7 @@ public class GiveOrder extends EmpireBasedOrder {
             final String[] recipientNames = matcher.group(RECIPIENT_LIST_GROUP).split(SPACE_REGEX);
             for (String shipClassName: shipClassNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipClassName);
-                if (empire.isKnownShipClass(shipClass)) {
+                if (!empire.isKnownShipClass(shipClass)) {
                     order.addError("Unknown ship class: " + shipClassName);
                 } else {
                     order.shipClasses.add(shipClass);
@@ -59,11 +59,11 @@ public class GiveOrder extends EmpireBasedOrder {
 
             for (String recipientName: recipientNames) {
                 final Empire recipient = turnData.getEmpire(recipientName);
-                if (empire.isKnownEmpire(recipient)) {
+                if (!empire.isKnownEmpire(recipient)) {
                     order.addError("You are not in message contact with empire %s".formatted(recipientName));
                 } else if (empire.equals(recipient)) {
                     order.addError("No need to give ship classes to yourself");
-                } else if (empire.isGM()) {
+                } else if (recipient.isGM()) {
                     order.addError("The GM politely declines your offer");
                 } else {
                     order.recipients.add(recipient);

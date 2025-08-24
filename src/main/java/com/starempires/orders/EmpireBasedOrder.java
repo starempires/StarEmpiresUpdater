@@ -22,5 +22,6 @@ public abstract class EmpireBasedOrder extends Order {
 
     protected static void parseReady(final JsonNode node, final TurnData turnData, final OrderType orderType, final EmpireBasedOrder.EmpireBasedOrderBuilder<?, ?> builder) {
         Order.parseReady(node,  turnData, orderType, builder);
+        builder.recipients(getTurnDataListFromJsonNode(node.get("recipients"), turnData::getEmpire));
     }
 }

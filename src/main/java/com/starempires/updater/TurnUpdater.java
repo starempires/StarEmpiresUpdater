@@ -125,7 +125,6 @@ public class TurnUpdater {
         processPhase(new DestructShipsPhaseUpdater(turnData));
         processPhase(new FireGunsPhaseUpdater(turnData));
         processPhase(new ApplyCombatDamagePhaseUpdater(turnData));
-        processPhase(new RemoveDestroyedShipsIPhaseUpdater(turnData));
         processPhase(new AutoRepairShipsPhaseUpdater(turnData));
         processPhase(new DetermineOwnershipIPhaseUpdater(turnData));
 
@@ -136,7 +135,6 @@ public class TurnUpdater {
         processPhase(new AcquireNavDataPhaseUpdater(turnData));
         processPhase(new WeatherStormsPhaseUpdater(turnData));
         processPhase(new ApplyStormDamagePhaseUpdater(turnData));
-        processPhase(new RemoveDestroyedShipsIIPhaseUpdater(turnData));
         processPhase(new DetermineOwnershipIIPhaseUpdater(turnData));
         processPhase(new RelocateHomeworldsPhaseUpdater(turnData));
         processPhase(new EstablishProhibitionsPhaseUpdater(turnData));

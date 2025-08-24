@@ -13,7 +13,7 @@ public class ApplyStormDamagePhaseUpdater extends ApplyDamagePhaseUpdater {
 
     @Override
     public void update() {
-        final List<Ship> damagedShips = turnData.shipsCombatDamagedThisTurn();
+        final List<Ship> damagedShips = turnData.shipsStormDamagedThisTurn();
         update(damagedShips, Ship::applyStormDamageAccrued);
     }
 }
