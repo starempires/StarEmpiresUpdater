@@ -369,6 +369,12 @@ public class Empire extends IdentifiableObject {
                 .collect(Collectors.toSet());
     }
 
+    public Set<Ship> getDeadShips(final Coordinate coordinate) {
+        return fleet.getShipsByCoordinate(coordinate).stream()
+                .filter(s -> !s.isAlive())
+                .collect(Collectors.toSet());
+    }
+
     @JsonIgnore
     public Set<Ship> getLiveShips() {
         return getShips().stream()

@@ -32,12 +32,14 @@ public class DestructOrder extends ShipBasedOrder {
                     order.addError(ship, "Starbase cannot be self-destructed");
                 } else if (ship.isLoaded()) {
                     order.addError(ship, "Ship is loaded onto carrier %s and cannot be self-destructed.".formatted(ship.getCarrier()));
-                } else if (ship.hasLoadedCargo()) {
-                    order.addWarning(ship, "Self-destructing carrier will self-destruct %d loaded cargo ships.".formatted(ship.getCargo().size()));
-                    order.ships.addAll(ship.getCargoGroup());
                 } else {
+                    if (ship.hasLoadedCargo()) {
+                        order.addWarning(ship, "Self-destructing carrier will self-destruct %d loaded cargo ships.".formatted(ship.getCargo().size()));
+                    }
+                    else {
+                        order.addOKResult(ship);
+                    }
                     order.ships.add(ship);
-                    order.addOKResult(ship);
                 }
             }
 

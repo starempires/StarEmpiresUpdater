@@ -7,6 +7,7 @@ import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.orders.DestructOrder;
@@ -23,19 +24,19 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
         super(Phase.SELF_DESTRUCT_SHIPS, turnData);
     }
 
-    private void applyCollateralDamage(final Coordinate coordinate, final int tonnage) {
+    private void applyCollateralDamage(final Coordinate coordinate, final int tonnage, final Collection<Empire> newsEmpires) {
         final int interval = turnData.getIntParameter(Constants.PARAMETER_SELF_DESTRUCT_TONNAGE_INTERVAL,
                 Constants.DEFAULT_SELF_DESTRUCT_TONNAGE_INTERVAL);
         final int damage = (int) Math.ceil((double) tonnage / (double) interval);
 
         final Collection<Ship> shipsInSector = turnData.getLiveShips(coordinate);
-        shipsInSector.forEach(ship -> {
-            if (!ship.hasCondition(ShipCondition.SELF_DESTRUCTED)) {
-                ship.inflictCombatDamage(damage);
-                final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
-                addNews(newsEmpires, "%s ship %s received %d collateral damage".formatted(ship.getOwner(), ship, damage));
-            }
-        });
+        shipsInSector.stream()
+                .filter(s -> !s.hasCondition(ShipCondition.SELF_DESTRUCTED))
+                .sorted(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR)
+                .forEach(ship -> {
+                   ship.inflictCombatDamage(damage);
+                   addNews(newsEmpires, "%s ship %s received %d collateral damage".formatted(ship.getOwner(), ship, damage));
+            });
     }
 
     private void destructShips(final Multimap<Coordinate, Ship> selfDestructs) {
@@ -45,7 +46,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
             // count collateral damage from destroyed ships, note their cargo
             final int collateralTonnage = destructedShips.stream().map(Ship::getTonnage).mapToInt(i -> i).sum();
             destructedShips.forEach(Ship::destruct);
-            applyCollateralDamage(coordinate, collateralTonnage);
+            applyCollateralDamage(coordinate, collateralTonnage, newsEmpires);
         });
     }
 
@@ -55,12 +56,12 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
         final Multimap<Coordinate, Ship> selfDestructs = HashMultimap.create();
         orders.forEach(o -> {
             final DestructOrder order = (DestructOrder) o;
-            for (Ship ship: order.getShips()) {
+            order.getShips().stream().sorted(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR).forEach(ship -> {
                 if (ship.isStarbase()) {
                     addNewsResult(order, "Starbase " + ship + " cannot be self-destructed.");
                 }
                 else if (ship.isLoaded()) {
-                    addNewsResult(order, "Ship %s is loaded onto carrier %s and cannot be self-destructed.".formatted(ship, ship.getCarrier().getHandle()));
+                    addNewsResult(order, "Ship %s is loaded onto carrier %s and cannot be self-destructed.".formatted(ship, ship.getCarrier()));
                 }
                 else {
                     final Coordinate coordinate = ship.getCoordinate();
@@ -78,7 +79,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
                                 "Loaded cargo %s (%s) self destructed".formatted(cargo, plural(cargo.getTonnage(), "tonne")));
                     }
                 }
-            };
+            });
         });
         destructShips(selfDestructs);
     }

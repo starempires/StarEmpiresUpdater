@@ -269,6 +269,14 @@ public class TurnData {
         return empiresPresent;
     }
 
+    public Set<Empire> getEmpiresPresentFromDeadShips(final Coordinate coordinate) {
+        final Set<Empire> empiresPresent = Sets.newHashSet();
+        empiresPresent.addAll(getActiveEmpires().stream()
+                .filter(empire -> !empire.getDeadShips(coordinate).isEmpty())
+                .collect(Collectors.toSet()));
+        return empiresPresent;
+    }
+
     public int getIntParameter(final String parameter, final int defaultValue) {
         return Integer.parseInt(parameters.getOrDefault(parameter, Integer.toString(defaultValue)));
     }

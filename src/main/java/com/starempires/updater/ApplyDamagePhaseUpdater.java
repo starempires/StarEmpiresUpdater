@@ -23,6 +23,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
         damagedShips.forEach(ship -> {
             final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
             newsEmpires.putAll(ship, empires);
+            newsEmpires.putAll(ship, turnData.getEmpiresPresentFromDeadShips(ship.getCoordinate()));
         });
         final Set<Ship> destroyed = Sets.newHashSet();
         damagedShips.forEach(ship -> {
