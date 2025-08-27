@@ -6,13 +6,13 @@ import com.google.common.collect.Multimap;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.MappableObject;
 import com.starempires.objects.Ship;
 import com.starempires.orders.MoveOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 import lombok.NonNull;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +49,7 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
             final List<Ship> movers = order.getShips();
             // remove ships ordered to move which cannot legally move
             final List<Ship> validMovers = gatherValidMovers(order, movers);
+            validMovers.sort(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR);
             if (validMovers.isEmpty()) {
                 order.addResult("No valid movers found");
                 return;
@@ -61,9 +62,8 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
                 final int distance = mover.distanceTo(destination);
                 if (distance <= availableEngines) {
                     movingShips.put(order, mover);
-
                 } else {
-                    addNewsResult(order, "Ship %s has insufficient operational engines (max move %d) to reach destination %s (distance %d)".formatted(mover, availableEngines, order.getDestination(), distance));
+                    addNewsResult(order, "Ship %s has insufficient operational engines (max move %d) to reach destination %s (distance %d)".formatted(mover, availableEngines, mover.getOwner().toLocal(order.getDestination()), distance));
                 }
             });
         });
@@ -72,26 +72,37 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
             final MoveOrder order = entry.getKey();
             final Empire empire = order.getEmpire();
             final Ship mover = entry.getValue();
-            final Collection<Empire> originEmpires = turnData.getEmpiresPresent(mover);
-            originEmpires.remove(empire);
 
              // report departing ships to all empires present in origin sectors
+            final Collection<Empire> originEmpires = turnData.getEmpiresPresent(mover);
             final MappableObject originObject = turnData.getMappableObject(mover.getCoordinate());
             final MappableObject destinationObject = turnData.getMappableObject(order.getDestination());
-            final String destination = ObjectUtils.firstNonNull(destinationObject, order.getDestination()).toString();
 
-            String moveText;
-            if (originObject == null) {
-                moveText = "moved out of sector " + mover.getCoordinate();
-                addNewsResult(order, empire, "Ship " + mover + " moved from " + mover.getCoordinate() + " to destination " + destination);
-            }
-            else {
-                moveText = "departed " + originObject;
-                addNewsResult(order, empire, "Ship " + mover + " moved from " + originObject + " to destination " + destination);
-            }
-             addNews(originEmpires, "%s ship %s %s".formatted(mover.getOwner(), mover, moveText));
+            originEmpires.forEach(originEmpire -> {
+                String originText;
+                if (originObject == null) {
+                    originText = "sector " + originEmpire.toLocal(mover.getCoordinate());
+                }
+                else {
+                    originText = originObject.toString();
+                }
+                if (originEmpire.equals(empire)) {
+                    String destinationText;
+                    if (destinationObject == null) {
+                        destinationText = "sector " + originEmpire.toLocal(order.getDestination());
+                    }
+                    else {
+                        destinationText = destinationObject.toString();
+                    }
+                    addNews(originEmpire, "%s ship %s moved from %s to %s".formatted(mover.getOwner(), mover, originText, destinationText));
+                }
+                else {
+                    addNews(originEmpire, "%s ship %s departed %s".formatted(mover.getOwner(), mover, originText));
+                }
+            });
         }
 
+        // move the ships
         for (Map.Entry<MoveOrder, Ship> entry: movingShips.entries()) {
             final MoveOrder order = entry.getKey();
             final Empire empire = order.getEmpire();
@@ -106,17 +117,18 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
             final Ship mover = entry.getValue();
             final Collection<Empire> destinationEmpires = turnData.getEmpiresPresent(mover);
             destinationEmpires.remove(empire);
-
             final MappableObject destinationObject = turnData.getMappableObject(order.getDestination());
-            final String destination = ObjectUtils.firstNonNull(destinationObject, order.getDestination()).toString();
-            String moveText;
-            if (destinationObject == null) {
-                moveText = "sector " + mover.getCoordinate();
-            }
-            else {
-                moveText = destinationObject.toString();
-            }
-            addNews(destinationEmpires, "%s ship %s arrived at %s".formatted(empire, mover, moveText));
+
+            destinationEmpires.forEach(destinationEmpire -> {
+                String moveText;
+                if (destinationObject == null) {
+                    moveText = "sector " + destinationEmpire.toLocal(mover.getCoordinate());
+                }
+                else {
+                    moveText = destinationObject.toString();
+                }
+                addNews(destinationEmpire, "%s ship %s arrived at %s".formatted(empire, mover, moveText));
+            });
         }
     }
 }

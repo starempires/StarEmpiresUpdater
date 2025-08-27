@@ -36,7 +36,7 @@ public abstract class TransponderChangesPhaseUpdater extends PhaseUpdater {
         final List<Ship> ships = getShipsByHandle(order, shipHandles);
         for (final Ship ship: ships) {
             if (ship.isPublicTransponder()) {
-                addNewsResult(order, "Transponder for ship " + ship + " is public and cannot be modified.");
+                addNewsResult(order, "Transponder for ship " + ship + " is public and cannot be modified");
             }
             else {
                 validShips.add(ship);

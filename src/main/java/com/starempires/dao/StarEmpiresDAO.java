@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -173,42 +174,50 @@ public abstract class StarEmpiresDAO {
     private void addShips(final Map<String, Object> jsonData, final TurnData turnData) {
         final List<Map<String, Object>> objectData = getObjectData(jsonData, "ships");
         final Map<Empire, Map<String, Ship>> ships = Maps.newHashMap();
+        final Map<Ship, String> carriers = Maps.newHashMap();
+        final Multimap<Ship, String> cargos = HashMultimap.create();
         for (Map<String, Object> data : objectData) {
             final Ship ship = MAPPER.convertValue(data, new TypeReference<Ship>() { });
+            // don't load destroyed ships
+            if (ship.getDpRemaining() > 0) {
+                final String shipClass = (String) data.get("shipClass");
+                ship.setShipClass(turnData.getShipClass(shipClass));
 
-            final String shipClass = (String) data.get("shipClass");
-            ship.setShipClass(turnData.getShipClass(shipClass));
+                final String owner = (String) data.get("owner");
+                final Empire empire = turnData.getEmpire(owner);
+                ship.setOwner(empire);
 
-            final String owner = (String) data.get("owner");
-            final Empire empire = turnData.getEmpire(owner);
-            ship.setOwner(empire);
+                final Collection<String> transponders = getStringCollection(data, "transponders");
+                transponders.stream().map(turnData::getEmpire).forEach(ship::addTransponder);
 
-            final Collection<String> transponders = getStringCollection(data, "transponders");
-            transponders.stream().map(turnData::getEmpire).forEach(ship::addTransponder);
+                final String carrierName = (String) data.get("carrier");
+                if (carrierName != null) {
+                    carriers.put(ship, carrierName);
+                }
+                cargos.putAll(ship, getStringCollection(data, "cargo"));
 
-            empire.addShip(ship);
-            log.debug("Loaded ship {} for owner {}", ship, empire);
-            final Map<String, Ship> empireShips = ships.computeIfAbsent(empire, k -> Maps.newHashMap());
-            empireShips.put(ship.getName(), ship);
+                empire.addShip(ship);
+                log.debug("Loaded ship {} for owner {}", ship, empire);
+                final Map<String, Ship> empireShips = ships.computeIfAbsent(empire, k -> Maps.newHashMap());
+                empireShips.put(ship.getName(), ship);
+            }
         }
 
         // add cargo and carriers once all ships have been instantiated
-        for (Map<String, Object> data : objectData) {
-            final String name = (String) data.get("name");
-            final String owner = (String) data.get("owner");
-            final Empire empire = turnData.getEmpire(owner);
-            final Ship ship = empire.getShip(name);
-
-            final String carrierName = (String) data.get("carrier");
-            if (carrierName != null) {
-                final Ship carrier = empire.getShip(carrierName);
-                ship.setCarrier(carrier);
-                carrier.addCargo(ship);
-            }
-
-            final Collection<String> cargo = getStringCollection(data, "cargo");
-            cargo.stream().map(empire::getShip).forEach(ship::addCargo);
+        for (Map.Entry<Ship, String> entry : carriers.entrySet()) {
+            final Ship cargo = entry.getKey();
+            final String carrierName = entry.getValue();
+            final Ship carrier = cargo.getOwner().getShip(carrierName);
+            cargo.setCarrier(carrier);
+            carrier.addCargo(cargo);
         }
+
+        cargos.forEach((carrier, cargoName) -> {
+            final Empire owner = carrier.getOwner();
+            final Ship cargo = owner.getShip(cargoName);
+            cargo.setCarrier(carrier);
+            carrier.addCargo(cargo);
+        });
     }
 
     private void addEmpires(final Map<String, Object> jsonData, final TurnData turnData) {

@@ -42,21 +42,21 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
             final Ship ship = order.getShips().get(0);
             final List<World> worlds = order.getWorlds();
             if (!ship.isAlive()) {
-                addNewsResult(order, "Ship " + ship + " has been destroyed.");
+                addNewsResult(order, "Ship " + ship + " has been destroyed");
             } else if (!ship.isRepairable()) {
-                addNewsResult(order, "Ship " + ship + " needs no repairs.");
+                addNewsResult(order, "Ship " + ship + " needs no repairs");
             } else {
                 for (World world: worlds) {
                     if (!world.isOwnedBy(empire)) {
                         addNewsResult(order, "You do not own world " + world);
                     } else if (world.isInterdicted()) {
-                        addNewsResult(order, "World " + world + " is interdicted; no repairs possible.");
+                        addNewsResult(order, "World " + world + " is interdicted; no repairs possible");
                     } else if (world.isBlockaded() && !ship.isSameSector(world)) {
-                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible.");
+                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible");
                     } else if (world.getStockpile() < 1) {
                         addNewsResult(order, "No RUs stockpiled at world " + world);
                     } else if (world.isBlockaded() && !ship.isSameSector(world)) {
-                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible.");
+                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible");
                     } else {
                         int dpToRepair = order.getDpToRepair();
                         final int maxRepair = ship.getMaxRepairAmount();

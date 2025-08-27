@@ -62,7 +62,7 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
                 if (!world.isOwnedBy(empire)) {
                     addNewsResult(order, "You do not own world " + world);
                 } else if (world.isInterdicted()) {
-                    addNewsResult(order, "World " + world + " is interdicted; no builds possible.");
+                    addNewsResult(order, "World " + world + " is interdicted; no builds possible");
                 } else {
                     buildShips(order, shipClass);
                 }

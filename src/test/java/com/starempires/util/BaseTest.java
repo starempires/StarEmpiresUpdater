@@ -7,6 +7,7 @@ import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.EmpireType;
+import com.starempires.objects.FrameOfReference;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.Portal;
 import com.starempires.objects.Ship;
@@ -87,7 +88,9 @@ public class BaseTest {
     }
 
     protected Empire createEmpire(final String name) {
-        final Empire empire = Empire.builder().name(name).empireType(EmpireType.ACTIVE).build();
+        final Empire empire = Empire.builder().name(name).empireType(EmpireType.ACTIVE)
+                .frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE)
+                .build();
         turnData.addEmpires(Sets.newHashSet(empire));
         return empire;
     }

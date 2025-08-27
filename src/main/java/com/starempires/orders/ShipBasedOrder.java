@@ -106,8 +106,10 @@ public abstract class ShipBasedOrder extends Order {
             final String shipListText = matcher.group(SHIP_LIST_GROUP);
             if (coordText != null) {
                 final String exceptListText = matcher.group(COORDINATE_EXCEPT_LIST_GROUP);
-                final Coordinate coordinate = Coordinate.parse(coordText);
-                locationShips.addAll(empire.getShips(coordinate));
+                final Coordinate localCoordinate = Coordinate.parse(coordText);
+                final Coordinate galacticCoordinate = empire.toGalactic(localCoordinate);
+                locationShips.addAll(empire.getShips(galacticCoordinate));
+                locationShips.removeIf(Ship::isLoaded);
                 final Collection<Ship> exceptShips = getShipsFromNames(empire, exceptListText, order);
                 exceptShips.forEach(locationShips::remove);
             } else if (locationText != null) {
@@ -118,6 +120,7 @@ public abstract class ShipBasedOrder extends Order {
                 } else {
                     final String exceptListText = matcher.group(LOCATION_EXCEPT_LIST_GROUP);
                     locationShips.addAll(empire.getShips(coordinate));
+                    locationShips.removeIf(Ship::isLoaded);
                     final Collection<Ship> exceptShips = getShipsFromNames(empire, exceptListText, order);
                     exceptShips.forEach(locationShips::remove);
                 }

@@ -239,6 +239,11 @@ public class Ship extends OwnableObject {
         return dpRemaining > 0;
     }
 
+    @JsonIgnore
+    public int getDamage() {
+        return getDp() - dpRemaining;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getHandle(), owner);

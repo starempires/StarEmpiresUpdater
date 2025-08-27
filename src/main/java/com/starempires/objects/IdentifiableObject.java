@@ -43,7 +43,7 @@ public abstract class IdentifiableObject implements Comparable<IdentifiableObjec
     public static class IdentifiableObjectComparator implements Comparator<IdentifiableObject> {
         @Override
         public int compare(@NonNull final IdentifiableObject o1, @NonNull final IdentifiableObject o2) {
-            return StringUtils.compare(o1.getName(), o2.getName());
+            return StringUtils.compareIgnoreCase(o1.getName(), o2.getName());
         }
     }
 

@@ -101,7 +101,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
             } else if (attacker.getAvailableGuns() > 0) {
                 gunships.add(attacker);
             } else {
-                order.addResult("Attacker %s has no operational guns; skipping".formatted(attacker));
+                order.addResult("Attacker %s has no operational guns".formatted(attacker));
             }
         }
     }

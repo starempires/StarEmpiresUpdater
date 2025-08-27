@@ -31,7 +31,7 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             }
 
             if (fromWorld.isBlockaded()) {
-                addNewsResult(order, "World " + fromWorld + " is blockaded; no RU transfers possible");
+                addNewsResult(order, "No RU transfers possible from blockaded world " + fromWorld);
                 return;
             }
 

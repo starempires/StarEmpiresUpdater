@@ -21,7 +21,7 @@ public class AcquireNavDataPhaseUpdater extends PhaseUpdater {
             portalsTraversed.forEach(portal -> {
                 if (!empire.hasNavData(portal)) {
                     empire.addNavData(portal);
-                    addNews(empire, "You hava acquired navigation data for portal " + portal);
+                    addNews(empire, "You have acquired navigation data for portal " + portal);
                 }
             });
         });

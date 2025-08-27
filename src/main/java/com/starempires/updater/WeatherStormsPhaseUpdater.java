@@ -11,6 +11,7 @@ import com.starempires.objects.DeviceType;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.objects.Storm;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -80,15 +81,16 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                 final Set<Coordinate> surroundingCoordinates = Coordinate.getSurroundingCoordinates(coordinate, STARBASE_PROTECTION_RANGE);
                 final Set<Ship> starbases = Sets.newHashSet();
                 surroundingCoordinates.forEach(c -> starbases.addAll(turnData.getStarbases(c)));
-                final Collection<Empire> empires = turnData.getEmpiresPresent(coordinate);
+                final Collection<Empire> empiresPresent = turnData.getEmpiresPresent(coordinate);
                 final Collection<Ship> ships = turnData.getLiveShips(coordinate).stream().filter(s -> !s.isLoaded()).collect(Collectors.toSet());
                 ships.removeAll(starbases);
 
                 final Multimap<Empire, Ship> shipsByEmpire = HashMultimap.create();
                 ships.forEach(ship -> shipsByEmpire.put(ship.getOwner(), ship));
+                String stormText = StringUtils.join(storms, ",");
 
                 starbases.forEach(s -> {
-                    addNews(empires, "Starbase %s protects %s ships".formatted(s, s.getOwner()));
+                    addNews(empiresPresent, "Starbase %s protects %s ships from damage from %s".formatted(s, s.getOwner(), stormText));
                     shipsByEmpire.removeAll(s.getOwner());
                 });
 
@@ -99,10 +101,10 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
 
                 shipsByEmpire.asMap().forEach((empire, shipList) -> {
                     final Collection<Ship> empireShields = shieldsByEmpire.get(empire);
-                    final int unshieldedStormRating = degradeShields(empireShields, totalRating, empires);
+                    final int unshieldedStormRating = degradeShields(empireShields, totalRating, empiresPresent);
                     if (unshieldedStormRating > 0) {
                         shipList.forEach(ship -> {
-                            addNews(empires, "Ship " + ship + " suffered " + unshieldedStormRating + " ion storm damage");
+                            addNews(empiresPresent, "Ship " + ship + " suffered " + unshieldedStormRating + " storm damage");
                             ship.inflictStormDamage(unshieldedStormRating);
                         });
                     }
