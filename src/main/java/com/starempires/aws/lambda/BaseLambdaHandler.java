@@ -11,6 +11,9 @@ import java.util.Map;
 public abstract class BaseLambdaHandler implements RequestHandler<Map<String, Object>, Map<String, Object>> {
 
     protected static final String SESSIONS_LOCATION = "starempires-sessions";
+    protected static final String GAME_DATA_LOCATION = "starempires-gamedata";
+    protected static final String CONFIG_FILE = "session.cfg";
+
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     String getBody(Map<String, Object> event) {

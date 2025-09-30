@@ -54,6 +54,11 @@ public class SessionCreator {
     private static final String HULL_PARAMETERS_FILENAME = "HullParameters.json";
     private static final String SHIP_CLASSES_FILENAME = "ShipClasses.json";
 
+    private static final String ARG_SESSION_NAME = "session";
+    private static final String ARG_GAME_DATA_DIR = "gamedatadir";
+    private static final String ARG_CONFIG_FILE = "config";
+    private static final String ARG_SESSIONS_DIR = "sessionsdir";
+
     private String sessionName;
     private String gameDataDir;
     private String sessionsDir;
@@ -66,24 +71,20 @@ public class SessionCreator {
         return Lists.newArrayList(data.split("\n"));
     }
 
-    private void extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
         try {
-            options.addOption(Option.builder("s").argName("session name").longOpt("session").hasArg().desc("session name").required().build());
+            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             // location where session creation data and other session-independent files are found
-            options.addOption(Option.builder("gd").argName("game data dir").longOpt("gamedatadir").hasArg().desc("game data dir").required().build());
+            options.addOption(Option.builder("gd").argName("game data dir").longOpt("gamedatadir").hasArg().desc(ARG_GAME_DATA_DIR).required().build());
             // config properties for how sessions are created, should be found in found in game data dir
-            options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc("config file").required().build());
+            options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc(ARG_CONFIG_FILE).required().build());
             // location where individual session folders are found
-            options.addOption(Option.builder("sd").argName("sessions dir").longOpt("sessionsdir").hasArg().desc("sessions dir").required().build());
+            options.addOption(Option.builder("sd").argName("sessions dir").longOpt("sessionsdir").hasArg().desc(ARG_SESSIONS_DIR).required().build());
 
             final CommandLineParser parser = new DefaultParser();
-            final CommandLine cmd = parser.parse(options, args);
-            // Parse command-line arguments
-            sessionName = cmd.getOptionValue("session");
-            gameDataDir = cmd.getOptionValue("gamedatadir");
-            sessionsDir = cmd.getOptionValue("sessionsdir");
-            configFile = cmd.getOptionValue("config");
+            return parser.parse(options, args);
+
         } catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("SessionCreator", options);
@@ -91,8 +92,12 @@ public class SessionCreator {
         }
     }
 
-    public SessionCreator(final String[] args) throws ParseException, IOException {
-        extractCommandLineOptions(args);
+    public SessionCreator(final String sessionName, final String sessionsDir, final String gameDataDir,
+                          final String configFile) {
+        this.sessionName = sessionName;
+        this.gameDataDir = gameDataDir;
+        this.sessionsDir = sessionsDir;
+        this.configFile = configFile;
 //        dao = new JsonStarEmpiresDAO(sessionsDir, gameDataDir);
         dao = new S3StarEmpiresDAO(sessionsDir, gameDataDir);
     }
@@ -129,7 +134,8 @@ public class SessionCreator {
         return edgeCoordinates;
     }
 
-    public TurnData createSession(final List<String> empireData) throws Exception {
+    public TurnData createSession() throws Exception {
+        final List<String> empireData = loadEmpireData();
         final List<String> configData = loadGameDataItems(configFile);
         final PropertiesUtil galaxyProperties = new PropertiesUtil(configData);
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
@@ -248,6 +254,9 @@ public class SessionCreator {
             });
         }
 
+        saveTurnData(turnData);
+        final Map<String, String> colors = createColorMap(turnData);
+        saveColors(colors);
         log.info("Initialized session {}", sessionName);
         return turnData;
     }
@@ -287,12 +296,14 @@ public class SessionCreator {
 
     public static void main(String[] args) {
         try {
-            final SessionCreator creator = new SessionCreator(args);
-            final List<String> empireData = creator.loadEmpireData();
-            final TurnData turnData = creator.createSession(empireData);
-            creator.saveTurnData(turnData);
-            final Map<String, String> colors = creator.createColorMap(turnData);
-            creator.saveColors(colors);
+            final CommandLine cmd = extractCommandLineOptions(args);
+            // Parse command-line arguments
+            final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
+            final String gameDataDir = cmd.getOptionValue(ARG_GAME_DATA_DIR);
+            final String sessionsDir = cmd.getOptionValue(ARG_SESSIONS_DIR);
+            final String configFile = cmd.getOptionValue(ARG_CONFIG_FILE);
+            final SessionCreator creator = new SessionCreator(sessionName, sessionsDir, gameDataDir, configFile);
+            final TurnData turnData = creator.createSession();
             // reload turn data to confirm it's valid
             final TurnData turnData2 = creator.loadTurnData(turnData.getSession(), turnData.getTurnNumber());
             log.info("Loaded turnData {}", turnData2);
