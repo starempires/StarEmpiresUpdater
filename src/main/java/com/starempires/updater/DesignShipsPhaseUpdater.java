@@ -1,9 +1,7 @@
 package com.starempires.updater;
 
 import com.starempires.TurnData;
-import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
-import com.starempires.objects.HullParameters;
 import com.starempires.objects.HullType;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.World;
@@ -20,8 +18,6 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
     }
 
     private void designMissile(final DesignOrder order) {
-        final HullParameters hullParameters = turnData.getHullParameters(HullType.MISSILE);
-        final int cost = hullParameters.getCost(order.getGuns(), order.getTonnage());
         final Empire empire = order.getEmpire();
 
         final ShipClass shipClass = ShipClass.builder()
@@ -32,7 +28,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
                 .scan(0)
                 .racks(0)
                 .tonnage(order.getTonnage())
-                .cost(cost)
+                .cost(order.getCost())
                 .ar(0)
                 .hullType(HullType.MISSILE)
                 .build();
@@ -43,18 +39,17 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
 
     private void designShip(final DesignOrder order) {
         final HullType hullType = order.getHullType();
-        final HullParameters hullParameters = turnData.getHullParameters(hullType);
-        final int cost = hullParameters.getCost(order.getGuns(), order.getDp(), order.getEngines(), order.getScan(), order.getRacks());
-        final int tonnage = hullParameters.getTonnage(order.getGuns(), order.getDp(), order.getEngines(), order.getScan(), order.getRacks());
-        final int ar = Math.max(1, Math.round(order.getDp() * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
-        final int designCost = Math.max(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
+        final int cost = order.getCost();
+        final int tonnage = order.getTonnage();
+        final int ar = order.getAr();
+        final int designFee = order.getDesignFee();
 
         final World world = order.getWorld();
         final Empire empire = order.getEmpire();
 
         int stockpile = world.getStockpile();
-        if (designCost > stockpile) {
-            addNewsResult(order, "World %s has insufficient stockpile (%d) to pay design fee %d".formatted(world, stockpile, designCost));
+        if (designFee > stockpile) {
+            addNewsResult(order, "World %s has insufficient stockpile (%d) to pay design fee %d".formatted(world, stockpile, designFee));
             return;
         }
 
@@ -73,9 +68,9 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
 
         turnData.addShipClass(shipClass);
         empire.addKnownShipClass(shipClass);
-        stockpile = world.adjustStockpile(-designCost);
+        stockpile = world.adjustStockpile(-designFee);
         addNewsResult(order, "You have designed new " + hullType + " class " + order.getName()
-                            + " (" + designCost + " fee; " + stockpile + " RU remaining).");
+                            + " (" + designFee + " fee; " + stockpile + " RU remaining).");
     }
 
     @Override

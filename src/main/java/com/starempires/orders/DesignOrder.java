@@ -38,6 +38,9 @@ public class DesignOrder extends WorldBasedOrder {
     private int scan;
     private int racks;
     private int tonnage;
+    private int cost;
+    private int designFee;
+    private int ar;
 
     private boolean checkAttribute(final int value, final int min, final int max, final String name, final HullType hullType) {
         boolean rv = true;
@@ -110,6 +113,7 @@ public class DesignOrder extends WorldBasedOrder {
                 order.guns = guns;
                 order.tonnage = tonnage;
                 order.dp = 1;
+                order.cost = cost;
                 final ShipClass shipClass = ShipClass.builder()
                         .name(designName)
                         .hullType(hullType)
@@ -138,24 +142,28 @@ public class DesignOrder extends WorldBasedOrder {
                     return order;
                 }
                 final int cost = hullParameters.getCost(guns, dp, engines, scan, racks);
-                final int designCost = Math.min(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
-                if (designCost > world.getStockpile()) {
-                    order.addError(world, "Insufficient stockpile (%d) to pay %s design cost (%d)".formatted(world.getStockpile(), hullType, designCost));
+                final int designFee = Math.max(1, Math.round(cost * Constants.DEFAULT_DESIGN_MULTIPLIER));
+                if (designFee > world.getStockpile()) {
+                    order.addError(world, "Insufficient stockpile (%d) to pay %s design fee (%d)".formatted(world.getStockpile(), hullType, designFee));
                     return order;
                 }
                 final int tonnage = hullParameters.getTonnage(guns, dp, engines, scan, racks);
                 final int ar = Math.max(1, Math.round(dp * Constants.DEFAULT_AUTO_REPAIR_MULTIPLIER));
-                world.adjustStockpile(-designCost);
+                world.adjustStockpile(-designFee);
                 order.addResult("Pending design for %s (%s) G:%d DP:%d E:%d S:%d R:%d".formatted(designName, hullType, guns, dp, engines, scan, racks));
                 order.addResult("Cost: %d".formatted(cost));
                 order.addResult("AR: %d".formatted(ar));
                 order.addResult("Tonnage: %d".formatted(tonnage));
-                order.addResult("Design fee %d (%d remaining)".formatted(designCost, world.getStockpile()));;
+                order.addResult("Design fee %d (%d remaining)".formatted(designFee, world.getStockpile()));;
                 order.guns = guns;
                 order.dp = dp;
                 order.engines = engines;
                 order.scan = scan;
                 order.racks = racks;
+                order.cost = cost;
+                order.designFee = designFee;
+                order.tonnage = tonnage;
+                order.ar = ar;
                 final ShipClass shipClass = ShipClass.builder()
                         .name(designName)
                         .hullType(hullType)

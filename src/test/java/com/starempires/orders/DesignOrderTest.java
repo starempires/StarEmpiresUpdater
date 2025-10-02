@@ -34,6 +34,9 @@ class DesignOrderTest extends BaseTest {
         assertEquals(0, order.getScan());
         assertEquals(0, order.getRacks());
         assertEquals(10, order.getTonnage());
+        assertEquals(1, order.getCost());
+        assertEquals(0, order.getDesignFee());
+        assertEquals(0, order.getAr());
     }
 
     @Test
@@ -45,6 +48,9 @@ class DesignOrderTest extends BaseTest {
         assertEquals(3, order.getScan());
         assertEquals(1, order.getDp());
         assertEquals(1, order.getRacks());
+        assertEquals(5, order.getCost());
+        assertEquals(3, order.getDesignFee());
+        assertEquals(1, order.getAr());
     }
 
     @Test

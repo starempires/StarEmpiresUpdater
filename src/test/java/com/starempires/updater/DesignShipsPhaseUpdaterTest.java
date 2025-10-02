@@ -47,6 +47,10 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
                 .scan(SCAN)
                 .racks(RACKS)
                 .world(world)
+                .cost(23)
+                .tonnage(14)
+                .designFee(12)
+                .ar(1)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
     }
@@ -64,10 +68,11 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(1, cruiserClass.getAr());
         assertEquals(HullType.GUNSHIP, cruiserClass.getHullType());
         assertEquals(NAME, cruiserClass.getName());
-        assertEquals(29, cruiserClass.getCost());
-        assertEquals(13, cruiserClass.getTonnage());
+        assertEquals(23, cruiserClass.getCost());
+        assertEquals(14, cruiserClass.getTonnage());
+        assertEquals(1, cruiserClass.getAr());
         assertTrue(empire.getKnownShipClasses().contains(cruiserClass));
-        assertEquals(5, world.getStockpile());
+        assertEquals(8, world.getStockpile());
     }
 
     @Test
@@ -113,6 +118,7 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
                 .name(name)
                 .guns(missileGuns)
                 .tonnage(missileTonnage)
+                .cost(4)
                 .world(world2)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
