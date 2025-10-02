@@ -92,12 +92,12 @@ public class BuildOrder extends WorldBasedOrder {
                 if (buildMax) {
                     count = (int) (stockpile / cost);
                     if (count < 1) {
-                        order.addError(world, "Insufficient stockpile (%d) to build any ships of class %s (cost %d)".formatted(stockpile, shipClass, cost));
+                        order.addError(world, "Insufficient stockpile (%d RU) to build any ships of class %s (cost %d RU)".formatted(stockpile, shipClass, cost));
                         return order;
                     }
                 } else {
                     if (cost * count > stockpile) {
-                        order.addError(world, "Insufficient stockpile (%d) to build %d ships of class %s (cost %d)".formatted(world.getStockpile(), count, shipClass, cost));
+                        order.addError(world, "Insufficient stockpile (%d RU) to build %d ships of class %s (cost %d RU)".formatted(world.getStockpile(), count, shipClass, cost));
                         return order;
                     }
                 }
@@ -125,7 +125,7 @@ public class BuildOrder extends WorldBasedOrder {
                     }
                     world.adjustStockpile(-cost);
                     empire.buildShip(shipClass, world, nextName, turnData.getTurnNumber());
-                    order.addResult("Pending build for %s ship %s (cost %d, %d RU remaining)".formatted(shipClass, nextName, cost, world.getStockpile()));
+                    order.addResult("Pending build for %s ship %s (cost %d RU, %d RU remaining)".formatted(shipClass, nextName, cost, world.getStockpile()));
                 }
             }
             order.world = world;

@@ -32,7 +32,7 @@ public class ProduceResourceUnitsPhaseUpdater extends PhaseUpdater {
             if (multiplier != 1.0) {
                 text += " (" + production + " x " + multiplier + ")";
             }
-            text += " (stockpile now " + world.getStockpile() + ")";
+            text += " (stockpile now " + world.getStockpile() + " RU)";
             addNews(newsEmpires, text);
         });
     }

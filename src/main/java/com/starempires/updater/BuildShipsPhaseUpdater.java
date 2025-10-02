@@ -38,10 +38,10 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
                 }
                 final Ship ship = empire.buildShip(shipClass, world, name, turnData.getTurnNumber());
                 addNewsResult(order, "You built " + shipClass + " ship " + ship + " at world "
-                        + world + " (cost " + cost + "; " + remaining + " RU remaining)");
+                        + world + " (cost " + cost + " RU; " + remaining + " RU remaining)");
             } else {
-                addNewsResult(order, "Insufficient stockpile (" + stockpile + ") on world "
-                        + world + " to build ship class " + shipClass + " (cost " + cost + ")");
+                addNewsResult(order, "Insufficient stockpile (" + stockpile + " RU) on world "
+                        + world + " to build ship class " + shipClass + " (cost " + cost + " RU)");
                 break;
             }
         }

@@ -92,17 +92,17 @@ public abstract class Order {
         return valueNode == null ? null : valueNode.asText();
     }
 
-    protected static int getInt(JsonNode node, String fieldName) {
-        JsonNode valueNode = node.get(fieldName);
+    protected static int getInt(final JsonNode node, final String fieldName) {
+        final JsonNode valueNode = node.get(fieldName);
         return valueNode == null ? 0 : valueNode.asInt();
     }
 
-    protected static boolean getBoolean(JsonNode node, String fieldName) {
-        JsonNode valueNode = node.get(fieldName);
+    protected static boolean getBoolean(final JsonNode node, final String fieldName) {
+        final JsonNode valueNode = node.get(fieldName);
         return valueNode != null && valueNode.asBoolean();
     }
 
-    private static List<String> getStringListFromValueNode(JsonNode node) {
+    private static List<String> getStringListFromValueNode(final JsonNode node) {
         final List<String> values = new ArrayList<>();
         if (node != null && node.isArray()) {
             for (JsonNode value : node) {
@@ -112,7 +112,7 @@ public abstract class Order {
         return values;
     }
 
-    protected static List<String> getStringList(JsonNode node, String fieldName) {
+    protected static List<String> getStringList(final JsonNode node, final String fieldName) {
         final JsonNode valueNode = node.get(fieldName);
         return getStringListFromValueNode(valueNode);
     }
@@ -121,7 +121,7 @@ public abstract class Order {
         final List<String> names = getStringListFromValueNode(node);
         final List<T> objects = new ArrayList<>();
         names.forEach(name -> {
-            T obj = lookupMethod.apply(name);
+            final T obj = lookupMethod.apply(name);
             if (obj == null) {
                 log.error("Unknown object {}", name);
             } else {

@@ -198,7 +198,10 @@ public class DesignOrder extends WorldBasedOrder {
                 .engines(getInt(node, "engines"))
                 .scan(getInt(node, "scan"))
                 .racks(getInt(node, "racks"))
-                .tonnage(getInt(node, "tonnage")) // for missiles
+                .tonnage(getInt(node, "tonnage"))
+                .cost(getInt(node, "cost"))
+                .designFee(getInt(node, "designFee"))
+                .ar(getInt(node, "ar"))
                 .build();
     }
 }

@@ -49,7 +49,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
 
         int stockpile = world.getStockpile();
         if (designFee > stockpile) {
-            addNewsResult(order, "World %s has insufficient stockpile (%d) to pay design fee %d".formatted(world, stockpile, designFee));
+            addNewsResult(order, "World %s has insufficient stockpile (%d RU) to pay %d RU design fee".formatted(world, stockpile, designFee));
             return;
         }
 
@@ -69,8 +69,8 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
         turnData.addShipClass(shipClass);
         empire.addKnownShipClass(shipClass);
         stockpile = world.adjustStockpile(-designFee);
-        addNewsResult(order, "You have designed new " + hullType + " class " + order.getName()
-                            + " (" + designFee + " fee; " + stockpile + " RU remaining).");
+        addNewsResult(order, "You designed new " + hullType + " class " + order.getName()
+                            + " (" + designFee + " RU design fee; " + stockpile + " RU remaining).");
     }
 
     @Override
