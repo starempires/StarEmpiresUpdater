@@ -433,6 +433,7 @@ public class Empire extends IdentifiableObject {
                 .turnBuilt(turnNumber)
                 .build();
         addShip(ship);
+        ship.addCondition(ShipCondition.BUILT);
         return ship;
     }
 

@@ -456,4 +456,10 @@ class ShipTest extends BaseTest {
     void testTargetable() {
         assertTrue(carrier.isTargetable());
     }
+
+    @Test
+    void getAbbreviatedConditions() {
+        carrier.addCondition(ShipCondition.MOVED);
+        assertEquals(Set.of(ShipCondition.MOVED.getAbbreviation()), carrier.getAbbreviatedConditions());
+    }
 }

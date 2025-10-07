@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,7 +26,9 @@ public class Ship extends OwnableObject {
     /** serial number of this ship */
     private final String serialNumber;
     /** set of conditions that apply to this ship */
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(contentUsing =  ShipCondition.ShipConditionAbbrevSerializer.class)
+    @JsonDeserialize(contentUsing = ShipCondition.ShipConditionAbbrevDeserializer.class)
     private final Set<ShipCondition> conditions = Sets.newHashSet();
     /** dp remaining for this ship */
     private int dpRemaining;
@@ -475,5 +478,10 @@ public class Ship extends OwnableObject {
             return false;
         }
         return true;
+    }
+
+    @JsonIgnore
+    public Set<String> getAbbreviatedConditions() {
+        return conditions.stream().map(ShipCondition::getAbbreviation).collect(Collectors.toSet());
     }
 }
