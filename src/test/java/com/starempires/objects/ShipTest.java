@@ -4,6 +4,7 @@ import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -459,7 +460,12 @@ class ShipTest extends BaseTest {
 
     @Test
     void getAbbreviatedConditions() {
+        carrier.addCondition(ShipCondition.HIT_IN_COMBAT);
         carrier.addCondition(ShipCondition.MOVED);
-        assertEquals(Set.of(ShipCondition.MOVED.getAbbreviation()), carrier.getAbbreviatedConditions());
+        carrier.addCondition(ShipCondition.TRAVERSED_WORMNET);
+        final List<String> expected = List.of(ShipCondition.HIT_IN_COMBAT.getAbbreviation(),
+                ShipCondition.MOVED.getAbbreviation(),
+                ShipCondition.TRAVERSED_WORMNET.getAbbreviation());
+        assertEquals(expected, carrier.getAbbreviatedConditions());
     }
 }

@@ -9,10 +9,10 @@ import com.starempires.objects.Empire;
 import com.starempires.objects.HullType;
 import com.starempires.objects.ScanStatus;
 import com.starempires.objects.Ship;
-import com.starempires.objects.ShipCondition;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ShipSnapshot extends OwnableObjectSnapshot {
 
     private final String serialNumber;
-    private final Set<ShipCondition> conditions;
+    private final List<String> conditions;
     private final Set<String> cargo;
     private final String shipClass;
     private final double opRating;
@@ -57,7 +57,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .owner(ship.getOwner().getName())
                     .shipClass(ship.getShipClass().getName())
                     .opRating(ship.getOperationRating())
-                    .conditions(ship.getConditions())
+                    .conditions(ship.getAbbreviatedConditions())
                     .dpRemaining(ship.getDpRemaining())
                     .emptyRacks(ship.getEmptyRacks())
                     .cargo(ship.getCargo().stream().map(Ship::getHandle).collect(Collectors.toSet()))
@@ -92,7 +92,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .owner(ship.getOwner().getName())
                     .shipClass(ship.getShipClass().getName())
                     .hull(ship.getShipClass().getHullType())
-                    .conditions(ship.getConditions())
+                    .conditions(ship.getAbbreviatedConditions())
                     .dpRemaining(dpRemaining)
                     .opRating(opRating)
                     .tonnage(ship.getShipClass().getTonnage())
