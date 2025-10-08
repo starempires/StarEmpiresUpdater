@@ -80,4 +80,8 @@ public class Fleet {
                 .max()
                 .orElse(0);
     }
+
+    public void clearShipConditions() {
+        shipsByName.values().forEach(Ship::clearConditions);
+    }
 }

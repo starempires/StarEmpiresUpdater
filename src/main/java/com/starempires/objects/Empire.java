@@ -465,4 +465,9 @@ public class Empire extends IdentifiableObject {
     public int getLargestBasenameNumber(final String basename) {
         return fleet.getLargestBasenameNumber(basename);
     }
+
+    public void clearShipConditions() {
+        fleet.clearShipConditions();
+    }
+
 }

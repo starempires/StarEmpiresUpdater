@@ -499,4 +499,8 @@ public class TurnData {
     public Collection<ShipClass> getAllShipClasses() {
         return shipClassNames.values();
     }
+
+    public void clearShipConditions() {
+        empireNames.values().forEach(Empire::clearShipConditions);
+    }
 }

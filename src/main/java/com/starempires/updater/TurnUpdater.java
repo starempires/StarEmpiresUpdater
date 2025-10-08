@@ -52,6 +52,7 @@ public class TurnUpdater {
 
     public TurnData updateTurn() throws Exception {
         final TurnData turnData = loadTurnData();
+        turnData.clearShipConditions();
         loadReadyOrders(turnData);
         processTurn(turnData);
         turnData.setTurnNumber(turnData.getTurnNumber() + 1);

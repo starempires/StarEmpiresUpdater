@@ -116,6 +116,10 @@ public class Ship extends OwnableObject {
         return conditions.contains(condition);
     }
 
+    public void clearConditions() {
+        conditions.clear();
+    }
+
     /* Add/remove cargo methods manipulate cargo list without setting conditions */
 
     public void addCargo(final Ship ship) {
