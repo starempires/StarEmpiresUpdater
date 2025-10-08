@@ -56,8 +56,8 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .name(ship.getName())
                     .owner(ship.getOwner().getName())
                     .shipClass(ship.getShipClass().getName())
-                    .opRating(ship.getOperationRating())
                     .conditions(ship.getAbbreviatedConditions())
+                    .opRating(ship.getOperationRating())
                     .dpRemaining(ship.getDpRemaining())
                     .emptyRacks(ship.getEmptyRacks())
                     .cargo(ship.getCargo().stream().map(Ship::getHandle).collect(Collectors.toSet()))
@@ -79,13 +79,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .build();
         }
         else if (empire.getScanStatus(coordinate) == ScanStatus.VISIBLE) {
-            int dpRemaining = 0;
-            double opRating = 0.0;
-            if (empire.isKnownShipClass(ship.getShipClass())) {
-                dpRemaining = ship.getDpRemaining();
-                opRating = ship.getOperationRating();
-            }
-            snapshot = ShipSnapshot.builder()
+            final ShipSnapshotBuilder<? extends ShipSnapshot, ?> builder = ShipSnapshot.builder()
                     .coordinate(empire.toLocal(coordinate))
                     .serialNumber(ship.getSerialNumber())
                     .name(ship.getName())
@@ -93,10 +87,24 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .shipClass(ship.getShipClass().getName())
                     .hull(ship.getShipClass().getHullType())
                     .conditions(ship.getAbbreviatedConditions())
-                    .dpRemaining(dpRemaining)
-                    .opRating(opRating)
                     .tonnage(ship.getShipClass().getTonnage())
-                    .build();
+                    .starbase(ship.getShipClass().isStarbase());
+
+            if (empire.isKnownShipClass(ship.getShipClass())) {
+                builder.dpRemaining(ship.getDpRemaining())
+                       .opRating(ship.getOperationRating())
+                       .opGuns(ship.getAvailableGuns())
+                       .opEngines(ship.getAvailableEngines())
+                       .opScan(ship.getAvailableScan())
+                       .dp(ship.getShipClass().getDp())
+                       .guns(ship.getShipClass().getGuns())
+                       .engines(ship.getShipClass().getEngines())
+                       .scan(ship.getShipClass().getScan())
+                       .racks(ship.getShipClass().getRacks())
+                       .cost(ship.getShipClass().getCost())
+                       .ar(ship.getShipClass().getAr());
+            }
+            snapshot = builder.build();
         }
         else if (empire.getScanStatus(coordinate) == ScanStatus.SCANNED) {
             if (ship.isTransponderSet(empire)) {
