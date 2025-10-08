@@ -340,7 +340,7 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public boolean isConqueringShip() {
-        return isAlive() && !isOneShot() && getAvailableGuns() > 0;
+        return isAlive() && !isOneShot() && getAvailableGuns() > 0 && !isLoaded();
     }
 
     @JsonIgnore

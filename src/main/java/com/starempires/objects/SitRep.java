@@ -18,7 +18,7 @@ public class SitRep {
     }
 
     public void add(final Ship ship) {
-        if (ship.isDevice() || ship.isMissile()) {
+        if (!ship.isConqueringShip()) {
             return;
         }
 

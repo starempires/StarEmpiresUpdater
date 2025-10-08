@@ -15,7 +15,7 @@ class ProduceResourceUnitsPhaseUpdaterTest extends BaseTest {
     @BeforeEach
     void setUp() {
         world = createWorld("world", ZERO_COORDINATE, 10);
-        world.setOwner(empire);
+        world.setOwner(empire1);
         updater = new ProduceResourceUnitsPhaseUpdater(turnData);
     }
 

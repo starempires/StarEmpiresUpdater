@@ -32,11 +32,11 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
     void setUp() {
         updater = new DesignShipsPhaseUpdater(turnData);
         world = createWorld("world", ZERO_COORDINATE, 10);
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(20);
 
         order = DesignOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESIGN)
                 .parameters("world cruiser gunship 20 10 2 2 2")
                 .hullType(HullType.GUNSHIP)
@@ -71,7 +71,7 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(23, cruiserClass.getCost());
         assertEquals(14, cruiserClass.getTonnage());
         assertEquals(1, cruiserClass.getAr());
-        assertTrue(empire.getKnownShipClasses().contains(cruiserClass));
+        assertTrue(empire1.getKnownShipClasses().contains(cruiserClass));
         assertEquals(8, world.getStockpile());
     }
 
@@ -108,10 +108,10 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
         final int missileTonnage = 2;
         final String name = "supernuke";
         final World world2 = createWorld("world2", ZERO_COORDINATE, 10);
-        world2.setOwner(empire);
+        world2.setOwner(empire1);
         world2.setStockpile(20);
         order = DesignOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESIGN)
                 .parameters("world2 supernuke missile 15 2")
                 .hullType(HullType.MISSILE)
@@ -135,7 +135,7 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(name, missileClass.getName());
         assertEquals(4, missileClass.getCost());
         assertEquals(missileTonnage, missileClass.getTonnage());
-        assertTrue(empire.getKnownShipClasses().contains(missileClass));
+        assertTrue(empire1.getKnownShipClasses().contains(missileClass));
         assertEquals(20, world2.getStockpile());
     }
 }

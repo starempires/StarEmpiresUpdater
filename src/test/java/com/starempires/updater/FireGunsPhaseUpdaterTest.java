@@ -1,7 +1,6 @@
 package com.starempires.updater;
 
 import com.google.common.collect.Lists;
-import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.orders.FireOrder;
@@ -17,26 +16,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FireGunsPhaseUpdaterTest extends BaseTest {
 
     private Ship ship;
-    private Empire enemy;
     private FireOrder order;
     private FireGunsPhaseUpdater updater;
 
     @BeforeEach
     void setUp() {
-        enemy = createEmpire("enemy");
         updater = new FireGunsPhaseUpdater(turnData);
     }
 
     @Test
     void update() {
-        ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
-        final Ship target = createShip(probeClass, ZERO_COORDINATE, "target", enemy);
+        ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship target = createShip(probeClass, ZERO_COORDINATE, "target", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(ship))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
@@ -48,15 +45,15 @@ class FireGunsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMultipleTargets() {
-        ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire);
-        final Ship target1 = createShip(probeClass, ZERO_COORDINATE, "target1", enemy);
-        final Ship target2 = createShip(probeClass, ZERO_COORDINATE, "target2", enemy);
+        ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship target1 = createShip(probeClass, ZERO_COORDINATE, "target1", empire2);
+        final Ship target2 = createShip(probeClass, ZERO_COORDINATE, "target2", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(ship))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
@@ -70,15 +67,15 @@ class FireGunsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMultipleAttackers() {
-        final Ship attacker1 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire);
-        final Ship attacker2 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire);
-        final Ship target = createShip(starbaseClass, ZERO_COORDINATE, "target", enemy);
+        final Ship attacker1 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire1);
+        final Ship attacker2 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire1);
+        final Ship target = createShip(starbaseClass, ZERO_COORDINATE, "target", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(attacker1, attacker2))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
@@ -91,15 +88,15 @@ class FireGunsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMoreAttackersThanNeeded() {
-        final Ship attacker1 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire);
-        final Ship attacker2 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire);
-        final Ship target = createShip(probeClass, ZERO_COORDINATE, "target", enemy);
+        final Ship attacker1 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire1);
+        final Ship attacker2 = createShip(probeClass, ZERO_COORDINATE, "attacker2", empire1);
+        final Ship target = createShip(probeClass, ZERO_COORDINATE, "target", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(attacker1, attacker2))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
@@ -112,15 +109,15 @@ class FireGunsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMissilesAttackFirst() {
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
-        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire);
-        final Ship target = createShip(fighterClass, ZERO_COORDINATE, "target", enemy);
+        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire1);
+        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire1);
+        final Ship target = createShip(fighterClass, ZERO_COORDINATE, "target", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(missile, attacker))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));
@@ -135,16 +132,16 @@ class FireGunsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMultipleAttackersWithMissileAndMultipleTargets() {
-        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
-        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire);
-        final Ship target1 = createShip(fighterClass, ZERO_COORDINATE, "target1", enemy);
-        final Ship target2 = createShip(fighterClass, ZERO_COORDINATE, "target2", enemy);
+        final Ship missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire1);
+        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire1);
+        final Ship target1 = createShip(fighterClass, ZERO_COORDINATE, "target1", empire2);
+        final Ship target2 = createShip(fighterClass, ZERO_COORDINATE, "target2", empire2);
         order = FireOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.FIRE)
-                .parameters("ship at enemy")
+                .parameters("ship at empire2")
                 .ships(Lists.newArrayList(missile, attacker))
-                .targets(Lists.newArrayList(enemy))
+                .targets(Lists.newArrayList(empire2))
                 .coordinate(ZERO_COORDINATE)
                 .build();
         turnData.addOrders(Lists.newArrayList(order));

@@ -21,7 +21,7 @@ class ApplyCombatDamagePhaseUpdaterTest extends BaseTest {
     @Test
     void update() {
         final int damage = 1;
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         ship.inflictCombatDamage(damage);
         updater.update();
         assertEquals(damage, ship.getCombatDamageAccrued());

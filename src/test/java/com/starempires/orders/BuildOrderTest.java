@@ -20,21 +20,21 @@ class BuildOrderTest extends BaseTest {
     @BeforeEach
     void before() throws Exception {
         world = createWorld("KRATOS", ZERO_COORDINATE, 12);
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(12);
-        empire.addKnownWorld(world);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownWorld(world);
+        empire1.addKnownShipClass(probeClass);
     }
 
     @Test
     void testBadOrder() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS");
         assertFalse(order.isReady());
     }
 
     @Test
     void testParsePrefix() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe cube*");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 2 probe cube*");
         assertEquals("cube", order.getBasename());
         assertEquals("probe", order.getShipClassName());
         assertTrue(order.isReady());
@@ -42,7 +42,7 @@ class BuildOrderTest extends BaseTest {
 
     @Test
     void testParseNames() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 2 probe p1 p2");
         assertNull(order.getBasename());
         assertEquals(List.of("p1", "p2"), order.getNames());
         assertEquals("probe", order.getShipClassName());
@@ -51,27 +51,27 @@ class BuildOrderTest extends BaseTest {
 
     @Test
     void testInvalidBuildCount() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 0 probe p1 p2");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 0 probe p1 p2");
         assertFalse(order.isReady());
     }
 
     @Test
     void testNonExistentBuildWorld() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "Unknown 2 probe p1 p2");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "Unknown 2 probe p1 p2");
         assertFalse(order.isReady());
     }
 
     @Test
     void testUnknownBuildWorld() {
-        empire.removeKnownWorld(world);
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        empire1.removeKnownWorld(world);
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 2 probe p1 p2");
         assertFalse(order.isReady());
     }
 
     @Test
     void testUnownedBuildWorld() {
         world.setOwner(null);
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 2 probe p1 p2");
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("do not currently own")));
         assertTrue(order.isReady());
     }
@@ -79,14 +79,14 @@ class BuildOrderTest extends BaseTest {
     @Test
     void testInterdictedBuildWorld() {
         world.setProhibition(Prohibition.INTERDICTED);
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS 2 probe p1 p2");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 2 probe p1 p2");
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("interdicted")));
         assertTrue(order.isReady());
     }
 
     @Test
     void testBuildMax() {
-        final BuildOrder order = BuildOrder.parse(turnData, empire, "KRATOS max probe p*");
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS max probe p*");
         assertEquals("p", order.getBasename());
         assertEquals("probe", order.getShipClassName());
         assertTrue(order.isBuildMax());

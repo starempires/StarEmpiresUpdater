@@ -25,12 +25,12 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateSpecifiedExit() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry exit")
@@ -46,12 +46,12 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateUnspecifiedExit() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -66,13 +66,13 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDestroyedShip() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         ship.destroy(ShipCondition.DESTROYED_IN_COMBAT);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -88,12 +88,12 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNoEngines() {
-        final Ship ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -109,14 +109,14 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateCargoOnly() {
-        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
-        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
         turnData.load(cargo, carrier);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(cargo))
                 .parameters("ship portal entry")
@@ -132,14 +132,14 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateCarrierAndCargo() {
-        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
-        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
         turnData.load(cargo, carrier);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(carrier))
                 .parameters("ship portal entry")
@@ -158,13 +158,13 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateAttackingShip() {
-        final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire1);
         ship.fireGuns(1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, true);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -180,12 +180,12 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateEntryCollapsed() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, true);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -201,12 +201,12 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateExitCollapsed() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, true);
         turnData.addPortalConnection("entry", "exit");
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")
@@ -222,11 +222,11 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDisjointPortals() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
         final TraverseOrder order = TraverseOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("ship portal entry")

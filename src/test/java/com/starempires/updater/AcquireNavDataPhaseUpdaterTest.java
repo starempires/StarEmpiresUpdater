@@ -20,24 +20,24 @@ class AcquireNavDataPhaseUpdaterTest extends BaseTest {
     @Test
     void updateTraversedNewPortal() {
         final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
-        empire.addPortalTraversed(portal);
+        empire1.addPortalTraversed(portal);
         updater.update();
-        assertTrue(empire.hasNavData(portal));
+        assertTrue(empire1.hasNavData(portal));
     }
 
     @Test
     void updateTraversedKnownPortal() {
         final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
-        empire.addNavData(portal);
-        empire.addPortalTraversed(portal);
+        empire1.addNavData(portal);
+        empire1.addPortalTraversed(portal);
         updater.update();
-        assertTrue(empire.hasNavData(portal));
+        assertTrue(empire1.hasNavData(portal));
     }
 
     @Test
     void updatePortalNotTraversed() {
         final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
         updater.update();
-        assertFalse(empire.hasNavData(portal));
+        assertFalse(empire1.hasNavData(portal));
     }
 }

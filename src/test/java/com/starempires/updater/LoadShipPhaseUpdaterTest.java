@@ -22,15 +22,15 @@ class LoadShipPhaseUpdaterTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
+        cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
         updater = new LoadShipPhaseUpdater(turnData);
     }
 
     @Test
     void updateSuccessfulLoad() {
-        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
         order = LoadOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.LOAD)
                 .parameters("cargo onto carrier")
                 .carrier(carrier)
@@ -48,9 +48,9 @@ class LoadShipPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNotLoadedInsufficientRacks() {
-        carrier = createShip(probeClass, ZERO_COORDINATE, "carrier", empire);
+        carrier = createShip(probeClass, ZERO_COORDINATE, "carrier", empire1);
         order = LoadOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.LOAD)
                 .parameters("cargo onto carrier")
                 .carrier(carrier)
@@ -68,9 +68,9 @@ class LoadShipPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNotLoadedDifferentCoords() {
-        carrier = createShip(carrierClass, ONE_COORDINATE, "carrier", empire);
+        carrier = createShip(carrierClass, ONE_COORDINATE, "carrier", empire1);
         order = LoadOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.LOAD)
                 .parameters("cargo onto carrier")
                 .carrier(carrier)

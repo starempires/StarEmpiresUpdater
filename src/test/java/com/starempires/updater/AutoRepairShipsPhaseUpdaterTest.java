@@ -22,7 +22,7 @@ class AutoRepairShipsPhaseUpdaterTest extends BaseTest {
     @Test
     void update() {
         final int damage = 3;
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         ship.inflictCombatDamage(damage);
         ship.applyCombatDamageAccrued();
         updater.update();
@@ -32,7 +32,7 @@ class AutoRepairShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNothingToRepair() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         updater.update();
         assertEquals(ship.getDp(), ship.getDpRemaining());
         assertFalse(ship.hasCondition(ShipCondition.AUTO_REPAIRED));

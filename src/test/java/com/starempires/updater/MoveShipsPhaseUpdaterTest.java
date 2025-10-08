@@ -24,9 +24,9 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void update() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("TO (1,1)")
@@ -40,10 +40,10 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDestroyedMover() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         ship.destroy(ShipCondition.DESTROYED_IN_COMBAT);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("TO (1,1)")
@@ -57,11 +57,11 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMoveCargo() {
-        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
-        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
         turnData.load(cargo, carrier);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(cargo))
                 .parameters("TO (1,1)")
@@ -77,11 +77,11 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMoveCarrier() {
-        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
-        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
         turnData.load(cargo, carrier);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(carrier))
                 .parameters("TO (1,1)")
@@ -97,10 +97,10 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMoveAttacker() {
-        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire);
+        final Ship attacker = createShip(probeClass, ZERO_COORDINATE, "attacker", empire1);
         attacker.fireGuns(1);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(attacker))
                 .parameters("TO (1,1)")
@@ -114,9 +114,9 @@ class MoveShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateMoveTooFar() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "attacker", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "attacker", empire1);
         final MoveOrder order = MoveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.MOVE)
                 .ships(Lists.newArrayList(ship))
                 .parameters("TO (1,1)")

@@ -24,11 +24,11 @@ class DestructShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void update() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
-        final Ship collateral = createShip(probeClass, ZERO_COORDINATE, "collateral", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship collateral = createShip(probeClass, ZERO_COORDINATE, "collateral", empire1);
 
         final DestructOrder order = DestructOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESTRUCT)
                 .parameters("ship")
                 .ships(Lists.newArrayList(ship))
@@ -43,12 +43,12 @@ class DestructShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDestructLoadedCargo() {
-        final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire);
-        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
+        final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
         turnData.load(cargo, ship);
 
         final DestructOrder order = DestructOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESTRUCT)
                 .parameters("ship")
                 .ships(Lists.newArrayList(ship))
@@ -63,12 +63,12 @@ class DestructShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDestructFailedLoadedShip() {
-        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire);
-        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
+        final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
         turnData.load(ship, carrier);
 
         final DestructOrder order = DestructOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESTRUCT)
                 .parameters("ship")
                 .ships(Lists.newArrayList(ship))
@@ -83,10 +83,10 @@ class DestructShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDestructFailedStarbase() {
-        final Ship ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
 
         final DestructOrder order = DestructOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.DESTRUCT)
                 .parameters("ship")
                 .ships(Lists.newArrayList(ship))

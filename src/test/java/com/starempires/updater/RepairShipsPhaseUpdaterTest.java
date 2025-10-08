@@ -26,11 +26,11 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
     void setUp() {
         updater = new RepairShipsPhaseUpdater(turnData);
         world = createWorld("world", ZERO_COORDINATE, 10);
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(10);
-        ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         order = RepairOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.REPAIR)
                 .parameters("ship 2 world")
                 .ships(Lists.newArrayList(ship))
@@ -149,7 +149,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         ship.applyCombatDamageAccrued();
         world.setStockpile(1);
         order = RepairOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.REPAIR)
                 .parameters("ship 4 world")
                 .ships(Lists.newArrayList(ship))
@@ -165,12 +165,12 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateRepairOrbital() {
-        ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire);
+        ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
         ship.inflictCombatDamage(3);
         ship.applyCombatDamageAccrued();
         world.setStockpile(1);
         order = RepairOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.REPAIR)
                 .parameters("ship 3 world")
                 .ships(Lists.newArrayList(ship))
@@ -186,7 +186,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateRepairOrbitalFreeRepair() {
-        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire);
+        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire1);
         turnData.load(ship, starbase);
         ship.inflictCombatDamage(3);
         ship.applyCombatDamageAccrued();

@@ -13,51 +13,49 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransmitOrderTest extends BaseTest {
 
     private Portal portal;
-    private Empire other;
 
     @BeforeEach
     public void before() {
         portal = createPortal("portal", ZERO_COORDINATE, false);
-        other = createEmpire("other");
-        empire.addKnownPortal(portal);
-        empire.addNavData(portal);
-        empire.addKnownEmpire(other);
+        empire1.addKnownPortal(portal);
+        empire1.addNavData(portal);
+        empire1.addKnownEmpire(empire2);
     }
 
     @Test
     void testParseInvalidOrder() {
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "foo");
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "foo");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Invalid TRANSMIT order")));
     }
 
     @Test
     void testParseUnknownPortal() {
-        empire.removeKnownPortal(portal);
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to other");
+        empire1.removeKnownPortal(portal);
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to empire2");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown portal")));
     }
 
     @Test
     void testParseNoNavData() {
-        empire.removeNavData(portal);
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to other");
+        empire1.removeNavData(portal);
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to empire2");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("navigation data")));
     }
 
     @Test
     void testParseUnknownRecipient() {
-        empire.removeKnownEmpire(other);
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to other");
+        empire1.removeKnownEmpire(empire2);
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to empire2");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("message contact")));
     }
 
     @Test
     void testParseSelf() {
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to test");
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to empire1");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("yourself")));
     }
@@ -66,17 +64,17 @@ class TransmitOrderTest extends BaseTest {
     void testParseGM() {
         final Empire gm = Empire.builder().name("GM").empireType(EmpireType.GM).build();
         turnData.addEmpires(Sets.newHashSet(gm));
-        empire.addKnownEmpire(gm);
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to GM");
+        empire1.addKnownEmpire(gm);
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to GM");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("declines")));
     }
 
     @Test
     void testParseSuccess() {
-        final TransmitOrder order = TransmitOrder.parse(turnData, empire, "portal to other");
+        final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to empire2");
         assertTrue(order.isReady());
-        assertTrue(other.isKnownPortal(portal));
-        assertTrue(other.hasNavData(portal));
+        assertTrue(empire2.isKnownPortal(portal));
+        assertTrue(empire2.hasNavData(portal));
     }
 }

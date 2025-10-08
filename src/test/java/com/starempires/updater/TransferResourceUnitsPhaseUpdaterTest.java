@@ -1,6 +1,5 @@
 package com.starempires.updater;
 
-import com.starempires.objects.Empire;
 import com.starempires.objects.Prohibition;
 import com.starempires.objects.World;
 import com.starempires.orders.OrderType;
@@ -20,9 +19,9 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
     @BeforeEach
     void setUp() {
         fromWorld = createWorld("fromworld", ZERO_COORDINATE, 5);
-        fromWorld.setOwner(empire);
+        fromWorld.setOwner(empire1);
         toWorld = createWorld("toworld", ZERO_COORDINATE, 5);
-        toWorld.setOwner(empire);
+        toWorld.setOwner(empire1);
         updater = new TransferResourceUnitsPhaseUpdater(turnData);
     }
 
@@ -30,12 +29,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
     void updateSuccessTransferRU() {
         fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld 2 toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire1)
                 .amount(1)
                 .build();
         turnData.addOrder(order);
@@ -48,12 +47,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
     void updateSuccessTransferTooManyRU() {
         fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld 4 toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire1)
                 .amount(4)
                 .build();
         turnData.addOrder(order);
@@ -66,12 +65,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
     void updateTransferAll() {
         fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire1)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -85,12 +84,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
         fromWorld.setStockpile(2);
         fromWorld.setProhibition(Prohibition.BLOCKADED);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -104,12 +103,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
         fromWorld.setStockpile(2);
         fromWorld.setOwner(null);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -123,12 +122,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
         fromWorld.setStockpile(2);
         toWorld.setOwner(null);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -139,16 +138,15 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateTransferToOtherEmpire() {
-        final Empire recipient = createEmpire("recipient");
-        toWorld.setOwner(recipient);
+        toWorld.setOwner(empire2);
         fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld recipient")
+                .parameters("fromworld all toworld empire2")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(recipient)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -159,16 +157,15 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateTransferWrongRecipient() {
-        final Empire recipient = createEmpire("recipient");
         toWorld.setOwner(null);
         fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld recipient")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(recipient)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -181,12 +178,12 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
     void updateTransferNoStockpile() {
         fromWorld.setStockpile(0);
         final TransferOrder order = TransferOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TRANSFER)
                 .parameters("fromworld all toworld recipient")
                 .fromWorld(fromWorld)
                 .toWorld(toWorld)
-                .toEmpire(empire)
+                .toEmpire(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);

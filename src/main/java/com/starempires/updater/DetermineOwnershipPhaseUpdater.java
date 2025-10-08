@@ -23,8 +23,8 @@ public abstract class DetermineOwnershipPhaseUpdater extends PhaseUpdater {
         for (World world : turnData.getAllWorlds()) {
             final Set<Empire> empires = Sets.newHashSet();
             final Empire currentOwner = world.getOwner();
-            final Collection<Ship> ships = turnData.getLiveShips(world);
-            final Set<Empire> conqueringEmpires = ships.stream().filter(Ship::isConqueringShip)
+            final Collection<Ship> ships = turnData.getConqueringShips(world);
+            final Set<Empire> conqueringEmpires = ships.stream()
                     .map(OwnableObject::getOwner)
                     .collect(Collectors.toSet());
             empires.addAll(conqueringEmpires);

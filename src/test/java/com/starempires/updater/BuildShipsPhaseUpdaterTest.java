@@ -27,11 +27,11 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
     @Test
     void updateSuccessNames() {
         final int stockpile = 10;
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(stockpile);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -41,19 +41,19 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(probeClass, empire.getShip("probe1").getShipClass());
-        assertEquals(probeClass, empire.getShip("probe2").getShipClass());
+        assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
+        assertEquals(probeClass, empire1.getShip("probe2").getShipClass());
         assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
     @Test
     void updateSuccessTooFewNames() {
         final int stockpile = 10;
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(stockpile);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -63,20 +63,20 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(probeClass, empire.getShip("probe1").getShipClass());
-        assertNull(empire.getShip("probe2"));
-        assertEquals(2, empire.getShips().size());
+        assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
+        assertNull(empire1.getShip("probe2"));
+        assertEquals(2, empire1.getShips().size());
         assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
     @Test
     void updateSuccessBasename() {
         final int stockpile = 10;
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(stockpile);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -86,8 +86,8 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(probeClass, empire.getShip("probe1").getShipClass());
-        assertEquals(probeClass, empire.getShip("probe2").getShipClass());
+        assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
+        assertEquals(probeClass, empire1.getShip("probe2").getShipClass());
         assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
@@ -95,9 +95,9 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
     void updateWorldNotOwned() {
         final int stockpile = 10;
         world.setStockpile(stockpile);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -107,18 +107,18 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertNull(empire.getShip("probe1"));
-        assertNull(empire.getShip("probe2"));
+        assertNull(empire1.getShip("probe1"));
+        assertNull(empire1.getShip("probe2"));
         assertEquals(stockpile, world.getStockpile());
     }
 
     @Test
     void updateUnknownShipClass() {
         final int stockpile = 10;
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(stockpile);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -128,20 +128,20 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertNull(empire.getShip("probe1"));
-        assertNull(empire.getShip("probe2"));
+        assertNull(empire1.getShip("probe1"));
+        assertNull(empire1.getShip("probe2"));
         assertEquals(stockpile, world.getStockpile());
     }
 
     @Test
     void updateWorldInterdicted() {
         final int stockpile = 10;
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setProhibition(Prohibition.INTERDICTED);
         world.setStockpile(stockpile);
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -151,18 +151,18 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertNull(empire.getShip("probe1"));
-        assertNull(empire.getShip("probe2"));
+        assertNull(empire1.getShip("probe1"));
+        assertNull(empire1.getShip("probe2"));
         assertEquals(stockpile, world.getStockpile());
     }
 
     @Test
     void updateInsufficientStockpile() {
-        world.setOwner(empire);
+        world.setOwner(empire1);
         world.setStockpile(probeClass.getCost()); // enough for one ship
-        empire.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.BUILD)
                 .parameters("NewClass to recipient")
                 .shipClassName(probeClass.getName())
@@ -172,8 +172,8 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(probeClass, empire.getShip("probe1").getShipClass());
-        assertNull(empire.getShip("probe2"));
+        assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
+        assertNull(empire1.getShip("probe2"));
         assertEquals(0, world.getStockpile());
     }
 }

@@ -22,7 +22,7 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void update() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         final Storm storm = createStorm("storm", ZERO_COORDINATE, 1);
         updater.update();;
         assertEquals(1, ship.getStormDamageAccrued());
@@ -31,7 +31,7 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateZeroRating() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         final Storm storm = createStorm("storm", ZERO_COORDINATE, 0);
         updater.update();;
         assertEquals(0, ship.getStormDamageAccrued());
@@ -40,8 +40,8 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateStarbaseInRange() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
-        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire);
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire1);
         final Storm storm = createStorm("storm", ZERO_COORDINATE, 5);
         updater.update();;
         assertEquals(0, ship.getStormDamageAccrued());

@@ -17,7 +17,7 @@ class PoolResourceUnitsPhaseUpdaterTest extends BaseTest {
     @BeforeEach
     void setUp() {
         world = createWorld("world", ZERO_COORDINATE, 5);
-        world.setOwner(empire);
+        world.setOwner(empire1);
         updater = new PoolResourceUnitsPhaseUpdater(turnData);
     }
 
@@ -25,12 +25,12 @@ class PoolResourceUnitsPhaseUpdaterTest extends BaseTest {
     void update() {
         final World other1 = createWorld("other1", ZERO_COORDINATE, 5);
         final World other2 = createWorld("other2", ZERO_COORDINATE, 5);
-        other1.setOwner(empire);
+        other1.setOwner(empire1);
         other1.setStockpile(2);
-        other2.setOwner(empire);
+        other2.setOwner(empire1);
         other2.setStockpile(4);
         final PoolOrder order = PoolOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.POOL)
                 .parameters("world")
                 .world(world)

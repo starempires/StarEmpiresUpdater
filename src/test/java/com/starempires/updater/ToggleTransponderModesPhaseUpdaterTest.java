@@ -21,7 +21,7 @@ class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire);
+        ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         updater = new ToggleTransponderModesPhaseUpdater(turnData);
     }
 
@@ -29,7 +29,7 @@ class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
     void updatePublic() {
         ship.setPublicTransponder(false);
         final ToggleOrder order = ToggleOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TOGGLE)
                 .parameters("public ship")
                 .ships(Lists.newArrayList(ship))
@@ -44,7 +44,7 @@ class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
     void updatePrivate() {
         ship.setPublicTransponder(true);
         final ToggleOrder order = ToggleOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TOGGLE)
                 .parameters("private ship")
                 .ships(Lists.newArrayList(ship))
@@ -60,7 +60,7 @@ class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
         ship.setPublicTransponder(false);
         ship.destroy(ShipCondition.DESTROYED_IN_COMBAT);
         final ToggleOrder order = ToggleOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TOGGLE)
                 .parameters("public ship")
                 .ships(Lists.newArrayList(ship))
@@ -76,7 +76,7 @@ class ToggleTransponderModesPhaseUpdaterTest extends BaseTest {
     void updateShipClass() {
         ship.setPublicTransponder(false);
         final ToggleOrder order = ToggleOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.TOGGLE)
                 .parameters("public fighter")
                 .ships(Lists.newArrayList())

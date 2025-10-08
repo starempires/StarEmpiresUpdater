@@ -1,6 +1,5 @@
 package com.starempires.updater;
 
-import com.starempires.objects.Empire;
 import com.starempires.objects.Portal;
 import com.starempires.objects.ScanStatus;
 import com.starempires.objects.Ship;
@@ -19,7 +18,6 @@ class RecordNewMapObjectsPhaseUpdaterTest extends BaseTest {
     private World world;
     private Portal portal;
     private Storm storm;
-    private Empire newEmpire;
 
     @BeforeEach
     void setUp() {
@@ -29,107 +27,106 @@ class RecordNewMapObjectsPhaseUpdaterTest extends BaseTest {
         storm = createStorm("storm", ONE_COORDINATE, 5);
         turnData.addWorld(world);
         turnData.addPortal(portal);
-        newEmpire = createEmpire("newEmpire");
     }
 
     @Test
     void updateWorlds() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
         updater.update();
-        assertTrue(empire.isKnownWorld(world));
+        assertTrue(empire1.isKnownWorld(world));
     }
 
     @Test
     void updateWorldNebula() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.STALE);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.STALE);
         updater.update();
-        assertFalse(empire.isKnownWorld(world));
+        assertFalse(empire1.isKnownWorld(world));
     }
 
     @Test
     void updateWorldNebulaScannedPreviously() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.STALE);
-        empire.addScanHistory(ONE_COORDINATE, 1);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.STALE);
+        empire1.addScanHistory(ONE_COORDINATE, 1);
         updater.update();
-        assertTrue(empire.isKnownWorld(world));
+        assertTrue(empire1.isKnownWorld(world));
     }
 
     @Test
     void updatePortals() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
         updater.update();
-        assertTrue(empire.isKnownPortal(portal));
+        assertTrue(empire1.isKnownPortal(portal));
     }
 
     @Test
     void updatePortalNebula() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.STALE);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.STALE);
         updater.update();
-        assertFalse(empire.isKnownPortal(portal));
+        assertFalse(empire1.isKnownPortal(portal));
     }
 
     @Test
     void updatePortalNebulaScannedPreviously() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.STALE);
-        empire.addScanHistory(ONE_COORDINATE, 1);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.STALE);
+        empire1.addScanHistory(ONE_COORDINATE, 1);
         updater.update();
-        assertTrue(empire.isKnownPortal(portal));
+        assertTrue(empire1.isKnownPortal(portal));
     }
 
     @Test
     void updateStorms() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.STALE);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.STALE);
         updater.update();
-        assertTrue(empire.isKnownStorm(storm));
+        assertTrue(empire1.isKnownStorm(storm));
     }
 
     @Test
     void updateKnownEmpiresNoWorldsOrShips() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
         turnData.removeWorld(world);
         updater.update();
-        assertTrue(empire.getKnownEmpires().isEmpty());
+        assertTrue(empire1.getKnownEmpires().isEmpty());
     }
 
     @Test
     void updateKnownEmpiresFromWorld() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
-        world.setOwner(newEmpire);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        world.setOwner(empire2);
         updater.update();
-        assertTrue(empire.isKnownEmpire(newEmpire));
+        assertTrue(empire1.isKnownEmpire(empire2));
     }
 
     @Test
     void updateKnownEmpiresUnownedWorld() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
         updater.update();
-        assertTrue(empire.getKnownEmpires().isEmpty());
+        assertTrue(empire1.getKnownEmpires().isEmpty());
     }
 
     @Test
     void updateKnownEmpiresFromShip() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
-        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", newEmpire);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", empire2);
         ship.setPublicTransponder(true);
         updater.update();
-        assertTrue(empire.isKnownEmpire(newEmpire));
+        assertTrue(empire1.isKnownEmpire(empire2));
     }
 
     @Test
     void updateKnownEmpiresFromShipPrivateTransponderScanned() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
-        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", newEmpire);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.SCANNED);
+        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", empire2);
         ship.setPublicTransponder(false);
         updater.update();
-        assertFalse(empire.isKnownEmpire(newEmpire));
+        assertFalse(empire1.isKnownEmpire(empire2));
     }
 
     @Test
     void updateKnownEmpiresFromShipPrivateTransponderVisible() {
-        empire.addScan(ONE_COORDINATE, ScanStatus.VISIBLE);
-        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", newEmpire);
+        empire1.addScan(ONE_COORDINATE, ScanStatus.VISIBLE);
+        final Ship ship = createShip(probeClass, ONE_COORDINATE, "newShip", empire2);
         ship.setPublicTransponder(false);
         updater.update();
-        assertTrue(empire.isKnownEmpire(newEmpire));
+        assertTrue(empire1.isKnownEmpire(empire2));
     }
 }

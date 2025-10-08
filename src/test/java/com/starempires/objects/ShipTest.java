@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ShipTest extends BaseTest {
 
     private static final ShipClass DEVICE_CLASS = ShipClass.builder().name("device").hullType(HullType.DEVICE).dp(1).build();
-    private Empire otherEmpire;
 
     private Ship fighter;
     private Ship carrier;
@@ -28,13 +27,10 @@ class ShipTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        // Owners
-        otherEmpire = createEmpire("other");
-
         // Common ships
-        fighter = createShip(fighterClass, ZERO_COORDINATE, "fighter", empire);
-        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
-        missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire);
+        fighter = createShip(fighterClass, ZERO_COORDINATE, "fighter", empire1);
+        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        missile = createShip(missileClass, ZERO_COORDINATE, "missile", empire1);
     }
 
     @Test
@@ -105,7 +101,7 @@ class ShipTest extends BaseTest {
         carrier.deploy();
         assertFalse(carrier.hasCondition(ShipCondition.DEPLOYED));
 
-        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire);
+        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire1);
         device.deploy();
         assertTrue(device.hasCondition(ShipCondition.DEPLOYED));
     }
@@ -206,7 +202,7 @@ class ShipTest extends BaseTest {
     @Test
     void isDevice() {
         assertFalse(carrier.isDevice());
-        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire);
+        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire1);
         assertTrue(device.isDevice());
     }
 
@@ -219,21 +215,38 @@ class ShipTest extends BaseTest {
     @Test
     void isOrbital() {
         assertFalse(carrier.isOrbital());
-        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "device", empire);
+        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "device", empire1);
         assertTrue(starbase.isOrbital());
     }
 
     @Test
-    void isConqueringShip() {
+    void isConqueringShipOneShot() {
         assertFalse(missile.isConqueringShip());
+    }
 
+    @Test
+    void isConqueringShipDestroyed() {
         assertTrue(carrier.isConqueringShip());
         carrier.setDpRemaining(0);
         assertFalse(carrier.isConqueringShip());
+    }
 
+    @Test
+    void isConqueringShipNoGuns() {
+        final ShipClass noGunsClass = ShipClass.builder().name("noguns").hullType(HullType.SCOUT).dp(1).guns(0).build();
+        final Ship noGuns = createShip(noGunsClass, ZERO_COORDINATE, "noguns", empire1);
+        assertFalse(noGuns.isConqueringShip());
+    }
+
+    @Test
+    void isConqueringShipLoaded() {
+        turnData.load(fighter, carrier);
+        assertFalse(fighter.isConqueringShip());
+    }
+
+    @Test
+    void isConqueringShipSuuccess() {
         assertTrue(fighter.isConqueringShip());
-        fighter.setDpRemaining(1);
-        assertFalse(carrier.isConqueringShip());
     }
 
     @Test
@@ -356,21 +369,21 @@ class ShipTest extends BaseTest {
         assertFalse(carrier.isOneShot());
         assertTrue(missile.isOneShot());
 
-        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire);
+        final Ship device = createShip(DEVICE_CLASS, ZERO_COORDINATE, "device", empire1);
         assertTrue(device.isOneShot());
     }
 
     @Test
     void isTransponderSetPublic() {
         carrier.setPublicTransponder(true);
-        assertTrue(carrier.isTransponderSet(otherEmpire));
+        assertTrue(carrier.isTransponderSet(empire2));
     }
 
     @Test
     void isTransponderNotPublic() {
-        assertFalse(carrier.isTransponderSet(otherEmpire));
-        carrier.addTransponder(otherEmpire);
-        assertTrue(carrier.isTransponderSet(otherEmpire));
+        assertFalse(carrier.isTransponderSet(empire2));
+        carrier.addTransponder(empire2);
+        assertTrue(carrier.isTransponderSet(empire2));
     }
 
     @Test
@@ -406,30 +419,30 @@ class ShipTest extends BaseTest {
 
     @Test
     void isVisibleToEmpireOwned() {
-        carrier.isVisibleToEmpire(empire);
+        carrier.isVisibleToEmpire(empire1);
     }
 
     @Test
     void isVisibleToEmpireVisibleStatus() {
-        empire.addScan(ZERO_COORDINATE, ScanStatus.VISIBLE);
-        final Ship otherCarrier = createShip(carrierClass, ZERO_COORDINATE, "othercarrier", otherEmpire);
-        final Ship otherCargo = createShip(fighterClass, ZERO_COORDINATE, "otherfighter", otherEmpire);
-        assertTrue(otherCargo.isVisibleToEmpire(empire));
-        assertTrue(otherCarrier.isVisibleToEmpire(empire));
+        empire1.addScan(ZERO_COORDINATE, ScanStatus.VISIBLE);
+        final Ship otherCarrier = createShip(carrierClass, ZERO_COORDINATE, "othercarrier", empire2);
+        final Ship otherCargo = createShip(fighterClass, ZERO_COORDINATE, "otherfighter", empire2);
+        assertTrue(otherCargo.isVisibleToEmpire(empire1));
+        assertTrue(otherCarrier.isVisibleToEmpire(empire1));
         // loaded cargo should not be visible
         turnData.load(otherCargo, otherCarrier);
-        assertFalse(otherCargo.isVisibleToEmpire(empire));
-        assertTrue(otherCarrier.isVisibleToEmpire(empire));
+        assertFalse(otherCargo.isVisibleToEmpire(empire1));
+        assertTrue(otherCarrier.isVisibleToEmpire(empire1));
     }
 
     @Test
     void isVisibleToEmpireScannedStatus() {
-        empire.addScan(ZERO_COORDINATE, ScanStatus.SCANNED);
-        final Ship otherCarrier = createShip(carrierClass, ZERO_COORDINATE, "othercarrier", otherEmpire);
-        final Ship otherCargo = createShip(fighterClass, ZERO_COORDINATE, "otherfighter", otherEmpire);
-        otherCargo.addTransponder(empire);
-        assertTrue(otherCargo.isVisibleToEmpire(empire));
-        assertFalse(otherCarrier.isVisibleToEmpire(empire));
+        empire1.addScan(ZERO_COORDINATE, ScanStatus.SCANNED);
+        final Ship otherCarrier = createShip(carrierClass, ZERO_COORDINATE, "othercarrier", empire2);
+        final Ship otherCargo = createShip(fighterClass, ZERO_COORDINATE, "otherfighter", empire2);
+        otherCargo.addTransponder(empire1);
+        assertTrue(otherCargo.isVisibleToEmpire(empire1));
+        assertFalse(otherCarrier.isVisibleToEmpire(empire1));
     }
 
     @Test

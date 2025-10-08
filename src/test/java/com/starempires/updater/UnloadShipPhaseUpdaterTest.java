@@ -21,10 +21,10 @@ class UnloadShipPhaseUpdaterTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
-        cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire);
+        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        cargo = createShip(probeClass, ZERO_COORDINATE, "cargo", empire1);
         final UnloadOrder order = UnloadOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.UNLOAD)
                 .parameters("cargo")
                 .ships(Lists.newArrayList(cargo))

@@ -14,43 +14,41 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GiveOrderTest extends BaseTest {
 
     private ShipClass shipClass;
-    private Empire other;
 
     @BeforeEach
     public void before() {
         shipClass = ShipClass.builder().name("shipclass").build();
         turnData.addShipClass(shipClass);
-        other = createEmpire("other");
-        empire.addKnownShipClass(shipClass);;
-        empire.addKnownEmpire(other);
+        empire1.addKnownShipClass(shipClass);;
+        empire1.addKnownEmpire(empire2);
     }
 
     @Test
     void testParseInvalidOrder() {
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "foo");
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "foo");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Invalid GIVE order")));
     }
 
     @Test
     void testParseUnknownShipClass() {
-        empire.removeKnownShipClass(shipClass);
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "shipclass to other");
+        empire1.removeKnownShipClass(shipClass);
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to empire2");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown ")));
     }
 
     @Test
     void testParseUnknownRecipient() {
-        empire.removeKnownEmpire(other);
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "shipclass to other");
+        empire1.removeKnownEmpire(empire2);
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to empire2");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("message contact")));
     }
 
     @Test
     void testParseSelf() {
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "shipclass to test");
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to empire1");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("yourself")));
     }
@@ -59,16 +57,16 @@ class GiveOrderTest extends BaseTest {
     void testParseGM() {
         final Empire gm = Empire.builder().name("GM").empireType(EmpireType.GM).build();
         turnData.addEmpires(Sets.newHashSet(gm));
-        empire.addKnownEmpire(gm);
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "shipclass to GM");
+        empire1.addKnownEmpire(gm);
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to GM");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("declines")));
     }
 
     @Test
     void testParseSuccess() {
-        final GiveOrder order = GiveOrder.parse(turnData, empire, "shipclass to other");
+        final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to empire2");
         assertTrue(order.isReady());
-        assertTrue(other.isKnownShipClass(shipClass));
+        assertTrue(empire2.isKnownShipClass(shipClass));
     }
 }

@@ -243,13 +243,23 @@ public class TurnData {
         return ObjectUtils.firstNonNull(orders.get(orderType), Collections.emptyList());
     }
 
-    public Collection<Ship> getLiveShips(final MappableObject object) {
+    public Set<Ship> getLiveShips(final MappableObject object) {
         return getLiveShips(object.getCoordinate());
     }
 
-    public Collection<Ship> getLiveShips(final Coordinate coordinate) {
+    public Set<Ship> getLiveShips(final Coordinate coordinate) {
         return getActiveEmpires().stream()
                 .flatMap(empire -> empire.getLiveShips(coordinate).stream())
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Ship> getConqueringShips(final MappableObject object) {
+        return getConqueringShips(object.getCoordinate());
+    }
+
+    public Set<Ship> getConqueringShips(final Coordinate coordinate) {
+        return getLiveShips(coordinate).stream()
+                .filter(Ship::isConqueringShip)
                 .collect(Collectors.toSet());
     }
 
@@ -372,7 +382,7 @@ public class TurnData {
 
     public SitRep getSitRep(final Empire empire, final Coordinate coordinate) {
         final SitRep sitrep = new SitRep(empire, coordinate);
-        final Collection<Ship> ships = getLiveShips(coordinate);
+        final Collection<Ship> ships = getConqueringShips(coordinate);
         ships.forEach(sitrep::add);
         return sitrep;
     }

@@ -40,7 +40,8 @@ public class BaseTest {
     protected ShipClass missileClass;
     protected ShipClass fighterClass;
     protected ShipClass frigateClass;
-    protected Empire empire;
+    protected Empire empire1;
+    protected Empire empire2;
 
     @BeforeAll
     public static void beforeAllBaseTest() throws Exception {
@@ -70,7 +71,8 @@ public class BaseTest {
         missileClass = turnData.getShipClass("nuke");
         fighterClass = turnData.getShipClass("fighter");
         frigateClass = turnData.getShipClass("frigate");
-        empire = createEmpire("test");
+        empire1 = createEmpire("empire1");
+        empire2 = createEmpire("empire2");
     }
 
     protected Ship createShip(final ShipClass shipClass, final Coordinate coordinate, final String name, final Empire owner) {

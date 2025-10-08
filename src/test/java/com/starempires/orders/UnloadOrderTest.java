@@ -15,14 +15,14 @@ class UnloadOrderTest extends BaseTest {
 
     @BeforeEach
     public void before() {
-        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire);
-        probe = createShip(probeClass, ZERO_COORDINATE, "probe", empire);
+        carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        probe = createShip(probeClass, ZERO_COORDINATE, "probe", empire1);
     }
 
     @Test
     void parse_invalidFormat_addsErrorAndNotReady() {
         // When
-        final UnloadOrder order = UnloadOrder.parse(turnData, empire, "");
+        final UnloadOrder order = UnloadOrder.parse(turnData, empire1, "");
 
         // Then
         assertNotNull(order);
@@ -35,7 +35,7 @@ class UnloadOrderTest extends BaseTest {
         carrier.loadCargo(probe);
         probe.loadOntoCarrier(carrier);
 
-        final UnloadOrder order = UnloadOrder.parse(turnData, empire, "probe");
+        final UnloadOrder order = UnloadOrder.parse(turnData, empire1, "probe");
 
         // Then
         assertTrue(order.isReady());
@@ -45,7 +45,7 @@ class UnloadOrderTest extends BaseTest {
 
     @Test
     void parseUnloadNotLoaded() {
-        final UnloadOrder order = UnloadOrder.parse(turnData, empire, "probe");
+        final UnloadOrder order = UnloadOrder.parse(turnData, empire1, "probe");
 
         // Then
         assertFalse(order.isReady());
@@ -54,7 +54,7 @@ class UnloadOrderTest extends BaseTest {
 
     @Test
     void parseUnloadUnknownShip() {
-        final UnloadOrder order = UnloadOrder.parse(turnData, empire, "unknown");
+        final UnloadOrder order = UnloadOrder.parse(turnData, empire1, "unknown");
 
         // Then
         assertFalse(order.isReady());

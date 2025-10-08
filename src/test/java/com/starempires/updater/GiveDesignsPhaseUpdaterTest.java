@@ -1,6 +1,5 @@
 package com.starempires.updater;
 
-import com.starempires.objects.Empire;
 import com.starempires.objects.ShipClass;
 import com.starempires.orders.GiveOrder;
 import com.starempires.orders.OrderType;
@@ -27,17 +26,16 @@ class GiveDesignsPhaseUpdaterTest extends BaseTest {
                 .name("NewClass")
                 .build();
         turnData.addShipClass(newClass);
-        empire.addKnownShipClass(newClass);
-        final Empire recipient = createEmpire("recipient");
+        empire1.addKnownShipClass(newClass);
         final GiveOrder order = GiveOrder.builder()
-                .empire(empire)
+                .empire(empire1)
                 .orderType(OrderType.GIVE)
                 .parameters("NewClass to recipient")
                 .shipClasses(List.of(newClass))
-                .recipients(List.of(recipient))
+                .recipients(List.of(empire2))
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertTrue(recipient.isKnownShipClass(newClass));
+        assertTrue(empire2.isKnownShipClass(newClass));
     }
 }
