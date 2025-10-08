@@ -353,9 +353,9 @@ public class Ship extends OwnableObject {
         return getDp() - Math.max(0, dpRemaining);
     }
 
-    public void repair(final int amount) {
+    public void repair(final int amount, final ShipCondition condition) {
         dpRemaining = Math.min(getDp(), dpRemaining + amount);
-        addCondition(ShipCondition.REPAIRED);
+        addCondition(condition);
     }
 
     @JsonIgnore
@@ -364,8 +364,7 @@ public class Ship extends OwnableObject {
         if (isAlive()) {
             ar = Math.min(getAr(), getMaxRepairAmount());
             if (ar > 0) {
-                repair(ar);
-                addCondition(ShipCondition.AUTO_REPAIRED);
+                repair(ar, ShipCondition.AUTO_REPAIRED);
             }
         }
         return ar;

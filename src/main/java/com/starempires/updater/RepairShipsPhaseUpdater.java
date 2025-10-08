@@ -4,6 +4,7 @@ import com.starempires.TurnData;
 import com.starempires.constants.Constants;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
+import com.starempires.objects.ShipCondition;
 import com.starempires.objects.World;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
@@ -26,7 +27,7 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
             final Collection<Ship> cargos = orbital.getCargo();
             cargos.stream().filter(Ship::isRepairable).sorted(IDENTIFIABLE_NAME_COMPARATOR).forEach(cargo -> {
                 final int maxRepair = cargo.getMaxRepairAmount();
-                cargo.repair(maxRepair);
+                cargo.repair(maxRepair, ShipCondition.REPAIRED);
                 addNews(orbital.getOwner(), "Orbital " + orbital + " repaired " + maxRepair + " DP on cargo " + cargo);
             });
         });
@@ -72,7 +73,7 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
                             dpToRepair = fee * dpRepairedPerRU;
                             addNewsResult(order, "World %s can fund only %d repairs".formatted(world, dpToRepair));
                         }
-                        ship.repair(dpToRepair);
+                        ship.repair(dpToRepair, ShipCondition.REPAIRED);
                         final int remaining = world.adjustStockpile(-fee);
                         final Collection<Empire> newEmpires = turnData.getEmpiresPresent(ship);
                         newEmpires.remove(empire);

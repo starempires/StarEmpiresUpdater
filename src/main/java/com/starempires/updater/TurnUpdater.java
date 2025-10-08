@@ -14,6 +14,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 
 @Log4j2
@@ -26,6 +28,53 @@ public class TurnUpdater {
     private final StarEmpiresDAO dao;
     private final String sessionName;
     private final int turnNumber;
+
+    // Registry mapping Phase enums to their updater factories
+    private static final Map<Phase, Function<TurnData, PhaseUpdater>> PHASE_REGISTRY = Map.ofEntries(
+        Map.entry(Phase.FLUCTUATE_STORMS, FluctuateStormsPhaseUpdater::new),
+        Map.entry(Phase.REMOVE_MAP_OBJECTS, RemoveMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.MOVE_MAP_OBJECTS, MoveMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.ADD_MAP_OBJECTS, AddMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.MODIFY_MAP_OBJECTS, ModifyMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.REMOVE_KNOWN_ITEMS, RemoveKnownItemsPhaseUpdater::new),
+        Map.entry(Phase.ADD_KNOWN_ITEMS, AddKnownItemsPhaseUpdater::new),
+        Map.entry(Phase.DRIFT_MAP_OBJECTS, DriftMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.STABILIZE_PORTALS, StabilizePortalsPhaseUpdater::new),
+        Map.entry(Phase.COLLAPSE_PORTALS, CollapsePortalsPhaseUpdater::new),
+        Map.entry(Phase.UNLOAD_SHIPS, UnloadShipPhaseUpdater::new),
+        Map.entry(Phase.DEPLOY_DEVICES, DeployDevicesPhaseUpdater::new),
+        Map.entry(Phase.LOAD_SHIPS, LoadShipPhaseUpdater::new),
+        Map.entry(Phase.SELF_DESTRUCT_SHIPS, DestructShipsPhaseUpdater::new),
+        Map.entry(Phase.FIRE_GUNS, FireGunsPhaseUpdater::new),
+        Map.entry(Phase.APPLY_COMBAT_DAMAGE, ApplyCombatDamagePhaseUpdater::new),
+        Map.entry(Phase.DETERMINE_OWNERSHIP_I, DetermineOwnershipIPhaseUpdater::new),
+        Map.entry(Phase.TRANSMIT_PORTAL_NAV_DATA, TransmitPortalNavDataPhaseUpdater::new),
+        Map.entry(Phase.MOVE_SHIPS, MoveShipsPhaseUpdater::new),
+        Map.entry(Phase.TRAVERSE_PORTALS, TraversePortalsPhaseUpdater::new),
+        Map.entry(Phase.ACQUIRE_NAV_DATA, AcquireNavDataPhaseUpdater::new),
+        Map.entry(Phase.WEATHER_STORMS, WeatherStormsPhaseUpdater::new),
+        Map.entry(Phase.APPLY_STORM_DAMAGE, ApplyStormDamagePhaseUpdater::new),
+        Map.entry(Phase.DETERMINE_OWNERSHIP_II, DetermineOwnershipIIPhaseUpdater::new),
+        Map.entry(Phase.RELOCATE_HOMEWORLDS, RelocateHomeworldsPhaseUpdater::new),
+        Map.entry(Phase.ESTABLISH_PROHIBITIONS, EstablishProhibitionsPhaseUpdater::new),
+        Map.entry(Phase.SALVAGE_DESIGNS, SalvageDesignsPhaseUpdater::new),
+        Map.entry(Phase.CREATE_DESIGNS, DesignShipsPhaseUpdater::new),
+        Map.entry(Phase.GIVE_DESIGNS, GiveDesignsPhaseUpdater::new),
+        Map.entry(Phase.BUILD_SHIPS, BuildShipsPhaseUpdater::new),
+        Map.entry(Phase.AUTO_REPAIR_SHIPS, AutoRepairShipsPhaseUpdater::new),
+        Map.entry(Phase.REPAIR_SHIPS, RepairShipsPhaseUpdater::new),
+        Map.entry(Phase.TOGGLE_TRANSPONDER_MODES, ToggleTransponderModesPhaseUpdater::new),
+        Map.entry(Phase.CONCEAL_SHIPS, ConcealShipsPhaseUpdater::new),
+        Map.entry(Phase.IDENTIFY_SHIPS, IdentifyShipsPhaseUpdater::new),
+        Map.entry(Phase.PRODUCE_RESOURCE_UNITS, ProduceResourceUnitsPhaseUpdater::new),
+        Map.entry(Phase.POOL_RESOURCE_UNITS, PoolResourceUnitsPhaseUpdater::new),
+        Map.entry(Phase.TRANSFER_RESOURCE_UNITS, TransferResourceUnitsPhaseUpdater::new),
+        Map.entry(Phase.DENY_SCAN_ACCESS, DenyScanDataPhaseUpdater::new),
+        Map.entry(Phase.AUTHORIZE_SCAN_ACCESS, AuthorizeScanDataPhaseUpdater::new),
+        Map.entry(Phase.COLLECT_SCAN_DATA, CollectScanDataPhaseUpdater::new),
+        Map.entry(Phase.SHARE_SCAN_DATA, ShareScanDataPhaseUpdater::new),
+        Map.entry(Phase.RECORD_NEW_MAP_OBJECTS, RecordNewMapObjectsPhaseUpdater::new)
+    );
 
     private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
         final Options options = new Options();
@@ -96,73 +145,12 @@ public class TurnUpdater {
 
     private void processTurn(TurnData turnData) {
         log.info("Running update for session {} turn {}", sessionName, turnNumber);
-
-//        // TODO:create synthetic orders
-//        // MoveMap -> Remove + Add
-//        // Deploy -> unload
-//        // fire missile -> unload
-
-//        // Astronomics
-        processPhase(new RemoveMapObjectsPhaseUpdater(turnData));
-        processPhase(new MoveMapObjectsPhaseUpdater(turnData));
-        processPhase(new AddMapObjectsPhaseUpdater(turnData));
-        processPhase(new ModifyMapObjectsPhaseUpdater(turnData));
-        processPhase(new DriftMapObjectsPhaseUpdater(turnData));
-        processPhase(new RemoveKnownItemsPhaseUpdater(turnData));
-        processPhase(new AddKnownItemsPhaseUpdater(turnData));
-        processPhase(new StabilizePortalsPhaseUpdater(turnData));
-        processPhase(new CollapsePortalsPhaseUpdater(turnData));
-        processPhase(new DissipateNebulaePhaseUpdater(turnData));
-//        processPhase(new ActivateNebulaePhaseUpdater(turnData));
-        processPhase(new DissipateStormsPhaseUpdater(turnData));
-        processPhase(new FluctuateStormsPhaseUpdater(turnData));
-
-        // Logistics
-        processPhase(new UnloadShipPhaseUpdater(turnData));
-        processPhase(new DeployDevicesPhaseUpdater(turnData));
-        processPhase(new LoadShipPhaseUpdater(turnData));
-
-        // Combat
-        processPhase(new DestructShipsPhaseUpdater(turnData));
-        processPhase(new FireGunsPhaseUpdater(turnData));
-        processPhase(new ApplyCombatDamagePhaseUpdater(turnData));
-        processPhase(new AutoRepairShipsPhaseUpdater(turnData));
-        processPhase(new DetermineOwnershipIPhaseUpdater(turnData));
-
-        // Movement phases
-        processPhase(new TransmitPortalNavDataPhaseUpdater(turnData));
-        processPhase(new MoveShipsPhaseUpdater(turnData));
-        processPhase(new TraversePortalsPhaseUpdater(turnData));
-        processPhase(new AcquireNavDataPhaseUpdater(turnData));
-        processPhase(new WeatherStormsPhaseUpdater(turnData));
-        processPhase(new ApplyStormDamagePhaseUpdater(turnData));
-        processPhase(new DetermineOwnershipIIPhaseUpdater(turnData));
-        processPhase(new RelocateHomeworldsPhaseUpdater(turnData));
-        processPhase(new EstablishProhibitionsPhaseUpdater(turnData));
-
-        // Research phases
-        processPhase(new SalvageDesignsPhaseUpdater(turnData));
-        processPhase(new DesignShipsPhaseUpdater(turnData));
-        processPhase(new GiveDesignsPhaseUpdater(turnData));
-
-        // Maintenance phases
-        processPhase(new BuildShipsPhaseUpdater(turnData));
-        processPhase(new RepairShipsPhaseUpdater(turnData));
-        processPhase(new ToggleTransponderModesPhaseUpdater(turnData));
-//        processPhase(new ConcealShipsPhaseUpdater(turnData));
-//        processPhase(new IdentifyShipsPhaseUpdater(turnData));
-//
-//        // Income phases
-        processPhase(new ProduceResourceUnitsPhaseUpdater(turnData));
-        processPhase(new PoolResourceUnitsPhaseUpdater(turnData));
-        processPhase(new TransferResourceUnitsPhaseUpdater(turnData));
-//
-//        // Scanning phases
-//        processPhase(new DenyScanDataPhaseUpdater(turnData));
-//        processPhase(new AuthorizeScanDataPhaseUpdater(turnData));
-        processPhase(new CollectScanDataPhaseUpdater(turnData));
-        processPhase(new ShareScanDataPhaseUpdater(turnData));
-        processPhase(new RecordNewMapObjectsPhaseUpdater(turnData));
+        for (Phase phase : Phase.values()) {
+            final Function<TurnData, PhaseUpdater> factory = PHASE_REGISTRY.get(phase);
+            if (factory != null) {
+                processPhase(factory.apply(turnData));
+            }
+        }
         log.info("Processed all phases for session {}", sessionName);
     }
 

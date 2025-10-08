@@ -22,8 +22,7 @@
     "tonnageDp": 20,
     "tonnageEngines": 5,
     "tonnageScan": 5,
-    "tonnageRacks": 2,
-    "arMultiplier": 4
+    "tonnageRacks": 2
   },
   {
     "hullType": "scout",
@@ -48,8 +47,7 @@
     "tonnageDp": 5,
     "tonnageEngines": 5,
     "tonnageScan": 5,
-    "tonnageRacks": 2,
-    "arMultiplier": 1
+    "tonnageRacks": 2
   },
   {
     "hullType": "transport",
@@ -74,8 +72,7 @@
     "tonnageDp": 10,
     "tonnageEngines": 5,
     "tonnageScan": 5,
-    "tonnageRacks": 2,
-    "arMultiplier": 1
+    "tonnageRacks": 2
   },
   {
     "hullType": "orbital",
@@ -100,8 +97,7 @@
     "tonnageDp": 20,
     "tonnageEngines": 1,
     "tonnageScan": 5,
-    "tonnageRacks": 2,
-    "arMultiplier": 4
+    "tonnageRacks": 2
   },
   {
     "hullType": "gunship",
@@ -126,8 +122,7 @@
     "tonnageDp": 10,
     "tonnageEngines": 5,
     "tonnageScan": 5,
-    "tonnageRacks": 2,
-    "arMultiplier": 2
+    "tonnageRacks": 2
   },
   {
     "hullType": "wing",
@@ -152,8 +147,7 @@
     "tonnageDp": 20,
     "tonnageEngines": 1,
     "tonnageScan": 1,
-    "tonnageRacks": 1,
-    "arMultiplier": 1
+    "tonnageRacks": 1
   },
   {
     "hullType": "device",
@@ -178,8 +172,7 @@
     "tonnageDp": 1,
     "tonnageEngines": 1,
     "tonnageScan": 1,
-    "tonnageRacks": 1,
-    "arMultiplier": 1
+    "tonnageRacks": 1
   },
   {
     "hullType": "missile",
@@ -204,7 +197,6 @@
     "tonnageDp": 1,
     "tonnageEngines": 1,
     "tonnageScan": 1,
-    "tonnageRacks": 1,
-    "arMultiplier": 1
+    "tonnageRacks": 1
   }
 ]

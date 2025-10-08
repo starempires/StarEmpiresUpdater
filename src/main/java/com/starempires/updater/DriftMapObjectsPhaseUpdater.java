@@ -8,7 +8,7 @@ import java.util.Collection;
 public class DriftMapObjectsPhaseUpdater extends PhaseUpdater {
 
     public DriftMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MAP_DRIFT_OBJECTS, turnData);
+        super(Phase.DRIFT_MAP_OBJECTS, turnData);
     }
 
     private void drift(String type, Collection<? extends MappableObject> objects) {

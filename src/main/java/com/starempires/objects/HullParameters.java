@@ -16,7 +16,6 @@ public class HullParameters {
     public static final float MISSILE_TONNAGE_COST = 5.0f;
 
     private final HullType hullType;
-    private final double arMultiplier;
     private final int baseGuns;
     private final int baseDp;
     private final int baseEngines;

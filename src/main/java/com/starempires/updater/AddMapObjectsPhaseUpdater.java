@@ -10,7 +10,7 @@ import com.starempires.TurnData;
 public class AddMapObjectsPhaseUpdater extends PhaseUpdater {
 
     public AddMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MAP_ADD_OBJECTS, turnData);
+        super(Phase.ADD_MAP_OBJECTS, turnData);
     }
 
     // private void addWorld(Order order, String worldName, Coordinate coordinate, int production, String empireName) {

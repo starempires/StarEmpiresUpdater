@@ -20,7 +20,7 @@ public class EstablishProhibitionsPhaseUpdater extends PhaseUpdater {
     public static final float INTERDICTION_THRESHOLD = 3.0f;
 
     public EstablishProhibitionsPhaseUpdater(TurnData turnData) {
-        super(Phase.ESTABLISH_BLOCKADES, turnData);
+        super(Phase.ESTABLISH_PROHIBITIONS, turnData);
     }
 
     @Override

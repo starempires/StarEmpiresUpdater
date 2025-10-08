@@ -254,11 +254,11 @@ class ShipTest extends BaseTest {
     @Test
     void repair() {
         carrier.setDpRemaining(1);
-        carrier.repair(3);
+        carrier.repair(3, ShipCondition.REPAIRED);
         assertEquals(4, carrier.getDpRemaining());
         assertTrue(carrier.hasCondition(ShipCondition.REPAIRED));
 
-        carrier.repair(100);
+        carrier.repair(100, ShipCondition.REPAIRED);
         assertEquals(carrier.getDp(), carrier.getDpRemaining());
     }
 

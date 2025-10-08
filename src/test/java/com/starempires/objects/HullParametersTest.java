@@ -32,7 +32,6 @@ class HullParametersTest {
     ) {
         return HullParameters.builder()
                 .hullType(null)
-                .arMultiplier(1.0d)
                 .baseGuns(baseGuns)
                 .baseDp(baseDp)
                 .baseEngines(baseEngines)

@@ -10,7 +10,7 @@ import com.starempires.TurnData;
 public class MoveMapObjectsPhaseUpdater extends PhaseUpdater {
 
     public MoveMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MAP_MOVE_OBJECTS, turnData);
+        super(Phase.MOVE_MAP_OBJECTS, turnData);
     }
 
     // private void movePortal(final Order order, final String name, final Coordinate toCoordinate) {

@@ -22,7 +22,7 @@ import java.util.Set;
 public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
 
     public RemoveMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MAP_REMOVE_OBJECTS, turnData);
+        super(Phase.REMOVE_MAP_OBJECTS, turnData);
     }
 
     private void removeWorlds(final Order order, final List<String> worldNames) {

@@ -8,7 +8,7 @@
     "racks": 10,
     "tonnage": 999,
     "cost": 999,
-    "ar": 15,
+    "ar": 20,
     "hullType": "orbital",
     "buildable": false
   },
@@ -21,7 +21,7 @@
     "racks": 2,
     "tonnage": 30,
     "cost": 28,
-    "ar": 16,
+    "ar": 4,
     "hullType": "capital ship",
     "buildable": true
   },
@@ -34,7 +34,7 @@
     "racks": 0,
     "tonnage": 2,
     "cost": 2,
-    "ar": 0,
+    "ar": 1,
     "hullType": "scout",
     "buildable": true
   },
@@ -60,7 +60,7 @@
     "racks": 2,
     "tonnage": 20,
     "cost": 25,
-    "ar": 16,
+    "ar": 4,
     "hullType": "orbital",
     "buildable": true
   },
@@ -73,7 +73,7 @@
     "racks": 0,
     "tonnage": 10,
     "cost": 15,
-    "ar": 3,
+    "ar": 1,
     "hullType": "gunship",
     "buildable": true
   },

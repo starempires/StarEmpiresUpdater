@@ -5,7 +5,7 @@ import com.starempires.TurnData;
 public class ModifyMapObjectsPhaseUpdater extends PhaseUpdater {
 
     public ModifyMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MAP_MODIFY_OBJECTS, turnData);
+        super(Phase.MODIFY_MAP_OBJECTS, turnData);
     }
 
     // private void addPortalConnections(Order order, String portalName, List<String> toPortalNames) {
