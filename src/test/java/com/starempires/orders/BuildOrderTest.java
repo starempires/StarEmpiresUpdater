@@ -24,6 +24,7 @@ class BuildOrderTest extends BaseTest {
         world.setStockpile(12);
         empire1.addKnownWorld(world);
         empire1.addKnownShipClass(probeClass);
+        empire1.addKnownShipClass(starbaseClass);
     }
 
     @Test
@@ -90,6 +91,24 @@ class BuildOrderTest extends BaseTest {
         assertEquals("p", order.getBasename());
         assertEquals("probe", order.getShipClassName());
         assertTrue(order.isBuildMax());
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testBuildNonBuildable() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 1 starbase s*");
+        assertFalse(order.isReady());
+    }
+
+    @Test
+    void testBuildNoShipClass() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 1 unknown f*");
+        assertTrue(order.isReady());
+    }
+
+    @Test
+    void testBuildUnknownShipClass() {
+        final BuildOrder order = BuildOrder.parse(turnData, empire1, "KRATOS 1 fighter f*");
         assertTrue(order.isReady());
     }
 }
