@@ -120,6 +120,7 @@ public class DesignOrder extends WorldBasedOrder {
                         .guns(guns)
                         .tonnage(tonnage)
                         .cost(cost)
+                        .buildable(true)
                         .build();
                 turnData.addShipClass(shipClass);
                 empire.addKnownShipClass(shipClass);
@@ -175,6 +176,7 @@ public class DesignOrder extends WorldBasedOrder {
                         .cost(cost)
                         .ar(ar)
                         .tonnage(tonnage)
+                        .buildable(true)
                         .build();
                 turnData.addShipClass(shipClass);
                 empire.addKnownShipClass(shipClass);

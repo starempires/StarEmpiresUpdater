@@ -31,6 +31,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
                 .cost(order.getCost())
                 .ar(0)
                 .hullType(HullType.MISSILE)
+                .buildable(true)
                 .build();
         turnData.addShipClass(shipClass);
         empire.addKnownShipClass(shipClass);

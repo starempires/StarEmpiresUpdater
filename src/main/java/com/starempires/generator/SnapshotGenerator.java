@@ -59,7 +59,7 @@ public class SnapshotGenerator {
         }
     }
 
-    private TurnData loadTurnData() throws Exception {
+    public TurnData loadTurnData() throws Exception {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
         log.info("Loaded turn data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
