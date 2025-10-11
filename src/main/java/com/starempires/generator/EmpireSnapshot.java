@@ -53,6 +53,7 @@ public class EmpireSnapshot extends IdentifiableObjectSnapshot {
     @JsonProperty("connections")
     @JsonSerialize(using = Coordinate.CoordinateMultimapSerializer.class)
     final private Multimap<Coordinate, Coordinate> connections = HashMultimap.create();
+    final long timestamp;
 
     public void addConnections(final Multimap<Coordinate, Coordinate> conns) {
         connections.putAll(conns);

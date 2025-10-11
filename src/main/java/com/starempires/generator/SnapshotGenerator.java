@@ -1,6 +1,5 @@
 package com.starempires.generator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -87,12 +86,13 @@ public class SnapshotGenerator {
     public void generateSnapshots(final TurnData turnData) throws Exception {
         final Map<String, String> colors = loadColors();
         final List<String> empireNames = loadEmpireNames();
+        final long timestamp = System.currentTimeMillis();
         for (String empireName: empireNames) {
             log.debug("Generating snapshot for {}", empireName);
-            final EmpireSnapshot snapshot = generate(turnData, colors, empireName);
+            final EmpireSnapshot snapshot = generate(turnData, colors, empireName, timestamp);
             saveSnapshot(snapshot, empireName);
         }
-        final EmpireSnapshot snapshot = generateGM(turnData, colors);
+        final EmpireSnapshot snapshot = generateGM(turnData, colors, timestamp);
         saveSnapshot(snapshot, "GM");
     }
 
@@ -149,7 +149,7 @@ public class SnapshotGenerator {
         return knownConnections;
     }
 
-    private EmpireSnapshot generate(final TurnData turnData, final Map<String, String> colors, final String empireName) throws JsonProcessingException {
+    private EmpireSnapshot generate(final TurnData turnData, final Map<String, String> colors, final String empireName, final long timestamp) {
         final Empire empire = turnData.getEmpire(empireName);
         final int radius = empire.computeMaxScanExtent();
         // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
@@ -161,6 +161,7 @@ public class SnapshotGenerator {
                 .columns(2 * radius + 1)
                 .rows(4 * radius + 1)
                 .turnNumber(turnData.getTurnNumber())
+                .timestamp(timestamp)
                 .build();
 
         // add "global" elements known to this empire
@@ -274,7 +275,7 @@ public class SnapshotGenerator {
         return empireSnapshot;
     }
 
-    private EmpireSnapshot generateGM(final TurnData turnData, final Map<String, String> colors) throws JsonProcessingException {
+    private EmpireSnapshot generateGM(final TurnData turnData, final Map<String, String> colors, final long timestamp) {
         final int radius = turnData.getRadius();
         // EmpireSnapshot is the "outer" object that contains snapshot information for items known to that empire
         final EmpireSnapshot empireSnapshot = EmpireSnapshot.builder()
@@ -284,6 +285,7 @@ public class SnapshotGenerator {
                 .columns(2 * radius + 1)
                 .rows(4 * radius + 1)
                 .turnNumber(turnData.getTurnNumber())
+                .timestamp(timestamp)
                 .build();
 
         // add "global" elements known to this empire

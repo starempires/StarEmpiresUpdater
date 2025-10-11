@@ -65,6 +65,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
                             .cost(cost)
                             .ar(ar)
                             .hullType(hullType)
+                            .buildable(true)
                             .build();
 
         turnData.addShipClass(shipClass);
