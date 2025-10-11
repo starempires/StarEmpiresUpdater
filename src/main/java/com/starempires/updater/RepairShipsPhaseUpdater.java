@@ -28,7 +28,7 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
             cargos.stream().filter(Ship::isRepairable).sorted(IDENTIFIABLE_NAME_COMPARATOR).forEach(cargo -> {
                 final int maxRepair = cargo.getMaxRepairAmount();
                 cargo.repair(maxRepair, ShipCondition.REPAIRED);
-                addNews(orbital.getOwner(), "Orbital " + orbital + " repaired " + maxRepair + " DP on cargo " + cargo);
+                addNews(orbital.getOwner(), "Orbital " + orbital + " fully repaired cargo " + cargo);
             });
         });
     }
@@ -77,7 +77,7 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
                         final int remaining = world.adjustStockpile(-fee);
                         final Collection<Empire> newEmpires = turnData.getEmpiresPresent(ship);
                         newEmpires.remove(empire);
-                        addNewsResult(order, "World %s repaired %d DP on ship %s (%d RU spent; %d remaining)".formatted(world, dpToRepair, ship, fee, remaining));
+                        addNewsResult(order, "World %s repaired %d DP (%d damage remaining; OR %s) on ship %s (%d RU spent; %d remaining)".formatted(world, dpToRepair, ship.getDamage(), formatOpRating(ship), ship, fee, remaining));
                         addNewsResult(order, newEmpires, "%s repaired %d DP on ship %s".formatted(empire, dpToRepair, ship));
                     }
                 }

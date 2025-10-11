@@ -19,16 +19,23 @@ public class AutoRepairShipsPhaseUpdater extends PhaseUpdater {
                 .forEach(ship -> {
             final int repaired = ship.autoRepair();
             if (repaired > 0) {
-                final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
                 String damageText;
                 final int damage = ship.getDamage();
                 if (damage > 0) {
-                    damageText = damage + " damage remaining";
+                    damageText = damage + " damage remaining; OR " + formatOpRating(ship);
                 }
                 else {
                     damageText = "fully repaired";
                 }
-                addNews(empires, "Ship %s auto-repaired %d DP (%s)".formatted(ship, repaired, damageText));
+                final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
+                for (Empire newsEmpire : newsEmpires) {
+                    if (newsEmpire.isKnownShipClass(ship.getShipClass())) {
+                        addNews(newsEmpire, "Ship %s auto-repaired %d DP (%s)".formatted(ship, repaired, damageText));
+                    }
+                    else {
+                        addNews(newsEmpire, "Ship %s auto-repaired %d DP".formatted(ship, repaired));
+                    }
+                }
             }
         });
     }

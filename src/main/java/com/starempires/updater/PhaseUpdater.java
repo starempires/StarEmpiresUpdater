@@ -123,4 +123,9 @@ public abstract class PhaseUpdater {
         }
         return validShips;
     }
+
+    String formatOpRating(final Ship ship) {
+        return "%.1f%%".formatted(Math.round(ship.getOperationRating() * 1000f) / 10f);
+    }
+
 }

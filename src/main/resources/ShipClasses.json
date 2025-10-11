@@ -85,7 +85,7 @@
     "scan": 0,
     "racks": 0,
     "tonnage": 1,
-    "cost": 1,
+    "cost": 2,
     "ar": 1,
     "hullType": "wing",
     "buildable": true

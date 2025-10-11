@@ -19,6 +19,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
     }
 
     public void update(final List<Ship> damagedShips, final Consumer<Ship> applyDamageType) {
+        damagedShips.sort(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR);
         Multimap<Ship, Empire> newsEmpires = HashMultimap.create();
         damagedShips.forEach(ship -> {
             final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
@@ -43,8 +44,11 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
                      });
             }
             else if (!ship.isOneShot()) {
-                final double opRating = Math.round(ship.getOperationRating() * 1000f) / 10f;
-                addNews(ship.getOwner(), String.format("Ship %s now at %.1f%% OR ", ship, opRating));
+                for (Empire newsEmpire: newsEmpires.get(ship)) {
+                    if (newsEmpire.isKnownShipClass(ship.getShipClass())) {
+                        addNews(newsEmpire, String.format("Ship %s now at %s OR", ship, formatOpRating(ship)));
+                    }
+                }
             }
         });
         turnData.removeDestroyedShips(destroyed);

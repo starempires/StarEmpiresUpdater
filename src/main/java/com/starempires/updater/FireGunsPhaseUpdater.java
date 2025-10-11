@@ -147,6 +147,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         for (final Ship target : targets) {
             final Collection<Empire> empiresInSector = turnData.getEmpiresPresent(target);
             int dpRemaining = target.getDpRemaining();
+            final String targetDescription = target.isWing() ? "defending wing" : "target";
             while (dpRemaining > 0 && (totalUnfiredGuns > 0 || !missiles.isEmpty())) { // target still there, attackers remain
                 if (totalUnfiredGuns >= dpRemaining || missiles.isEmpty()) {
                     // unfired guns are greater than target remaining DP or else out of missiles and firing guns as much as possible
@@ -160,8 +161,8 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                     dpRemaining -= gunsToFire;
                     totalUnfiredGuns -= gunsToFire;
                     addNewsResult(order, empiresInSector,
-                            "%s ship %s fired %s at target %s".formatted(gunship.getOwner(), gunship,
-                                 plural(gunsToFire, "gun"), target));
+                            "%s ship %s fired %s at %s %s".formatted(gunship.getOwner(), gunship,
+                                 plural(gunsToFire, "gun"), targetDescription, target));
                 } else { // select a missile to fire
                     final Ship missile = selectMissile(missiles, dpRemaining);
                     final int missileGuns = missile.getAvailableGuns();
@@ -170,8 +171,8 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                     missile.destroy(ShipCondition.DESTROYED_IN_COMBAT);
                     dpRemaining -= missileGuns;
                     addNewsResult(order, empiresInSector,
-                            "%s missile %s inflicted %d damage against target %s".formatted(missile.getOwner(), missile,
-                            missileGuns, target));
+                            "%s missile %s inflicted %d damage against %s %s".formatted(missile.getOwner(), missile,
+                            missileGuns, targetDescription, target));
                 }
             }
         }

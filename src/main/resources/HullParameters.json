@@ -132,7 +132,7 @@
     "baseScan": 0,
     "baseRacks": 0,
     "baseTonnage": 1,
-    "baseCost": 1,
+    "baseCost": 2,
     "maxGuns": 15,
     "maxDp": 15,
     "maxEngines": 0,
