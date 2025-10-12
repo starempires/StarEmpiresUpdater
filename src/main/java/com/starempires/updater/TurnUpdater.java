@@ -101,7 +101,6 @@ public class TurnUpdater {
 
     public TurnData updateTurn() throws Exception {
         final TurnData turnData = loadTurnData();
-        turnData.clearShipConditions();
         loadReadyOrders(turnData);
         processTurn(turnData);
         turnData.setTurnNumber(turnData.getTurnNumber() + 1);
@@ -125,6 +124,7 @@ public class TurnUpdater {
 
     private TurnData loadTurnData() throws Exception {
         final TurnData turnData = dao.loadTurnData(sessionName, turnNumber);
+        turnData.clearShipConditions();
         log.info("Loaded data for session {}, turn {}", sessionName, turnNumber);
         return turnData;
     }
@@ -149,6 +149,7 @@ public class TurnUpdater {
             final Function<TurnData, PhaseUpdater> factory = PHASE_REGISTRY.get(phase);
             if (factory != null) {
                 processPhase(factory.apply(turnData));
+                log.info("Processed phase {}", phase);
             }
         }
         log.info("Processed all phases for session {}", sessionName);

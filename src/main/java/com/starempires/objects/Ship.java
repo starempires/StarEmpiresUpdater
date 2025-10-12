@@ -48,9 +48,9 @@ public class Ship extends OwnableObject {
     @JsonDeserialize(using = DeferredIdentifiableObjectCollectionDeserializer.class)
     private final Set<Ship> cargo = Sets.newHashSet();
     /** damage accrued thus turn by this ship */
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    @JsonIgnore
     private int combatDamageAccrued;
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    @JsonIgnore
     private int stormDamageAccrued;
     /** the ShipClass of this ship */
     @JsonSerialize(using = IdentifiableObjectSerializer.class)

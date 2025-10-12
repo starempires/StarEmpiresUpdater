@@ -394,6 +394,7 @@ public abstract class StarEmpiresDAO {
             if (StringUtils.isBlank(data)) {
                 throw new NoSuchFileException("File %s is empty".formatted(filename));
             }
+            log.info("Loaded ready orders " + filename);
         } catch (NoSuchFileException | NoSuchKeyException ex) {
             log.warn("No ready orders found for empire {} turn {}", empire, turnNumber);
             return Collections.emptyList();

@@ -80,7 +80,7 @@ public class BuildOrder extends WorldBasedOrder {
             final List<String> names = Lists.newArrayList();
             final ShipClass shipClass = turnData.getShipClass(designName);
             if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
-                order.addWarning(shipClass, "Unknown ship class");
+                order.addResult("Warning: Unknown ship class " + designName);
             }
             else {
                 if (!shipClass.isBuildable()) {
