@@ -24,14 +24,14 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
         final List<RadialCoordinate> coordinates = sectors.stream().map(sector -> {
             final RadialCoordinate coordinate = RadialCoordinate.parseRadial(sector);
             if (coordinate == null) {
-                addNewsResult(order, empire, "Unknown coordinate " + sector);
+                addNews(order, "Unknown coordinate " + sector);
                 return null;
             }
             return coordinate;
         }).filter(Objects::nonNull).collect(Collectors.toList());
         recipients.forEach(recipient -> {
             empire.addCoordinateScanAccess(recipient, coordinates);
-            addNewsResult(order, empire, "You have authorized empire " + recipient + " access to "
+            addNews(order, "You have authorized empire " + recipient + " access to "
                     + plural(coordinates.size(), "sector") + " of scan data");
         });
     }
@@ -42,7 +42,7 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.addShipScanAccess(recipient, ships);
-            addNewsResult(order, empire, "You have authorized empire " + recipient
+            addNews(order, "You have authorized empire " + recipient
                     + " access to scan data from " + plural(ships.size(), "ship"));
         });
     }
@@ -53,7 +53,7 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.addShipClassScanAccess(recipient, shipClasses);
-            addNewsResult(order, empire,
+            addNews(order,
                     "You have authorized empire " + recipient + " access to scan data from "
                             + plural(shipClasses.size(), "ship class", Constants.SUFFIX_ES));
         });
@@ -63,7 +63,7 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
         final Empire empire = order.getEmpire();
         recipients.forEach(recipient -> {
             empire.addEmpireScanAccess(recipient);
-            addNewsResult(order, empire,
+            addNews(order,
                     "You have authorized empire " + recipient + " access to all scan data");
         });
     }

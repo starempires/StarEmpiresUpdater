@@ -28,17 +28,17 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
                         if (empire.isKnownEmpire(recipient)) {
                             recipient.addKnownPortal(portal);
                             recipient.addNavData(portal);
-                            addNewsResult(order, empire,
+                            addNews(order,
                                     "You gave navigation data for portal " + portal + " given to " + recipient);
                             addNews(recipient, empire + " gave navigation data for portal " + portal + " to you");
                         }
                         else {
-                            addNewsResult(order, empire, "You are not in message contact with %s".formatted(recipient));
+                            addNews(order, "You are not in message contact with %s".formatted(recipient));
                         }
                     });
                 }
                 else {
-                    addNewsResult(order, "You do not have navigation data for portal " + portal);
+                    addNews(order, "You do not have navigation data for portal " + portal);
                 }
             }
         });

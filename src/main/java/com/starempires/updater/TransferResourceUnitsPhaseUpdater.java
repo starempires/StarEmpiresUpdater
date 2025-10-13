@@ -27,22 +27,22 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             final Empire recipient = order.getRecipient();
             int amount = order.getAmount();
             if (world == null || !world.isOwnedBy(empire)) {
-                addNewsResult(order, "You do not own world " + world);
+                addNews(order, "You do not own world " + world);
                 return;
             }
 
             if (world.isBlockaded()) {
-                addNewsResult(order, "No RU transfers possible from blockaded world " + world);
+                addNews(order, "No RU transfers possible from blockaded world " + world);
                 return;
             }
 
             if (destination == null || !destination.isOwnedBy(recipient)) {
                 if (recipient.equals(empire)) {
-                    addNewsResult(order, "You do not own world " + destination);
+                    addNews(order, "You do not own world " + destination);
                     return;
                 }
                 else {
-                    addNewsResult(order, "World " + destination + " is not owned by intended recipient " + recipient);
+                    addNews(order, "World " + destination + " is not owned by intended recipient " + recipient);
                     return;
                 }
             }
@@ -50,14 +50,14 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             final int stockpile = world.getStockpile();
             if (order.isTransferAll()) {
                 if (stockpile <= 0) {
-                    addNewsResult(order, "No RUs remaining at world " + world);
+                    addNews(order, "No RUs remaining at world " + world);
                     return;
                 }
                 amount = stockpile;
             }
             else {
                 if (amount > stockpile) {
-                    addNewsResult(order, "Transfer amount " + amount + " exceeds stockpile " + stockpile
+                    addNews(order, "Transfer amount " + amount + " exceeds stockpile " + stockpile
                             + " at world " + world + "; sending available stockpile");
                     amount = stockpile;
                 }

@@ -160,7 +160,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                     gunship.fireGuns(gunsToFire);
                     dpRemaining -= gunsToFire;
                     totalUnfiredGuns -= gunsToFire;
-                    addNewsResult(order, empiresInSector,
+                    addNews(empiresInSector,
                             "%s ship %s fired %s at %s %s".formatted(gunship.getOwner(), gunship,
                                  plural(gunsToFire, "gun"), targetDescription, target));
                 } else { // select a missile to fire
@@ -170,7 +170,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
                     missile.fireGuns(missileGuns);
                     missile.destroy(ShipCondition.DESTROYED_IN_COMBAT);
                     dpRemaining -= missileGuns;
-                    addNewsResult(order, empiresInSector,
+                    addNews(empiresInSector,
                             "%s missile %s inflicted %d damage against %s %s".formatted(missile.getOwner(), missile,
                             missileGuns, targetDescription, target));
                 }

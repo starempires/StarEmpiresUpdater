@@ -37,7 +37,7 @@ public class ConcealShipsPhaseUpdater extends TransponderChangesPhaseUpdater {
                 final List<Ship> ships = getTransponderShips(order, shipHandles);
                 transponderEmpires.forEach(transponderEmpire -> {
                     ships.forEach(ship -> ship.removeTransponder(transponderEmpire));
-                    addNewsResult(order, "You have concealed " + plural(ships.size(), "ship") + " from empire " + transponderEmpire);
+                    addNews(order, "You have concealed " + plural(ships.size(), "ship") + " from empire " + transponderEmpire);
                 });
             };
         });

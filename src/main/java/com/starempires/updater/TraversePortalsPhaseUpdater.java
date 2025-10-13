@@ -28,8 +28,7 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
 
         ships.forEach(ship -> {
             empire.traverseShip(ship, exit.getCoordinate());
-            addNewsResult(order, empire,
-                    "Ship " + ship + " traversed wormnet from " + entry + " to " + exit);
+            addNews(order, "Ship " + ship + " traversed wormnet from " + entry + " to " + exit);
             addNews(entranceEmpires, "Ship " + ship + " entered portal " + entry);
             addNews(exitEmpires, "Ship " + ship + " exited portal " + exit);
         });
@@ -48,13 +47,13 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
             final List<Ship> traversers = Lists.newArrayList();
             for (Ship ship : ships) {
                 if (!ship.isAlive()) {
-                    addNewsResult(order, "Omitting destroyed ship " + ship);
+                    addNews(order, "Omitting destroyed ship " + ship);
                 } else if (ship.getAvailableEngines() < 1) {
-                    order.addResult("Ship %s has no operational engines".formatted(ship));
+                    addNews(order, "Ship %s has no operational engines".formatted(ship));
                 } else if (ship.isLoaded()) {
-                    order.addResult("Loaded cargo %s will move with carrier".formatted(ship));
+                    addNews(order, "Loaded cargo %s will move with carrier".formatted(ship));
                 } else if (ship.getGunsActuallyFired() > 0) {
-                    order.addResult("Attacking ship %s cannot move".formatted(ship));
+                    addNews(order, "Attacking ship %s cannot move".formatted(ship));
                 }
                 else {
                     traversers.add(ship);
@@ -64,13 +63,13 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
 
 
             if (traversers.isEmpty()) {
-                addNewsResult(order, "No valid movers found");
+                addNews(order, "No valid movers found");
                 return;
             }
 
             final Portal entry = order.getEntry();
             if (entry.isCollapsed()) {
-                addNewsResult(order, "Entry portal " + entry + " is collapsed; no traversal possible");
+                addNews(order, "Entry portal " + entry + " is collapsed; no traversal possible");
                 return;
              }
 
@@ -79,12 +78,12 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
                  exit = entry.selectRandomConnection();
              }
              else if (!entry.isConnectedTo(exit)) {
-                 addNewsResult(order, "Entry portal %s and exit portal %s are not connected".formatted(entry, exit));
+                 addNews(order, "Entry portal %s and exit portal %s are not connected".formatted(entry, exit));
                  return;
              }
 
              if (exit.isCollapsed()) {
-                 addNewsResult(order, "Exit portal " + exit + " is collapsed; no wormnet traversal possible");
+                 addNews(order, "Exit portal " + exit + " is collapsed; no wormnet traversal possible");
                  return;
              }
              traversePortal(order, entry, exit, traversers);

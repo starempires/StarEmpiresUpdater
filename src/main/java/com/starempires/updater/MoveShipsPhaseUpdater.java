@@ -64,7 +64,7 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
                 if (distance <= availableEngines) {
                     movingShips.put(order, mover);
                 } else {
-                    addNewsResult(order, "Ship %s has insufficient operational engines (max move %d) to reach destination %s (distance %d)".formatted(mover, availableEngines, mover.getOwner().toLocal(order.getDestination()), distance));
+                    addNews(order, "Ship %s has insufficient operational engines (max move %d) to reach destination %s (distance %d)".formatted(mover, availableEngines, mover.getOwner().toLocal(order.getDestination()), distance));
                 }
             });
         });

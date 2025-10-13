@@ -51,11 +51,11 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
             for (Ship ship : order.getShips()) {
                 final Ship carrier = ship.getCarrier();
                 if (carrier == null) {
-                    addNewsResult(order, "Ship " + ship + " is not loaded");
+                    addNews(order, "Ship " + ship + " is not loaded");
                 } else {
                     turnData.unload(ship);
                     final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(ship);
-                    addNewsResult(order, newsEmpires, "Ship " + ship + " unloaded from carrier " + carrier);
+                    addNews(newsEmpires, "Ship " + ship + " unloaded from carrier " + carrier);
                 }
             }
         });

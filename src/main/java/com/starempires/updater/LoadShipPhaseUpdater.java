@@ -30,13 +30,13 @@ public class LoadShipPhaseUpdater extends PhaseUpdater {
             final Ship carrier = order.getCarrier();
             for (final Ship cargo : order.getShips()) {
                 if (!cargo.isSameSector(carrier)) {
-                    addNewsResult(order, "Carrier %s and cargo %s are not in the same sector".formatted(carrier, cargo));
+                    addNews(order, "Carrier %s and cargo %s are not in the same sector".formatted(carrier, cargo));
                 } else if (!carrier.canLoadCargo(cargo)) {
-                    addNewsResult(order, "Carrier %s has insufficient free racks (%d) to load ship %s (tonnage %d)".formatted(carrier, carrier.getEmptyRacks(), cargo, cargo.getTonnage()));
+                    addNews(order, "Carrier %s has insufficient free racks (%d) to load ship %s (tonnage %d)".formatted(carrier, carrier.getEmptyRacks(), cargo, cargo.getTonnage()));
                 } else {
                     turnData.load(cargo, carrier);
                     final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(carrier);
-                    addNewsResult(order, newsEmpires, "Ship " + cargo + " loaded onto carrier " + carrier);
+                    addNews(newsEmpires, "Ship " + cargo + " loaded onto carrier " + carrier);
                 }
             }
         });

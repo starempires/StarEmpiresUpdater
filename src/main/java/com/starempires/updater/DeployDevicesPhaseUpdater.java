@@ -28,12 +28,12 @@ public class DeployDevicesPhaseUpdater extends PhaseUpdater {
         if (CollectionUtils.isEmpty(starbases)) {
             turnData.deploy(device);
             newsEmpires.forEach(newsEmpire -> {
-                addNewsResult(order, newsEmpire, "%s deployed device %s in sector %s".formatted(device.getOwner(), device, newsEmpire.toLocal(device.getCoordinate())));
+                addNews(newsEmpire, "%s deployed device %s in sector %s".formatted(device.getOwner(), device, newsEmpire.toLocal(device.getCoordinate())));
             });
         } else {
             newsEmpires.forEach(newsEmpire -> {
-                addNewsResult(order, newsEmpire,
-                "Starbase %s prevented activation of %s device %s deployed in sector %s".formatted(starbases.stream().findFirst().orElseThrow(), device.getOwner(), device, newsEmpire.toLocal(device.getCoordinate())));
+                addNews(newsEmpire,
+                        "Starbase %s prevented activation of %s device %s deployed in sector %s".formatted(starbases.stream().findFirst().orElseThrow(), device.getOwner(), device, newsEmpire.toLocal(device.getCoordinate())));
             });
         }
     }

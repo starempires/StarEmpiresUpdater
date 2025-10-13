@@ -59,15 +59,15 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
             addOrderText(order);
             order.getShips().stream().sorted(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR).forEach(ship -> {
                 if (ship.isStarbase()) {
-                    addNewsResult(order, "Starbase " + ship + " cannot be self-destructed.");
+                    addNews(order, "Starbase " + ship + " cannot be self-destructed.");
                 }
                 else if (ship.isLoaded()) {
-                    addNewsResult(order, "Ship %s is loaded onto carrier %s and cannot be self-destructed.".formatted(ship, ship.getCarrier()));
+                    addNews(order, "Ship %s is loaded onto carrier %s and cannot be self-destructed.".formatted(ship, ship.getCarrier()));
                 }
                 else {
                     final Coordinate coordinate = ship.getCoordinate();
                     final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(coordinate);
-                    addNewsResult(order, newsEmpires,
+                    addNews(newsEmpires,
                             "%s ship %s (%s) self destructed".formatted(ship.getOwner(), ship, plural(ship.getTonnage(), "tonne")));
 
                     selfDestructs.put(coordinate, ship);
@@ -76,7 +76,7 @@ public class DestructShipsPhaseUpdater extends PhaseUpdater {
                     cargos.sort(Comparator.comparing(Ship::getHandle));
                     for (Ship cargo: cargos) {
                         selfDestructs.put(coordinate, cargo);
-                        addNewsResult(order, newsEmpires,
+                        addNews(newsEmpires,
                                 "Loaded cargo %s (%s) self destructed".formatted(cargo, plural(cargo.getTonnage(), "tonne")));
                     }
                 }

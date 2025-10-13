@@ -44,26 +44,26 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
             final Ship ship = order.getShips().get(0);
             final List<World> worlds = order.getWorlds();
             if (!ship.isAlive()) {
-                addNewsResult(order, "Ship " + ship + " has been destroyed");
+                addNews(order, "Ship " + ship + " has been destroyed");
             } else if (!ship.isRepairable()) {
-                addNewsResult(order, "Ship " + ship + " needs no repairs");
+                addNews(order, "Ship " + ship + " needs no repairs");
             } else {
                 for (World world: worlds) {
                     if (!world.isOwnedBy(empire)) {
-                        addNewsResult(order, "You do not own world " + world);
+                        addNews(order, "You do not own world " + world);
                     } else if (world.isInterdicted()) {
-                        addNewsResult(order, "World " + world + " is interdicted; no repairs possible");
+                        addNews(order, "World " + world + " is interdicted; no repairs possible");
                     } else if (world.isBlockaded() && !ship.isSameSector(world)) {
-                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible");
+                        addNews(order, "World " + world + " is blockaded; no offworld repairs possible");
                     } else if (world.getStockpile() < 1) {
-                        addNewsResult(order, "No RUs stockpiled at world " + world);
+                        addNews(order, "No RUs stockpiled at world " + world);
                     } else if (world.isBlockaded() && !ship.isSameSector(world)) {
-                        addNewsResult(order, "World " + world + " is blockaded; no offworld repairs possible");
+                        addNews(order, "World " + world + " is blockaded; no offworld repairs possible");
                     } else {
                         int dpToRepair = order.getDpToRepair();
                         final int maxRepair = ship.getMaxRepairAmount();
                         if (maxRepair < dpToRepair) {
-                            addNewsResult(order, "Ship %s needs only %d DP repaired".formatted(ship, maxRepair));
+                            addNews(order, "Ship %s needs only %d DP repaired".formatted(ship, maxRepair));
                             dpToRepair = maxRepair;
                         }
                         final int dpRepairedPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
@@ -72,14 +72,14 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
                         if (stockpile < fee) {
                             fee = stockpile;
                             dpToRepair = fee * dpRepairedPerRU;
-                            addNewsResult(order, "World %s can fund only %d repairs".formatted(world, dpToRepair));
+                            addNews(order, "World %s can fund only %d repairs".formatted(world, dpToRepair));
                         }
                         ship.repair(dpToRepair, ShipCondition.REPAIRED);
                         final int remaining = world.adjustStockpile(-fee);
                         final Collection<Empire> newEmpires = turnData.getEmpiresPresent(ship);
                         newEmpires.remove(empire);
-                        addNewsResult(order, "World %s repaired %d DP (%d damage remaining; OR %s) on ship %s (%d RU spent; %d remaining)".formatted(world, dpToRepair, ship.getDamage(), formatOpRating(ship), ship, fee, remaining));
-                        addNewsResult(order, newEmpires, "%s repaired %d DP on ship %s".formatted(empire, dpToRepair, ship));
+                        addNews(order, "World %s repaired %d DP (%d damage remaining; OR %s) on ship %s (%d RU spent; %d remaining)".formatted(world, dpToRepair, ship.getDamage(), formatOpRating(ship), ship, fee, remaining));
+                        addNews(newEmpires, "%s repaired %d DP on ship %s".formatted(empire, dpToRepair, ship));
                     }
                 }
             }

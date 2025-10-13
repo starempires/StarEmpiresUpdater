@@ -38,7 +38,7 @@ public class IdentifyShipsPhaseUpdater extends TransponderChangesPhaseUpdater {
                 final List<Ship> ships = getTransponderShips(order, shipHandles);
                 transponderEmpires.forEach(transponderEmpire -> {
                     ships.forEach(ship -> ship.addTransponder(transponderEmpire));
-                    addNewsResult(order, "You have identified " + plural(ships.size(), "ship") + " from empire " + transponderEmpire);
+                    addNews(order, "You have identified " + plural(ships.size(), "ship") + " from empire " + transponderEmpire);
                 });
             };
         });

@@ -45,30 +45,16 @@ public abstract class PhaseUpdater {
         turnData.addNews(phase, order.toString());
     }
 
-    protected void addNewsResult(final Order order, final String text) {
-        turnData.addNews(phase, order.getEmpire(), text);
-    }
-
-    protected void addNewsResult(final Order order, final Empire empire, final String text) {
-        turnData.addNews(phase, empire, text);
-        if (order != null) {
-            order.addResult(text);
-        }
-    }
-
-    protected void addNewsResult(final Order order, final Collection<Empire> empires, final String text) {
-        turnData.addNews(phase, empires, text);
-        if (order != null) {
-            order.addResult(text);
-        }
+    protected void addNews(final Order order, final String text) {
+        addNews(order.getEmpire(), text);
     }
 
     protected void addNews(final Empire empire, final String text) {
-        addNewsResult(null, empire, text);
+        turnData.addNews(phase, empire, text);
     }
 
     protected void addNews(final Collection<Empire> empires, final String text) {
-        addNewsResult(null, empires, text);
+        turnData.addNews(phase, empires, text);
     }
 
     protected static String plural(final int number, final String noun) {
@@ -106,7 +92,7 @@ public abstract class PhaseUpdater {
                     final String shipClassName = shipHandle.substring(1);
                     final ShipClass shipClass = turnData.getShipClass(shipClassName);
                     if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
-                        addNewsResult(order, "You have no information about ship class " + shipClassName);
+                        addNews(order, "You have no information about ship class " + shipClassName);
                     }
                     else {
                         final Collection<Ship> shipsOfClass = empire.getShips(shipClass).stream().filter(Ship::isAlive).toList();
@@ -116,9 +102,9 @@ public abstract class PhaseUpdater {
                 else {
                     final Ship ship = empire.getShip(shipHandle);
                     if (ship == null) {
-                        addNewsResult(order, "You do not own ship " + shipHandle);
+                        addNews(order, "You do not own ship " + shipHandle);
                     } else if (!ship.isAlive()) {
-                        addNewsResult(order, "Ship " + ship + " is destroyed");
+                        addNews(order, "Ship " + ship + " is destroyed");
                     } else {
                         validShips.add(ship);
                     }

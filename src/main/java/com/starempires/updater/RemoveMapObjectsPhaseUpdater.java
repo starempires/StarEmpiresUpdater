@@ -30,7 +30,7 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
             final World world = turnData.getWorld(worldName);
             final Collection<Empire> empires = turnData.getEmpiresPresent(world);
             turnData.removeWorld(world);
-            addNewsResult(order, empires, "World %s has been removed".formatted(world));
+            addNews(empires, "World %s has been removed".formatted(world));
         });
     }
 
@@ -39,7 +39,7 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
             final Portal portal = turnData.getPortal(portalName);
             final Collection<Empire> empires = turnData.getEmpiresPresent(portal);
             turnData.removePortal(portal);
-            addNewsResult(order, empires, "Portal %s has been removed".formatted(portal));
+            addNews(empires, "Portal %s has been removed".formatted(portal));
         });
     }
 
@@ -48,7 +48,7 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
             final Storm storm = turnData.getStorm(stormName);
             final Collection<Empire> empires = turnData.getEmpiresPresent(storm);
             turnData.removeStorm(storm);
-            addNewsResult(order, empires, "Storm %s has been removed".formatted(storm));
+            addNews(empires, "Storm %s has been removed".formatted(storm));
         });
     }
 
@@ -67,7 +67,7 @@ public class RemoveMapObjectsPhaseUpdater extends PhaseUpdater {
 
             ship.getCargo().forEach(Ship::unloadFromCarrier);
             empire.removeShip(ship);
-            addNewsResult(order, empires, "Ship %s has been removed".formatted(ship));
+            addNews(empires, "Ship %s has been removed".formatted(ship));
         });
     }
 

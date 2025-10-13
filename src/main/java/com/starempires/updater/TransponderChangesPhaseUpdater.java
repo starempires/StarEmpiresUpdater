@@ -21,7 +21,7 @@ public abstract class TransponderChangesPhaseUpdater extends PhaseUpdater {
         empireNames.forEach(empireName -> {
             final Empire transponderEmpire = turnData.getEmpire(empireName);
             if (transponderEmpire == null || !empire.isKnownEmpire(transponderEmpire)) {
-                addNewsResult(order, empire, "You have no information about empire " + empireName);
+                addNews(order, "You have no information about empire " + empireName);
             }
             else {
                 validEmpires.add(transponderEmpire);
@@ -35,7 +35,7 @@ public abstract class TransponderChangesPhaseUpdater extends PhaseUpdater {
         final List<Ship> ships = getShipsByHandle(order, shipHandles);
         for (final Ship ship: ships) {
             if (ship.isPublicTransponder()) {
-                addNewsResult(order, "Transponder for ship " + ship + " is public and cannot be modified");
+                addNews(order, "Transponder for ship " + ship + " is public and cannot be modified");
             }
             else {
                 validShips.add(ship);

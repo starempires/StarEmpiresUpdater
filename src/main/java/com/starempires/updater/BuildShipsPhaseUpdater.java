@@ -37,10 +37,10 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
                     name = names.get(i);
                 }
                 final Ship ship = empire.buildShip(shipClass, world, name, turnData.getTurnNumber());
-                addNewsResult(order, "You built " + shipClass + " ship " + ship + " at world "
+                addNews(order, "You built " + shipClass + " ship " + ship + " at world "
                         + world + " (cost " + cost + " RU; " + remaining + " RU remaining)");
             } else {
-                addNewsResult(order, "Insufficient stockpile (" + stockpile + " RU) on world "
+                addNews(order, "Insufficient stockpile (" + stockpile + " RU) on world "
                         + world + " to build ship class " + shipClass + " (cost " + cost + " RU)");
                 break;
             }
@@ -58,12 +58,12 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
             final World world = order.getWorld();
 
             if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
-                addNewsResult(order, "You have no design information for ship class " + order.getShipClassName());
+                addNews(order, "You have no design information for ship class " + order.getShipClassName());
             } else {
                 if (!world.isOwnedBy(empire)) {
-                    addNewsResult(order, "You do not own world " + world);
+                    addNews(order, "You do not own world " + world);
                 } else if (world.isInterdicted()) {
-                    addNewsResult(order, "World " + world + " is interdicted; no builds possible");
+                    addNews(order, "World " + world + " is interdicted; no builds possible");
                 } else {
                     buildShips(order, shipClass);
                 }

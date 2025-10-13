@@ -26,7 +26,7 @@ public class GiveDesignsPhaseUpdater extends PhaseUpdater {
                 for (Empire recipient : order.getRecipients()) {
                     recipient.addKnownShipClass(shipClass);
                     addNews(recipient, empire + " gave the design for the " + shipClass + " ship class to you.");
-                    addNewsResult(order, "You gave the design for the " + shipClass + " ship class to " + recipient + ".");
+                    addNews(order, "You gave the design for the " + shipClass + " ship class to " + recipient + ".");
                 }
             }
         });

@@ -29,12 +29,12 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
             final Empire empire = order.getEmpire();
             final World poolWorld = order.getWorld();
             if (!poolWorld.isOwnedBy(empire)) {
-                addNewsResult(order, "You do not own world " + poolWorld);
+                addNews(order, "You do not own world " + poolWorld);
             } else {
                 final List<World> exceptWorlds = Optional.ofNullable(order.getExceptedWorlds()).orElse(List.of());
                 exceptWorlds.forEach(world -> {
                     if (!world.isOwnedBy(empire)) {
-                        addNewsResult(order, "You do not own world " + world);
+                        addNews(order, "You do not own world " + world);
                         order.getExceptedWorlds().remove(world);
                     }
                 });
@@ -48,16 +48,16 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
                     final int stockpile = world.getStockpile();
                     if (stockpile > 0) {
                         if (world.isBlockaded()) {
-                            addNewsResult(order, empire, "Cannot pool RU from blockaded world %s".formatted(world));
+                            addNews(order, "Cannot pool RU from blockaded world %s".formatted(world));
                         } else {
-                            addNewsResult(order, empire, "Pooled %d RU from %s to %s".formatted(stockpile, world, poolWorld));
+                            addNews(order, "Pooled %d RU from %s to %s".formatted(stockpile, world, poolWorld));
                             total.addAndGet(stockpile);
                             world.setStockpile(0);
                         }
                     }
                 });
                 poolWorld.adjustStockpile(total.get());
-                addNewsResult(order, "Pooled %d RU from %s to %s (stockpile now %d)".formatted(total.get(),
+                addNews(order, "Pooled %d RU from %s to %s (stockpile now %d)".formatted(total.get(),
                         plural(ownedWorlds.size(), "other world"), poolWorld, poolWorld.getStockpile()));
             }
         });

@@ -35,7 +35,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
                 .build();
         turnData.addShipClass(shipClass);
         empire.addKnownShipClass(shipClass);
-        addNewsResult(order, "You have designed new missile class " + order.getName());
+        addNews(order, "You have designed new missile class " + order.getName());
     }
 
     private void designShip(final DesignOrder order) {
@@ -50,7 +50,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
 
         int stockpile = world.getStockpile();
         if (designFee > stockpile) {
-            addNewsResult(order, "World %s has insufficient stockpile (%d RU) to pay %d RU design fee".formatted(world, stockpile, designFee));
+            addNews(order, "World %s has insufficient stockpile (%d RU) to pay %d RU design fee".formatted(world, stockpile, designFee));
             return;
         }
 
@@ -71,7 +71,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
         turnData.addShipClass(shipClass);
         empire.addKnownShipClass(shipClass);
         stockpile = world.adjustStockpile(-designFee);
-        addNewsResult(order, "You designed new " + hullType + " class " + order.getName()
+        addNews(order, "You designed new " + hullType + " class " + order.getName()
                             + " (" + designFee + " RU design fee; " + stockpile + " RU remaining).");
     }
 
@@ -84,11 +84,11 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
             final World world = order.getWorld();
             final Empire empire = order.getEmpire();
             if (!world.isOwnedBy(empire)) {
-                addNewsResult(order, empire, "You do not own world %s".formatted(world));
+                addNews(empire, "You do not own world %s".formatted(world));
                 return;
             }
             if (world.isInterdicted()) {
-                addNewsResult(order, empire, "World %s is interdicted; no designs possible".formatted(world));
+                addNews(empire, "World %s is interdicted; no designs possible".formatted(world));
                 return;
             }
 

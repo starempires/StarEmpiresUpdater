@@ -33,15 +33,15 @@ public class ToggleTransponderModesPhaseUpdater extends PhaseUpdater {
                                 .filter(Ship::isAlive)
                                 .peek(ship -> ship.toggleTransponder(publicMode))
                                 .count();
-                        addNewsResult(order, "Transponder set to %s mode on %d %s-class %s".formatted(modeText, toggleCount, shipClass, plural(toggleCount, "ship")));
+                        addNews(order, "Transponder set to %s mode on %d %s-class %s".formatted(modeText, toggleCount, shipClass, plural(toggleCount, "ship")));
                     });
 
             for (Ship ship : order.getShips()) {
                 if (ship.isAlive()) {
                     ship.toggleTransponder(publicMode);
-                    addNewsResult(order, "Transponder set to %s mode on %s".formatted(modeText, ship));
+                    addNews(order, "Transponder set to %s mode on %s".formatted(modeText, ship));
                 } else {
-                    addNewsResult(order, "Ship %s is destroyed".formatted(ship));
+                    addNews(order, "Ship %s is destroyed".formatted(ship));
                 }
             }
         });

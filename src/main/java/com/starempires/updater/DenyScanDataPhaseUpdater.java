@@ -38,14 +38,14 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
         final List<RadialCoordinate> coordinates = sectors.stream().map(sector -> {
             final RadialCoordinate coordinate = RadialCoordinate.parseRadial(sector);
             if (coordinate == null) {
-                addNewsResult(order, empire, "Unknown coordinate " + sector);
+                addNews(order, "Unknown coordinate " + sector);
                 return null;
             }
             return coordinate;
         }).filter(Objects::nonNull).collect(Collectors.toList());
         recipients.forEach(recipient -> {
             empire.removeCoordinateScanAccess(recipient, coordinates);
-            addNewsResult(order, "You have denied empire " + recipient + " access to "
+            addNews(order, "You have denied empire " + recipient + " access to "
                     + plural(coordinates.size(), "sector") + " of scan data");
         });
     }
@@ -56,7 +56,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.removeShipScanAccess(recipient, ships);
-            addNewsResult(order, "You have denied empire " + recipient
+            addNews(order, "You have denied empire " + recipient
                     + " access to scan data from " + plural(ships.size(), "ship"));
         });
     }
@@ -67,7 +67,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
 
         recipients.forEach(recipient -> {
             empire.removeShipClassScanAccess(recipient, shipClasses);
-            addNewsResult(order, "You have denied empire " + recipient + " access to scan data from "
+            addNews(order, "You have denied empire " + recipient + " access to scan data from "
                             + plural(shipClasses.size(), "ship class", Constants.SUFFIX_ES));
         });
     }
@@ -76,8 +76,7 @@ public class DenyScanDataPhaseUpdater extends PhaseUpdater {
         final Empire empire = order.getEmpire();
         recipients.forEach(recipient -> {
             empire.removeEmpireScanAccess(recipient);
-            addNewsResult(order, empire,
-                    "You have denied empire " + recipient + " access to all scan data");
+            addNews(order, "You have denied empire " + recipient + " access to all scan data");
         });
     }
 
