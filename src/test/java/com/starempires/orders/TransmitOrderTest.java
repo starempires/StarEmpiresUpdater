@@ -3,20 +3,17 @@ package com.starempires.orders;
 import com.google.common.collect.Sets;
 import com.starempires.objects.Empire;
 import com.starempires.objects.EmpireType;
-import com.starempires.objects.Portal;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TransmitOrderTest extends BaseTest {
 
-    private Portal portal;
-
     @BeforeEach
     public void before() {
-        portal = createPortal("portal", ZERO_COORDINATE, false);
         empire1.addKnownPortal(portal);
         empire1.addNavData(portal);
         empire1.addKnownEmpire(empire2);

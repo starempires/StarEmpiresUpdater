@@ -2,7 +2,6 @@ package com.starempires.updater;
 
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
-import com.starempires.objects.Storm;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
     @Test
     void update() {
         final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
-        final Storm storm = createStorm("storm", ZERO_COORDINATE, 1);
         updater.update();;
         assertEquals(1, ship.getStormDamageAccrued());
         assertTrue(ship.hasCondition(ShipCondition.DAMAGED_BY_STORM));
@@ -31,8 +29,8 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateZeroRating() {
-        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
-        final Storm storm = createStorm("storm", ZERO_COORDINATE, 0);
+        final Ship ship = createShip(fighterClass, ONE_COORDINATE, "ship", empire1);
+        createStorm("storm", ONE_COORDINATE, 0);
         updater.update();;
         assertEquals(0, ship.getStormDamageAccrued());
         assertFalse(ship.hasCondition(ShipCondition.DAMAGED_BY_STORM));
@@ -42,7 +40,6 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
     void updateStarbaseInRange() {
         final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire1);
-        final Storm storm = createStorm("storm", ZERO_COORDINATE, 5);
         updater.update();;
         assertEquals(0, ship.getStormDamageAccrued());
         assertFalse(ship.hasCondition(ShipCondition.DAMAGED_BY_STORM));

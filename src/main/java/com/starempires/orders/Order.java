@@ -45,7 +45,8 @@ public abstract class Order {
     protected static final String ID_REGEX = "\\w+";
     protected static final String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
     protected static final String INT_REGEX = "\\d+";
-    protected static final String INT_OR_MAX_REGEX = INT_REGEX + "|max";
+    protected static final String MAX_TOKEN = "max";
+    protected static final String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
     protected static final String AMOUNT_GROUP = "dp";
     protected static final String AMOUNT_CAPTURE_REGEX = "(?<" + AMOUNT_GROUP + ">" + INT_OR_MAX_REGEX + ")";
     protected static final String RECIPIENT_LIST_GROUP = "recipientlist";

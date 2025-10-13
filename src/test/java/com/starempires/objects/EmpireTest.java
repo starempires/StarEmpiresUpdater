@@ -1,61 +1,54 @@
 package com.starempires.objects;
 
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EmpireTest {
-
-    private final Empire empire = Empire.builder().name("The Culture").empireType(EmpireType.ACTIVE).abbreviation("CU").frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE).build();
+class EmpireTest extends BaseTest {
 
     @Test
     void owns() {
-        final World world = World.builder().owner(empire).build();
-        assertTrue(empire.owns(world));
+        assertTrue(empire1.owns(world));
     }
 
     @Test
     void isKnownEmpire() {
-        assertTrue(empire.isKnownEmpire(empire));
+        assertTrue(empire1.isKnownEmpire(empire1));
         final Empire other = Empire.builder().build();
-        empire.addKnownEmpire(other);
-        assertTrue(empire.isKnownEmpire(other));
+        empire1.addKnownEmpire(other);
+        assertTrue(empire1.isKnownEmpire(other));
     }
 
     @Test
     void isKnownWorld() {
-        final World world = World.builder().build();
-        empire.addKnownWorld(world);
-        assertTrue(empire.isKnownWorld(world));
+        assertTrue(empire1.isKnownWorld(world));
     }
 
     @Test
     void isKnownPortal() {
-        final Portal portal  = Portal.builder().build();
-        empire.addKnownPortal(portal);
-        assertTrue(empire.isKnownPortal(portal));
+        empire1.addKnownPortal(portal);
+        assertTrue(empire1.isKnownPortal(portal));
     }
 
     @Test
     void isKnownStorm() {
-        final Storm storm = Storm.builder().build();
-        empire.addKnownStorm(storm);
-        assertTrue(empire.isKnownStorm(storm));
+        empire1.addKnownStorm(storm);
+        assertTrue(empire1.isKnownStorm(storm));
     }
 
     @Test
     void isKnownShipClass() {
         final ShipClass shipClass = ShipClass.builder().build();
-        empire.addKnownShipClass(shipClass);
-        assertTrue(empire.isKnownShipClass(shipClass));
+        empire1.addKnownShipClass(shipClass);
+        assertTrue(empire1.isKnownShipClass(shipClass));
     }
 
     @Test
     void addNavData() {
-        final Portal portal  = Portal.builder().build();
-        empire.addNavData(portal);
-        assertTrue(empire.hasNavData(portal));
+        empire1.addNavData(portal);
+        assertTrue(empire1.hasNavData(portal));
     }
 
     @Test
@@ -188,6 +181,8 @@ class EmpireTest {
 
     @Test
     void computeMaxScanExtent() {
+        empire1.mergeScanStatus(ONE_COORDINATE, ScanStatus.VISIBLE, 0);
+        assertEquals(1, empire1.computeMaxScanExtent());
     }
 
     @Test
@@ -240,18 +235,17 @@ class EmpireTest {
 
     @Test
     void getNewSerialNumber() {
-        assertTrue(empire.getNewSerialNumber().startsWith(empire.getAbbreviation()));
+        assertTrue(empire1.getNewSerialNumber().startsWith(empire1.getAbbreviation()));
     }
 
     @Test
     void buildShip() {
         final ShipClass shipClass = ShipClass.builder().dp(10).build();
-        final World world = World.builder().coordinate(new Coordinate(0,0)).build();
-        final Ship ship = empire.buildShip(shipClass,world, "foo", 1);
-        assertEquals(empire, ship.getOwner());
+        final Ship ship = empire1.buildShip(shipClass,world, "foo", 1);
+        assertEquals(empire1, ship.getOwner());
         assertEquals(shipClass, ship.getShipClass());
         assertEquals(10, ship.getDpRemaining());
         assertEquals(1, ship.getTurnBuilt());
-        assertTrue(empire.getShips().contains(ship));
+        assertTrue(empire1.getShips().contains(ship));
     }
 }

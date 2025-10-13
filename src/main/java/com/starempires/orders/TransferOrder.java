@@ -43,12 +43,12 @@ public class TransferOrder extends WorldBasedOrder {
             final String amountText = matcher.group(AMOUNT_GROUP);
             final String toEmpireName = matcher.group(RECIPIENT_GROUP);
             final World fromWorld = turnData.getWorld(fromWorldName);
-            if (fromWorld == null || !empire.isKnownWorld(fromWorld) || !fromWorld.isOwnedBy(empire)) {
+            if (!empire.isKnownWorld(fromWorld) || !fromWorld.isOwnedBy(empire)) {
                 order.addError("You do not own world " + fromWorldName);
                 return order;
             }
-            final World toWorld = turnData.getWorld(fromWorldName);
-            if (toWorld == null || !empire.isKnownWorld(toWorld)) {
+            final World toWorld = turnData.getWorld(toWorldName);
+            if (!empire.isKnownWorld(toWorld)) {
                 order.addError("Unknown world: " + toWorldName);
                 return order;
             }
@@ -60,7 +60,7 @@ public class TransferOrder extends WorldBasedOrder {
             Empire toEmpire = empire;
             if (toEmpireName != null) {
                 toEmpire = turnData.getEmpire(toEmpireName);
-                if (toEmpire == null || empire.isKnownEmpire(toEmpire)) {
+                if (!empire.isKnownEmpire(toEmpire)) {
                     order.addError("You have no contact with empire " + toEmpireName);
                     return order;
                 }
@@ -72,12 +72,12 @@ public class TransferOrder extends WorldBasedOrder {
             }
 
             int amount;
-            if (amountText.equalsIgnoreCase("ALL")) {
+            if (amountText.equalsIgnoreCase(MAX_TOKEN)) {
                 order.transferAll = true;
             } else {
                 amount = Integer.parseInt(amountText);
                 if (amount < 1) {
-                    order.addError(fromWorld, "Invalid transfer amount transfer %d".formatted(amount));
+                    order.addError(fromWorld, "Invalid transfer amount %d".formatted(amount));
                     return order;
                 }
                 if (amount > fromWorld.getStockpile()) {

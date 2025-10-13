@@ -90,7 +90,7 @@ public class RepairOrder extends ShipBasedOrder {
 
             for (String worldName : worldNames.split(" ")) {
                 final World world = turnData.getWorld(worldName);
-                if (world == null || !empire.isKnownWorld(world)) {
+                if (!empire.isKnownWorld(world)) {
                     order.addError("Unknown world: " + worldName);
                 } else if (!world.isOwnedBy(empire)) {
                     order.addWarning(world, "You don't own world " + world);

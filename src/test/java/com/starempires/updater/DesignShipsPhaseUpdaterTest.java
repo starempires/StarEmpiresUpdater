@@ -24,15 +24,12 @@ class DesignShipsPhaseUpdaterTest extends BaseTest {
     private static final int ENGINES = 2;
     private static final int SCAN = 2;
     private static final int RACKS = 2;
-    private World world;
     private DesignShipsPhaseUpdater updater;
     private DesignOrder order;
 
     @BeforeEach
     void setUp() {
         updater = new DesignShipsPhaseUpdater(turnData);
-        world = createWorld("world", ZERO_COORDINATE, 10);
-        world.setOwner(empire1);
         world.setStockpile(20);
 
         order = DesignOrder.builder()

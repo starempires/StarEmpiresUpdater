@@ -1,7 +1,6 @@
 package com.starempires.updater;
 
 import com.starempires.objects.Prohibition;
-import com.starempires.objects.World;
 import com.starempires.orders.BuildOrder;
 import com.starempires.orders.OrderType;
 import com.starempires.util.BaseTest;
@@ -16,19 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class BuildShipsPhaseUpdaterTest extends BaseTest {
 
     private BuildShipsPhaseUpdater updater;
-    private World world;
 
     @BeforeEach
     void setUp() {
         updater = new BuildShipsPhaseUpdater(turnData);
-        world = createWorld("world", ZERO_COORDINATE, 10);
     }
 
     @Test
     void updateSuccessNames() {
-        final int stockpile = 10;
-        world.setOwner(empire1);
-        world.setStockpile(stockpile);
+        final int startingStockpile = world.getStockpile();
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
@@ -43,14 +38,12 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
         assertEquals(probeClass, empire1.getShip("probe2").getShipClass());
-        assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
+        assertEquals(startingStockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
     @Test
     void updateSuccessTooFewNames() {
-        final int stockpile = 10;
-        world.setOwner(empire1);
-        world.setStockpile(stockpile);
+        final int startingStockpile = world.getStockpile();
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
@@ -66,14 +59,12 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
         assertNull(empire1.getShip("probe2"));
         assertEquals(2, empire1.getShips().size());
-        assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
+        assertEquals(startingStockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
     @Test
     void updateSuccessBasename() {
-        final int stockpile = 10;
-        world.setOwner(empire1);
-        world.setStockpile(stockpile);
+        final int startingStockpile = world.getStockpile();
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
@@ -88,13 +79,13 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(probeClass, empire1.getShip("probe1").getShipClass());
         assertEquals(probeClass, empire1.getShip("probe2").getShipClass());
-        assertEquals(stockpile - 2 * probeClass.getCost(), world.getStockpile());
+        assertEquals(startingStockpile - 2 * probeClass.getCost(), world.getStockpile());
     }
 
     @Test
     void updateWorldNotOwned() {
-        final int stockpile = 10;
-        world.setStockpile(stockpile);
+        final int startingStockpile = world.getStockpile();
+        world.setOwner(null);
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
@@ -109,14 +100,12 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertNull(empire1.getShip("probe1"));
         assertNull(empire1.getShip("probe2"));
-        assertEquals(stockpile, world.getStockpile());
+        assertEquals(startingStockpile, world.getStockpile());
     }
 
     @Test
     void updateUnknownShipClass() {
-        final int stockpile = 10;
-        world.setOwner(empire1);
-        world.setStockpile(stockpile);
+        final int startingStockpile = world.getStockpile();
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.BUILD)
@@ -130,15 +119,13 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertNull(empire1.getShip("probe1"));
         assertNull(empire1.getShip("probe2"));
-        assertEquals(stockpile, world.getStockpile());
+        assertEquals(startingStockpile, world.getStockpile());
     }
 
     @Test
     void updateWorldInterdicted() {
-        final int stockpile = 10;
-        world.setOwner(empire1);
+        final int startingStockpile = world.getStockpile();
         world.setProhibition(Prohibition.INTERDICTED);
-        world.setStockpile(stockpile);
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()
                 .empire(empire1)
@@ -153,12 +140,11 @@ class BuildShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertNull(empire1.getShip("probe1"));
         assertNull(empire1.getShip("probe2"));
-        assertEquals(stockpile, world.getStockpile());
+        assertEquals(startingStockpile, world.getStockpile());
     }
 
     @Test
     void updateInsufficientStockpile() {
-        world.setOwner(empire1);
         world.setStockpile(probeClass.getCost()); // enough for one ship
         empire1.addKnownShipClass(probeClass);
         final BuildOrder order = BuildOrder.builder()

@@ -47,7 +47,7 @@ public class ToggleOrder extends ShipBasedOrder {
             final String[] shipNames = matcher.group(SHIP_LIST_GROUP).split(" ");
             for (String shipName : shipNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipName);
-                if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
+                if (!empire.isKnownShipClass(shipClass)) {
                     final Ship ship = empire.getShip(shipName);
                     if (ship == null || !ship.isOwnedBy(empire)) {
                         order.addError("Unknown ship/class " + shipName);

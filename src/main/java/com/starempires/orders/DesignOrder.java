@@ -69,7 +69,7 @@ public class DesignOrder extends WorldBasedOrder {
             final String paramText = matcher.group(PARAMETERS_GROUP);
 
             final World world = turnData.getWorld(worldName);
-            if (world == null || !empire.isKnownWorld(world)) {
+            if (!empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
                 order.setReady(false);
                 return order;

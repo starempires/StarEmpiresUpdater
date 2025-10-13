@@ -41,7 +41,7 @@ public class PoolOrder extends WorldBasedOrder {
         if (matcher.matches()) {
             final String worldName = matcher.group(WORLD_GROUP);
             final World world = turnData.getWorld(worldName);
-            if (world == null || !empire.isKnownWorld(world)) {
+            if (!empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
                 return order;
             }
@@ -51,7 +51,7 @@ public class PoolOrder extends WorldBasedOrder {
             if (exceptText != null) {
                 for (String worldNameToExcept : exceptText.split(" ")) {
                     final World worldToExcept = turnData.getWorld(worldNameToExcept);
-                    if (worldToExcept == null || !empire.isKnownWorld(worldToExcept)) {
+                    if (!empire.isKnownWorld(worldToExcept)) {
                         order.addError("Unknown world: " + worldNameToExcept);
                     } else {
                         if (!worldToExcept.isOwnedBy(empire)) {

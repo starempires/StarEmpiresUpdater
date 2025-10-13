@@ -42,6 +42,9 @@ public class BaseTest {
     protected ShipClass frigateClass;
     protected Empire empire1;
     protected Empire empire2;
+    protected World world;
+    protected Portal portal;
+    protected Storm storm;
 
     @BeforeAll
     public static void beforeAllBaseTest() throws Exception {
@@ -73,6 +76,13 @@ public class BaseTest {
         frigateClass = turnData.getShipClass("frigate");
         empire1 = createEmpire("empire1");
         empire2 = createEmpire("empire2");
+        world = createWorld("world", ZERO_COORDINATE, 12);
+        world.setOwner(empire1);
+        world.setStockpile(12);
+        empire1.addKnownWorld(world);
+        portal = createPortal("portal", ZERO_COORDINATE, false);
+        storm = createStorm("storm", ZERO_COORDINATE, 1);
+        turnData.addStorm(storm);
     }
 
     protected Ship createShip(final ShipClass shipClass, final Coordinate coordinate, final String name, final Empire owner) {
@@ -92,6 +102,7 @@ public class BaseTest {
     protected Empire createEmpire(final String name) {
         final Empire empire = Empire.builder().name(name).empireType(EmpireType.ACTIVE)
                 .frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE)
+                .abbreviation(name.substring(0, 2))
                 .build();
         turnData.addEmpires(Sets.newHashSet(empire));
         return empire;

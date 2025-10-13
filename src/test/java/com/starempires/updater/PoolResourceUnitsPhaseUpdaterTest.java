@@ -11,13 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PoolResourceUnitsPhaseUpdaterTest extends BaseTest {
 
-    private World world;
     private PoolResourceUnitsPhaseUpdater updater;
 
     @BeforeEach
     void setUp() {
-        world = createWorld("world", ZERO_COORDINATE, 5);
-        world.setOwner(empire1);
         updater = new PoolResourceUnitsPhaseUpdater(turnData);
     }
 
@@ -37,7 +34,7 @@ class PoolResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(6,  world.getStockpile());
+        assertEquals(18,  world.getStockpile());
         assertEquals(0,  other1.getStockpile());
         assertEquals(0,  other2.getStockpile());
     }

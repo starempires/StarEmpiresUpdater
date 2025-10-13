@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.starempires.objects.Prohibition;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
-import com.starempires.objects.World;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.RepairOrder;
 import com.starempires.util.BaseTest;
@@ -18,16 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class RepairShipsPhaseUpdaterTest extends BaseTest {
 
     private RepairShipsPhaseUpdater updater;
-    private World world;
     private Ship ship;
     private RepairOrder order;
 
     @BeforeEach
     void setUp() {
         updater = new RepairShipsPhaseUpdater(turnData);
-        world = createWorld("world", ZERO_COORDINATE, 10);
-        world.setOwner(empire1);
-        world.setStockpile(10);
         ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
         order = RepairOrder.builder()
                 .empire(empire1)
@@ -47,7 +42,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(4, ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(9, world.getStockpile());
+        assertEquals(11, world.getStockpile());
     }
 
     @Test
@@ -58,7 +53,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(0, ship.getDpRemaining());
         assertFalse(ship.isAlive());
         assertFalse(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(10, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 
     @Test
@@ -67,7 +62,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(ship.getDp(), ship.getDpRemaining());
         assertFalse(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(10, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 
     @Test
@@ -79,7 +74,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(2, ship.getDpRemaining());
         assertFalse(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(10, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 
     @Test
@@ -92,7 +87,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(2, ship.getDpRemaining());
         assertFalse(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(10, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 
     @Test
@@ -105,7 +100,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(4, ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(9, world.getStockpile());
+        assertEquals(11, world.getStockpile());
     }
 
     @Test
@@ -129,7 +124,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(2, ship.getDpRemaining());
         assertFalse(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(10, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 
     @Test
@@ -140,7 +135,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(ship.getDp(), ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(9, world.getStockpile());
+        assertEquals(11, world.getStockpile());
     }
 
     @Test
@@ -168,7 +163,6 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
         ship.inflictCombatDamage(3);
         ship.applyCombatDamageAccrued();
-        world.setStockpile(1);
         order = RepairOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.REPAIR)
@@ -181,7 +175,7 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertEquals(ship.getDp(), ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(0, world.getStockpile());
+        assertEquals(11, world.getStockpile());
     }
 
     @Test
@@ -190,10 +184,9 @@ class RepairShipsPhaseUpdaterTest extends BaseTest {
         turnData.load(ship, starbase);
         ship.inflictCombatDamage(3);
         ship.applyCombatDamageAccrued();
-        world.setStockpile(0);
         updater.update();
         assertEquals(ship.getDp(), ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.REPAIRED));
-        assertEquals(0, world.getStockpile());
+        assertEquals(12, world.getStockpile());
     }
 }

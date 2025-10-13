@@ -1,11 +1,9 @@
 package com.starempires.updater;
 
 import com.starempires.objects.Coordinate;
-import com.starempires.objects.Portal;
 import com.starempires.objects.ScanStatus;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
-import com.starempires.objects.Storm;
 import com.starempires.objects.World;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +17,14 @@ class CollectScanDataPhaseUpdaterTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
+        empire1.removeKnownWorld(world);
+        world.setOwner(null);
         updater = new CollectScanDataPhaseUpdater(turnData);
     }
 
     @Test
     void updateShipScan() {
+        turnData.removeStorm(storm);
         final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire1);
         updater.update();
         Coordinate.getSurroundingCoordinatesWithoutOrigin(ship, ship.getAvailableScan())
@@ -46,8 +47,6 @@ class CollectScanDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateShipInNebula() {
-        final Storm storm = createStorm("storm", ZERO_COORDINATE, 0);
-        turnData.addStorm(storm);
         final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire1);
         updater.update();
         Coordinate.getSurroundingCoordinatesWithoutOrigin(ship, ship.getAvailableScan())
@@ -59,7 +58,8 @@ class CollectScanDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNebulaNearby() {
-        final Storm storm = createStorm("storm", ONE_COORDINATE, 0);
+        turnData.removeStorm(storm);
+        storm.setCoordinate(ONE_COORDINATE);
         turnData.addStorm(storm);
         final Ship ship = createShip(carrierClass, ZERO_COORDINATE, "ship", empire1);
         updater.update();
@@ -88,7 +88,6 @@ class CollectScanDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updatePortalScan() {
-        final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
         empire1.addKnownPortal(portal);
         turnData.addPortal(portal);
         updater.update();

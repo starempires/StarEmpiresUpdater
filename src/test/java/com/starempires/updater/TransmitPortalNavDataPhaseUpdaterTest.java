@@ -2,7 +2,6 @@ package com.starempires.updater;
 
 import com.google.common.collect.Lists;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Portal;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.TransmitOrder;
 import com.starempires.util.BaseTest;
@@ -23,7 +22,6 @@ class TransmitPortalNavDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void update() {
-        final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
         final Empire empire1 = createEmpire("empire1");
         final Empire empire2 = createEmpire("empire2");
         empire1.addKnownPortal(portal);
@@ -44,7 +42,6 @@ class TransmitPortalNavDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateNoNavData() {
-        final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
         final Empire empire1 = createEmpire("empire1");
         final Empire empire2 = createEmpire("empire2");
         empire1.addKnownEmpire(empire2);
@@ -63,7 +60,6 @@ class TransmitPortalNavDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateUnknownRecipient() {
-        final Portal portal = createPortal("portal", ZERO_COORDINATE, false);
         final Empire empire1 = createEmpire("empire1");
         final Empire empire2 = createEmpire("empire2");
         empire1.addKnownPortal(portal);

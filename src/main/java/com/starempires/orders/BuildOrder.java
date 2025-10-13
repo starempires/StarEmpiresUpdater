@@ -54,7 +54,7 @@ public class BuildOrder extends WorldBasedOrder {
 
             boolean buildMax = false;
             int count = 0;
-            if (numberText.equalsIgnoreCase("max")) {
+            if (numberText.equalsIgnoreCase(MAX_TOKEN)) {
                 buildMax = true;
             }
             else {
@@ -66,7 +66,7 @@ public class BuildOrder extends WorldBasedOrder {
             }
 
             final World world = turnData.getWorld(worldName);
-            if (world == null || !empire.isKnownWorld(world)) {
+            if (!empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
                 return order;
             }
@@ -79,7 +79,7 @@ public class BuildOrder extends WorldBasedOrder {
             String basename = null;
             final List<String> names = Lists.newArrayList();
             final ShipClass shipClass = turnData.getShipClass(designName);
-            if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
+            if (!empire.isKnownShipClass(shipClass)) {
                 order.addResult("Warning: Unknown ship class " + designName);
             }
             else {
