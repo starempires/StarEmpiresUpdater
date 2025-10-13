@@ -21,35 +21,35 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
         orders.forEach(o -> {
             final TransferOrder order = (TransferOrder)o;
             final Empire empire = order.getEmpire();
-            final World fromWorld = order.getFromWorld();
-            final World toWorld = order.getToWorld();
-            final Empire toEmpire = order.getToEmpire();
+            final World world = order.getWorld();
+            final World destination = order.getDestination();
+            final Empire recipient = order.getRecipient();
             int amount = order.getAmount();
-            if (!fromWorld.isOwnedBy(empire)) {
-                addNewsResult(order, "You do not own world " + fromWorld);
+            if (world == null || !world.isOwnedBy(empire)) {
+                addNewsResult(order, "You do not own world " + world);
                 return;
             }
 
-            if (fromWorld.isBlockaded()) {
-                addNewsResult(order, "No RU transfers possible from blockaded world " + fromWorld);
+            if (world.isBlockaded()) {
+                addNewsResult(order, "No RU transfers possible from blockaded world " + world);
                 return;
             }
 
-            if (!toWorld.isOwnedBy(toEmpire)) {
-                if (toEmpire.equals(empire)) {
-                    addNewsResult(order, "You do not own world " + toWorld);
+            if (destination == null || !destination.isOwnedBy(recipient)) {
+                if (recipient.equals(empire)) {
+                    addNewsResult(order, "You do not own world " + destination);
                     return;
                 }
                 else {
-                    addNewsResult(order, "World " + toWorld + " is not owned by intended recipient " + toEmpire);
+                    addNewsResult(order, "World " + destination + " is not owned by intended recipient " + recipient);
                     return;
                 }
             }
 
-            final int stockpile = fromWorld.getStockpile();
+            final int stockpile = world.getStockpile();
             if (order.isTransferAll()) {
                 if (stockpile <= 0) {
-                    addNewsResult(order, "No RUs remaining at world " + fromWorld);
+                    addNewsResult(order, "No RUs remaining at world " + world);
                     return;
                 }
                 amount = stockpile;
@@ -57,17 +57,17 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             else {
                 if (amount > stockpile) {
                     addNewsResult(order, "Transfer amount " + amount + " exceeds stockpile " + stockpile
-                            + " at world " + fromWorld + "; sending available stockpile");
+                            + " at world " + world + "; sending available stockpile");
                     amount = stockpile;
                 }
             }
 
-            fromWorld.adjustStockpile(-amount);
-            toWorld.adjustStockpile(amount);
+            world.adjustStockpile(-amount);
+            destination.adjustStockpile(amount);
 
-            addNews(empire, "World " + fromWorld + " transferred " + amount + " RU to destination " + toWorld);
-            if (!toEmpire.equals(empire)) {
-                addNews(toEmpire, "World " + toWorld + " has received " + amount + "RU from " + empire);
+            addNews(empire, "World " + world + " transferred " + amount + " RU to destination " + destination);
+            if (!recipient.equals(empire)) {
+                addNews(recipient, "World " + destination + " has received " + amount + " RU from " + empire);
             }
         });
     }

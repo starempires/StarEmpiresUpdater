@@ -1,8 +1,12 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.World;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -16,17 +20,22 @@ public class TransferOrder extends WorldBasedOrder {
 
     //TRANSFER from-world {amount|ALL} to-world [empire]
 
-    final static protected String TO_WORLD_GROUP = "toworld";
-    final static protected String TO_WORLD_CAPTURE_REGEX = "(?<" + TO_WORLD_GROUP + ">" + ID_REGEX + ")";
+    final static protected String DESTINATION_GROUP = "destination";
+    final static protected String DESTINATION_CAPTURE_REGEX = "(?<" + DESTINATION_GROUP + ">" + ID_REGEX + ")";
     final static protected String RECIPIENT_GROUP = "recipient";
     final static protected String RECIPIENT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + RECIPIENT_GROUP + ">" +ID_REGEX + "))?";
 
-    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + TO_WORLD_CAPTURE_REGEX + RECIPIENT_CAPTURE_REGEX;
+    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + DESTINATION_CAPTURE_REGEX + RECIPIENT_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
-    private World fromWorld;
-    private World toWorld;
-    private Empire toEmpire;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    private World destination;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    private Empire recipient;
     private int amount;
     private boolean transferAll;
 
@@ -38,37 +47,37 @@ public class TransferOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String fromWorldName = matcher.group(WORLD_GROUP);
-            final String toWorldName = matcher.group(TO_WORLD_GROUP);
+            final String worldName = matcher.group(WORLD_GROUP);
+            final String destinationName = matcher.group(DESTINATION_GROUP);
             final String amountText = matcher.group(AMOUNT_GROUP);
-            final String toEmpireName = matcher.group(RECIPIENT_GROUP);
-            final World fromWorld = turnData.getWorld(fromWorldName);
-            if (!empire.isKnownWorld(fromWorld) || !fromWorld.isOwnedBy(empire)) {
-                order.addError("You do not own world " + fromWorldName);
+            final String recipientName = matcher.group(RECIPIENT_GROUP); // null if same empire
+            final World world = turnData.getWorld(worldName);
+            if (!empire.isKnownWorld(world) || !world.isOwnedBy(empire)) {
+                order.addError("You do not own world " + worldName);
                 return order;
             }
-            final World toWorld = turnData.getWorld(toWorldName);
-            if (!empire.isKnownWorld(toWorld)) {
-                order.addError("Unknown world: " + toWorldName);
+            final World destination = turnData.getWorld(destinationName);
+            if (!empire.isKnownWorld(destination)) {
+                order.addError("Unknown destination world: " + destinationName);
                 return order;
             }
-            if (fromWorld.equals(toWorld)) {
-                order.addError(fromWorld, "Cannot transfer to same world");
+            if (world.equals(destination)) {
+                order.addError(world, "Cannot transfer to same world");
                 return order;
             }
 
-            Empire toEmpire = empire;
-            if (toEmpireName != null) {
-                toEmpire = turnData.getEmpire(toEmpireName);
-                if (!empire.isKnownEmpire(toEmpire)) {
-                    order.addError("You have no contact with empire " + toEmpireName);
+            Empire recipient = empire;
+            if (recipientName != null) {
+                recipient = turnData.getEmpire(recipientName);
+                if (!empire.isKnownEmpire(recipient)) {
+                    order.addError("You have no contact with empire " + recipientName);
                     return order;
                 }
-                if (!toWorld.isOwnedBy(toEmpire)) {
-                    order.addWarning(toWorld, "Empire %s does not currently own %s".formatted(toEmpireName, toWorldName));
+                if (!destination.isOwnedBy(recipient)) {
+                    order.addWarning(destination, "Empire %s does not currently own %s".formatted(recipient, destination));
                 }
-            } else if (!toWorld.isOwnedBy(empire)) {
-                order.addWarning(toWorld, "You do not currently own world " + toWorldName);
+            } else if (!destination.isOwnedBy(empire)) {
+                order.addWarning(destination, "You do not currently own world " + destination);
             }
 
             int amount;
@@ -77,18 +86,18 @@ public class TransferOrder extends WorldBasedOrder {
             } else {
                 amount = Integer.parseInt(amountText);
                 if (amount < 1) {
-                    order.addError(fromWorld, "Invalid transfer amount %d".formatted(amount));
+                    order.addError(world, "Invalid transfer amount %d".formatted(amount));
                     return order;
                 }
-                if (amount > fromWorld.getStockpile()) {
-                    order.addWarning(fromWorld, "Only %d stockpile present".formatted(fromWorld.getStockpile()));
+                if (amount > world.getStockpile()) {
+                    order.addWarning(world, "Only %d stockpile present".formatted(world.getStockpile()));
                 }
                 order.amount = amount;
             }
 
-            order.fromWorld = fromWorld;
-            order.toWorld = toWorld;
-            order.toEmpire = toEmpire;
+            order.world = world;
+            order.destination = destination;
+            order.recipient = recipient;
             order.setReady(true);
         } else {
             order.addError("Invalid TRANSFER order: " + parameters);
@@ -100,9 +109,9 @@ public class TransferOrder extends WorldBasedOrder {
         final var builder = TransferOrder.builder();
         WorldBasedOrder.parseReady(node, turnData, OrderType.TRANSFER, builder);
         return builder
-                .fromWorld(getTurnDataItemFromJsonNode(node.get("fromWorld"), turnData::getWorld))
-                .toWorld(getTurnDataItemFromJsonNode(node.get("toWorld"), turnData::getWorld))
-                .toEmpire(getTurnDataItemFromJsonNode(node.get("toEmpire"), turnData::getEmpire))
+                .world(getTurnDataItemFromJsonNode(node.get("world"), turnData::getWorld))
+                .destination(getTurnDataItemFromJsonNode(node.get("destination"), turnData::getWorld))
+                .recipient(getTurnDataItemFromJsonNode(node.get("recipient"), turnData::getEmpire))
                 .amount(getInt(node, "amount"))
                 .transferAll(getBoolean(node, "transferAll"))
                 .build();

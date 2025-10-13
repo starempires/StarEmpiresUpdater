@@ -46,7 +46,7 @@ class TransferOrderTest extends BaseTest {
     void testParseUnknownDestination() {
         final TransferOrder order = TransferOrder.parse(turnData, empire1, "world 2 unknown");
         assertFalse(order.isReady());
-        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown world")));
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown destination")));
     }
 
     @Test
@@ -63,7 +63,7 @@ class TransferOrderTest extends BaseTest {
         assertTrue(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("You do not currently own world")));
         assertEquals(2, order.getAmount());
-        assertEquals(destination, order.getToWorld());
+        assertEquals(destination, order.getDestination());
     }
 
     @Test
@@ -86,7 +86,7 @@ class TransferOrderTest extends BaseTest {
         final TransferOrder order = TransferOrder.parse(turnData, empire1, "world max destination");
         assertTrue(order.isReady());
         assertEquals(0, order.getAmount());
-        assertEquals(destination, order.getToWorld());
+        assertEquals(destination, order.getDestination());
     }
 
     @Test
@@ -94,7 +94,7 @@ class TransferOrderTest extends BaseTest {
         final TransferOrder order = TransferOrder.parse(turnData, empire1, "world 200 destination");
         assertTrue(order.isReady());
         assertEquals(200, order.getAmount());
-        assertEquals(destination, order.getToWorld());
+        assertEquals(destination, order.getDestination());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("stockpile present")));
     }
 

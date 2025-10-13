@@ -12,183 +12,173 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
 
-    private World fromWorld;
-    private World toWorld;
+    private World destination;
     private TransferResourceUnitsPhaseUpdater updater;
 
     @BeforeEach
     void setUp() {
-        fromWorld = createWorld("fromworld", ZERO_COORDINATE, 5);
-        fromWorld.setOwner(empire1);
-        toWorld = createWorld("toworld", ZERO_COORDINATE, 5);
-        toWorld.setOwner(empire1);
+        destination = createWorld("destination", ZERO_COORDINATE, 5);
+        destination.setOwner(empire1);
         updater = new TransferResourceUnitsPhaseUpdater(turnData);
     }
 
     @Test
     void updateSuccessTransferRU() {
-        fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld 2 toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire1)
+                .parameters("world 2 destination")
+                .destination(destination)
+                .world(world)
+                .recipient(empire1)
                 .amount(1)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(1, fromWorld.getStockpile());
-        assertEquals(1, toWorld.getStockpile());
+        assertEquals(11, world.getStockpile());
+        assertEquals(1, destination.getStockpile());
     }
 
     @Test
     void updateSuccessTransferTooManyRU() {
-        fromWorld.setStockpile(2);
+        world.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld 4 toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire1)
+                .parameters("world 4 destination")
+                .world(world)
+                .destination(destination)
+                .recipient(empire1)
                 .amount(4)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(0, fromWorld.getStockpile());
-        assertEquals(2, toWorld.getStockpile());
+        assertEquals(0, world.getStockpile());
+        assertEquals(2, destination.getStockpile());
     }
 
     @Test
     void updateTransferAll() {
-        fromWorld.setStockpile(2);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire1)
+                .parameters("world max destination")
+                .world(world)
+                .destination(destination)
+                .recipient(empire1)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(0, fromWorld.getStockpile());
-        assertEquals(2, toWorld.getStockpile());
+        assertEquals(0, world.getStockpile());
+        assertEquals(12, destination.getStockpile());
     }
 
     @Test
     void updateTransferBlockaded() {
-        fromWorld.setStockpile(2);
-        fromWorld.setProhibition(Prohibition.BLOCKADED);
+        world.setProhibition(Prohibition.BLOCKADED);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("fromworld max toworld")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(2, fromWorld.getStockpile());
-        assertEquals(0, toWorld.getStockpile());
+        assertEquals(12, world.getStockpile());
+        assertEquals(0, destination.getStockpile());
     }
 
     @Test
     void updateTransferFromWorldNotOwned() {
-        fromWorld.setStockpile(2);
-        fromWorld.setOwner(null);
+        world.setOwner(null);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("world max toworld")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(2, fromWorld.getStockpile());
-        assertEquals(0, toWorld.getStockpile());
+        assertEquals(12, world.getStockpile());
+        assertEquals(0, destination.getStockpile());
     }
 
     @Test
     void updateTransferToWorldUnowned() {
-        fromWorld.setStockpile(2);
-        toWorld.setOwner(null);
+        world.setOwner(null);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("world max destination")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(2, fromWorld.getStockpile());
-        assertEquals(0, toWorld.getStockpile());
+        assertEquals(12, world.getStockpile());
+        assertEquals(0, destination.getStockpile());
     }
 
     @Test
     void updateTransferToOtherEmpire() {
-        toWorld.setOwner(empire2);
-        fromWorld.setStockpile(2);
+        destination.setOwner(empire2);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld empire2")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("fromworld max toworld empire2")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(0, fromWorld.getStockpile());
-        assertEquals(2, toWorld.getStockpile());
+        assertEquals(0, world.getStockpile());
+        assertEquals(12, destination.getStockpile());
     }
 
     @Test
     void updateTransferWrongRecipient() {
-        toWorld.setOwner(null);
-        fromWorld.setStockpile(2);
+        destination.setOwner(null);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld recipient")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("fromworld max toworld recipient")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(2, fromWorld.getStockpile());
-        assertEquals(0, toWorld.getStockpile());
+        assertEquals(12, world.getStockpile());
+        assertEquals(0, destination.getStockpile());
     }
 
     @Test
     void updateTransferNoStockpile() {
-        fromWorld.setStockpile(0);
+        world.setStockpile(0);
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld all toworld recipient")
-                .fromWorld(fromWorld)
-                .toWorld(toWorld)
-                .toEmpire(empire2)
+                .parameters("fromworld max toworld recipient")
+                .world(world)
+                .destination(destination)
+                .recipient(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(0, fromWorld.getStockpile());
-        assertEquals(0, toWorld.getStockpile());
+        assertEquals(0, world.getStockpile());
+        assertEquals(0, destination.getStockpile());
     }
 }
