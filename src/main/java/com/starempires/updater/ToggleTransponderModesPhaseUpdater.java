@@ -21,6 +21,7 @@ public class ToggleTransponderModesPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.TOGGLE);
         orders.forEach(o -> {
             final ToggleOrder order = (ToggleOrder) o;
+            addOrderText(order);
             final boolean publicMode = order.isPublicMode();
             final String modeText = publicMode ? "public" : "private";
             final Empire empire = order.getEmpire();

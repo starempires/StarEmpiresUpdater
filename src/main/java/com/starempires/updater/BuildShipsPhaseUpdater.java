@@ -52,6 +52,7 @@ public class BuildShipsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.BUILD);
         orders.forEach(o -> {
             final BuildOrder order = (BuildOrder) o;
+            addOrderText(order);
             final Empire empire = order.getEmpire();
             final ShipClass shipClass = turnData.getShipClass(order.getShipClassName());
             final World world = order.getWorld();

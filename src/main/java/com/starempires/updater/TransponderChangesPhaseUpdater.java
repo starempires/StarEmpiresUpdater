@@ -10,7 +10,6 @@ import java.util.List;
 
 public abstract class TransponderChangesPhaseUpdater extends PhaseUpdater {
 
-
     public TransponderChangesPhaseUpdater(final Phase phase, final TurnData turnData) {
         super(phase, turnData);
     }

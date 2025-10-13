@@ -197,6 +197,7 @@ public class FireGunsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.FIRE);
         orders.forEach(o -> {
             final FireOrder order = (FireOrder) o;
+            addOrderText(order);
 
             final List<Ship> validTargets = getSortedValidTargets(order);
             if (validTargets.isEmpty()) {

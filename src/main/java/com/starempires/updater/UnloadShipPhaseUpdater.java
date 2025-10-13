@@ -47,6 +47,7 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.UNLOAD);
         orders.forEach(o -> {
             final UnloadOrder order = (UnloadOrder) o;
+            addOrderText(order);
             for (Ship ship : order.getShips()) {
                 final Ship carrier = ship.getCarrier();
                 if (carrier == null) {

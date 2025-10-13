@@ -20,6 +20,7 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.TRANSFER);
         orders.forEach(o -> {
             final TransferOrder order = (TransferOrder)o;
+            addOrderText(order);
             final Empire empire = order.getEmpire();
             final World world = order.getWorld();
             final World destination = order.getDestination();

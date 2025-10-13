@@ -43,6 +43,7 @@ public class DeployDevicesPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.DEPLOY);
         orders.forEach(o -> {
             final DeployOrder order = (DeployOrder) o;
+            addOrderText(order);
             for (final Ship ship : order.getShips()) {
                 deployDevice(order, ship);
             }

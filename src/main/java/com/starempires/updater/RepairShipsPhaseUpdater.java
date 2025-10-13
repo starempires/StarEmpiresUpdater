@@ -39,6 +39,7 @@ public class RepairShipsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.REPAIR);
         orders.forEach(o -> {
             final RepairOrder order = (RepairOrder) o;
+            addOrderText(order);
             final Empire empire = order.getEmpire();
             final Ship ship = order.getShips().get(0);
             final List<World> worlds = order.getWorlds();

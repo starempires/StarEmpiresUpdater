@@ -20,6 +20,7 @@ public class TransmitPortalNavDataPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.TRANSMIT);
         orders.forEach(o -> {
             final TransmitOrder order = (TransmitOrder) o;
+            addOrderText(order);
             final Empire empire = order.getEmpire();
             for (Portal portal: order.getPortals()) {
                 if (empire.hasNavData(portal)) {

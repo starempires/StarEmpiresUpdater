@@ -46,6 +46,7 @@ public class MoveShipsPhaseUpdater extends PhaseUpdater {
         Multimap<MoveOrder, Ship> movingShips = ArrayListMultimap.create();
         orders.forEach(o -> {
             final MoveOrder order = (MoveOrder) o;
+            addOrderText(order);
             final List<Ship> movers = order.getShips();
             // remove ships ordered to move which cannot legally move
             final List<Ship> validMovers = gatherValidMovers(order, movers);

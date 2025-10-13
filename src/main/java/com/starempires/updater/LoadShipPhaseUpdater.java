@@ -25,6 +25,7 @@ public class LoadShipPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.LOAD);
         orders.forEach(o -> {
             final LoadOrder order = (LoadOrder) o;
+            addOrderText(order);
             // load parameters are list of cargo handles to be loaded followed by carrier name last
             final Ship carrier = order.getCarrier();
             for (final Ship cargo : order.getShips()) {

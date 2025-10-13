@@ -42,7 +42,8 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.TRAVERSE);
         orders.forEach(o -> {
-            TraverseOrder order = (TraverseOrder) o;
+            final TraverseOrder order = (TraverseOrder) o;
+            addOrderText(order);
             final List<Ship> ships = order.getShips();
             final List<Ship> traversers = Lists.newArrayList();
             for (Ship ship : ships) {

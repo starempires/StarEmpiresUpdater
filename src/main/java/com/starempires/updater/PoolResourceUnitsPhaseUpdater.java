@@ -25,6 +25,7 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.POOL);
         orders.forEach(o -> {
             final PoolOrder order = (PoolOrder) o;
+            addOrderText(order);
             final Empire empire = order.getEmpire();
             final World poolWorld = order.getWorld();
             if (!poolWorld.isOwnedBy(empire)) {

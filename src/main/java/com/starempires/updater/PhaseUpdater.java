@@ -41,6 +41,10 @@ public abstract class PhaseUpdater {
         turnData.addNewsFooter(phase);
     }
 
+    protected void addOrderText(final Order order) {
+        turnData.addNews(phase, order.toString());
+    }
+
     protected void addNewsResult(final Order order, final String text) {
         turnData.addNews(phase, order.getEmpire(), text);
     }
@@ -127,5 +131,4 @@ public abstract class PhaseUpdater {
     String formatOpRating(final Ship ship) {
         return "%.1f%%".formatted(Math.round(ship.getOperationRating() * 1000f) / 10f);
     }
-
 }

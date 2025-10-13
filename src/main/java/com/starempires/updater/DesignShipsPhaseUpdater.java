@@ -80,6 +80,7 @@ public class DesignShipsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.DESIGN);
         orders.forEach(o -> {
             final DesignOrder order = (DesignOrder) o;
+            addOrderText(order);
             final World world = order.getWorld();
             final Empire empire = order.getEmpire();
             if (!world.isOwnedBy(empire)) {
