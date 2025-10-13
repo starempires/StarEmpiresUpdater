@@ -9,7 +9,6 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.starempires.constants.Constants;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.DeviceType;
 import com.starempires.objects.Empire;
@@ -229,14 +228,12 @@ public class TurnData {
     }
 
     public void addNewsHeader(final Phase phase) {
-        addNews(phase, "");
-        addNews(phase, Constants.DASHES);
-        addNews(phase, "Phase " + phase);
-        addNews(phase, Constants.DASHES);
+        addNews(phase, "## Phase " + phase);
     }
 
     public void addNewsFooter(final Phase phase) {
         addNews(phase, "");
+        addNews(phase, "---");
     }
 
     public List<Order> getOrders(final OrderType orderType) {

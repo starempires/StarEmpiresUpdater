@@ -37,20 +37,4 @@ public class TurnNews {
         phases.forEach(phase -> results.addAll(phaseNews.get(phase)));
         return results;
     }
-//
-//    public void logAllEmpireNewsByPhase() {
-//        final Multimap<Phase, String> results = ArrayListMultimap.create();
-//        final List<Empire> empires = Lists.newArrayList(news.keySet());
-//        Collections.sort(empires);
-//        empires.forEach(empire -> {
-//            final Multimap<Phase, String> mapList = news.get(empire);
-//            for (Map.Entry<Phase, Collection<String>> entry : mapList.asMap().entrySet()) {
-//                results.putAll(entry.getKey(), entry.getValue());
-//            }
-//        });
-//
-//        final List<Phase> phases = Lists.newArrayList(results.keySet());
-//        Collections.sort(phases);
-//        phases.forEach(phase -> results.get(phase).forEach(text -> log.info("{}: {}", phase, text) ));
-//    }
 }

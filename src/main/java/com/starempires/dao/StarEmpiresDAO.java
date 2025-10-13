@@ -50,7 +50,7 @@ public abstract class StarEmpiresDAO {
     private static final String MAP_COLORS_FILENAME = "map-colors.json";
 
     // session-specific game data
-    private static final String NEWS_FILENAME = "news.txt";
+    private static final String NEWS_FILENAME = "news.md";
     private static final String ORDERS_FILENAME = "orders.txt";
     private static final String ORDER_RESULTS_FILENAME = "order-results.txt";
     private static final String ORDER_LOCK_FILENAME = "order-lock.txt";

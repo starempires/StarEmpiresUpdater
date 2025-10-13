@@ -42,7 +42,7 @@ public abstract class PhaseUpdater {
     }
 
     protected void addOrderText(final Order order) {
-        turnData.addNews(phase, order.toString());
+        turnData.addNews(phase, "#### `> " + order.toString() + "`");
     }
 
     protected void addNews(final Order order, final String text) {
@@ -50,11 +50,11 @@ public abstract class PhaseUpdater {
     }
 
     protected void addNews(final Empire empire, final String text) {
-        turnData.addNews(phase, empire, text);
+        turnData.addNews(phase, empire, " `" + text + "`\n");
     }
 
     protected void addNews(final Collection<Empire> empires, final String text) {
-        turnData.addNews(phase, empires, text);
+        turnData.addNews(phase, empires, " `" + text + "`\n");
     }
 
     protected static String plural(final int number, final String noun) {
