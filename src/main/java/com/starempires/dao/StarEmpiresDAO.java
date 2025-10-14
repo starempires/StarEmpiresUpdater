@@ -388,24 +388,25 @@ public abstract class StarEmpiresDAO {
 
     public List<Order> loadReadyOrders(final String session, final String empire, final int turnNumber, final TurnData turnData) throws Exception {
         final String filename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
-        String data = null;
         try {
-            data = loadSessionData(session, filename);
+            final String data = loadSessionData(session, filename);
             if (StringUtils.isBlank(data)) {
                 throw new NoSuchFileException("File %s is empty".formatted(filename));
             }
             log.info("Loaded ready orders " + filename);
+
+            final ObjectMapper mapper = MAPPER.copy();          // <— local, per-call
+            final SimpleModule module = new SimpleModule();
+            module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
+            mapper.registerModule(module);
+            final List<Order> orders = mapper.readValue(data, new TypeReference<List<Order>>() { });
+            log.debug("Loading {} orders: {}", empire, orders);
+            return orders;
         } catch (NoSuchFileException | NoSuchKeyException ex) {
             log.warn("No ready orders found for empire {} turn {}", empire, turnNumber);
             return Collections.emptyList();
         }
 
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
-        MAPPER.registerModule(module);
-        final List<Order> orders = MAPPER.readValue(data, new TypeReference<List<Order>>() { });
-        log.debug("Loading {} orders: {}", empire, orders);
-        return orders;
     }
 
     public void saveTurnData(final String session, final TurnData turnData) throws Exception {

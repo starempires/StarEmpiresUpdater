@@ -20,7 +20,7 @@ public class CustomOrderDeserializer extends JsonDeserializer<Order> {
     }
 
     @Override
-    public Order deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public Order deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException {
         final JsonNode node = jp.getCodec().readTree(jp);
         final String orderTypeText = node.get("orderType").asText();
         final OrderType orderType = EnumUtils.getEnumIgnoreCase(OrderType.class, orderTypeText);
