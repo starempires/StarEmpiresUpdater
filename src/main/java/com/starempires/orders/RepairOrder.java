@@ -67,8 +67,8 @@ public class RepairOrder extends ShipBasedOrder {
             final int dpPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
 
             int dpToRepair;
-            if (StringUtils.equalsIgnoreCase(dpText, "ALL")) {
-                dpToRepair = ship.getMaxRepairAmount();
+            if (StringUtils.equalsIgnoreCase(dpText, MAX_TOKEN)) {
+                dpToRepair = ship.getDp();
             } else {
                 dpToRepair = Integer.parseInt(dpText);
                 if (dpToRepair < 1) {
@@ -129,13 +129,9 @@ public class RepairOrder extends ShipBasedOrder {
     public static RepairOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = RepairOrder.builder();
         ShipBasedOrder.parseReady(node, turnData, OrderType.REPAIR, builder);
-        final String shipName = getString(node, "ship");
-        final String empireName = getString(node, "empire");
-        final Empire empire = turnData.getEmpire(empireName);
         return builder
-                .ships(List.of(empire.getShip(shipName)))
                 .dpToRepair(getInt(node, "dpToRepair"))
-                .worlds(getTurnDataListFromJsonNode(node, turnData::getWorld))
+                .worlds(getTurnDataListFromJsonNode(node.get("worlds"), turnData::getWorld))
                 .build();
     }
 }

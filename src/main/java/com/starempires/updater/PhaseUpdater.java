@@ -20,8 +20,6 @@ import java.util.List;
 @Log4j2
 public abstract class PhaseUpdater {
 
-    protected static final String ALL_SHIPS_TOKEN = "all";
-
     protected final Phase phase;
     protected final TurnData turnData;
 
@@ -83,34 +81,27 @@ public abstract class PhaseUpdater {
     protected List<Ship> getShipsByHandle(final Order order, final List<String> shipHandles) {
         final Empire empire = order.getEmpire();
         final List<Ship> validShips = Lists.newArrayList();
-        if (shipHandles.contains(ALL_SHIPS_TOKEN)) {
-            validShips.addAll(empire.getLiveShips());
-        }
-        else {
-            shipHandles.forEach(shipHandle -> {
-                if (shipHandle.startsWith("@")) { //ship class
-                    final String shipClassName = shipHandle.substring(1);
-                    final ShipClass shipClass = turnData.getShipClass(shipClassName);
-                    if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
-                        addNews(order, "You have no information about ship class " + shipClassName);
-                    }
-                    else {
-                        final Collection<Ship> shipsOfClass = empire.getShips(shipClass).stream().filter(Ship::isAlive).toList();
-                        validShips.addAll(shipsOfClass);
-                    }
+        shipHandles.forEach(shipHandle -> {
+            if (shipHandle.startsWith("@")) { //ship class
+                final String shipClassName = shipHandle.substring(1);
+                final ShipClass shipClass = turnData.getShipClass(shipClassName);
+                if (shipClass == null || !empire.isKnownShipClass(shipClass)) {
+                    addNews(order, "You have no information about ship class " + shipClassName);
+                } else {
+                    final Collection<Ship> shipsOfClass = empire.getShips(shipClass).stream().filter(Ship::isAlive).toList();
+                    validShips.addAll(shipsOfClass);
                 }
-                else {
-                    final Ship ship = empire.getShip(shipHandle);
-                    if (ship == null) {
-                        addNews(order, "You do not own ship " + shipHandle);
-                    } else if (!ship.isAlive()) {
-                        addNews(order, "Ship " + ship + " is destroyed");
-                    } else {
-                        validShips.add(ship);
-                    }
+            } else {
+                final Ship ship = empire.getShip(shipHandle);
+                if (ship == null) {
+                    addNews(order, "You do not own ship " + shipHandle);
+                } else if (!ship.isAlive()) {
+                    addNews(order, "Ship " + ship + " is destroyed");
+                } else {
+                    validShips.add(ship);
                 }
-            });
-        }
+            }
+        });
         return validShips;
     }
 
