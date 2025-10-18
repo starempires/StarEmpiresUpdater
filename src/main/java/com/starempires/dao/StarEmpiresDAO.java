@@ -58,6 +58,7 @@ public abstract class StarEmpiresDAO {
     private static final String READY_ORDERS_FILENAME = "ready-orders.json";
     private static final String SNAPSHOT_FILENAME = "snapshot.json";
     private static final String EMPIRE_DATA_FILENAME = "empire-data.txt";
+    private static final String CONFIG_FILENAME = "session-config.txt";
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -486,5 +487,11 @@ public abstract class StarEmpiresDAO {
     public void unlockOrders(final String session, final String empire, final int turnNumber) throws IOException {
         final String orderLockFilename = getEmpireFilename(session, empire, turnNumber, ORDER_LOCK_FILENAME);
         removeSessionData(session, orderLockFilename);
+    }
+
+    public List<String> loadConfigFile(final String session) throws IOException {
+        final String filename = getSessionFilename(session, CONFIG_FILENAME);
+        final String data = loadSessionData(session, filename);
+        return Lists.newArrayList(data.split("\n"));
     }
 }

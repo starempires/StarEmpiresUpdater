@@ -56,17 +56,4 @@ public class PropertiesUtil extends HashMap<String, String> {
         }
         return rv;
     }
-
-    public double getDouble(final String key) {
-        return getDouble(key, 0.0);
-    }
-
-    public double getDouble(final String key, final double defaultValue) {
-        double rv = defaultValue;
-        final String value = get(key.toLowerCase());
-        if (value != null) {
-            rv = Double.parseDouble(value);
-        }
-        return rv;
-    }
 }

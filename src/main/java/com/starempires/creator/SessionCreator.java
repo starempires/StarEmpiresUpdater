@@ -56,13 +56,11 @@ public class SessionCreator {
 
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_GAME_DATA_DIR = "gamedatadir";
-    private static final String ARG_CONFIG_FILE = "config";
     private static final String ARG_SESSIONS_DIR = "sessionsdir";
 
-    private String sessionName;
-    private String gameDataDir;
-    private String sessionsDir;
-    private String configFile;
+    final private String sessionName;
+    final private String gameDataDir;
+    final private String sessionsDir;
 
     private final StarEmpiresDAO dao;
 
@@ -76,11 +74,9 @@ public class SessionCreator {
         try {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
             // location where session creation data and other session-independent files are found
-            options.addOption(Option.builder("gd").argName("game data dir").longOpt("gamedatadir").hasArg().desc(ARG_GAME_DATA_DIR).required().build());
-            // config properties for how sessions are created, should be found in found in game data dir
-            options.addOption(Option.builder("c").argName("config file").longOpt("config").hasArg().desc(ARG_CONFIG_FILE).required().build());
+            options.addOption(Option.builder("gd").argName("game data dir").longOpt(ARG_GAME_DATA_DIR).hasArg().desc("location of game data").required().build());
             // location where individual session folders are found
-            options.addOption(Option.builder("sd").argName("sessions dir").longOpt("sessionsdir").hasArg().desc(ARG_SESSIONS_DIR).required().build());
+            options.addOption(Option.builder("sd").argName("sessions dir").longOpt(ARG_SESSIONS_DIR).hasArg().desc("location of session data").required().build());
 
             final CommandLineParser parser = new DefaultParser();
             return parser.parse(options, args);
@@ -92,12 +88,10 @@ public class SessionCreator {
         }
     }
 
-    public SessionCreator(final String sessionName, final String sessionsDir, final String gameDataDir,
-                          final String configFile) {
+    public SessionCreator(final String sessionName, final String sessionsDir, final String gameDataDir) {
         this.sessionName = sessionName;
         this.gameDataDir = gameDataDir;
         this.sessionsDir = sessionsDir;
-        this.configFile = configFile;
 //        dao = new JsonStarEmpiresDAO(sessionsDir, gameDataDir);
         dao = new S3StarEmpiresDAO(sessionsDir, gameDataDir);
     }
@@ -135,8 +129,8 @@ public class SessionCreator {
     }
 
     public TurnData createSession() throws Exception {
-        final List<String> empireData = loadEmpireData();
-        final List<String> configData = loadGameDataItems(configFile);
+        final List<String> empireData = dao.loadEmpireData(sessionName);
+        final List<String> configData = dao.loadConfigFile(sessionName);
         final PropertiesUtil galaxyProperties = new PropertiesUtil(configData);
         final int radius = galaxyProperties.getInt(Constants.CONFIG_RADIUS);
         final TurnData turnData = TurnData.builder()
@@ -271,10 +265,6 @@ public class SessionCreator {
         return colors;
     }
 
-    private List<String> loadEmpireData() throws Exception {
-        return dao.loadEmpireData(sessionName);
-    }
-
     private Map<String, String> createColorMap(final TurnData turnData) throws IOException {
         final Map<String, String> defaultColors = loadDefaultColors();
         final Map<String, String> colors = defaultColors.entrySet().stream()
@@ -301,8 +291,7 @@ public class SessionCreator {
             final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
             final String gameDataDir = cmd.getOptionValue(ARG_GAME_DATA_DIR);
             final String sessionsDir = cmd.getOptionValue(ARG_SESSIONS_DIR);
-            final String configFile = cmd.getOptionValue(ARG_CONFIG_FILE);
-            final SessionCreator creator = new SessionCreator(sessionName, sessionsDir, gameDataDir, configFile);
+            final SessionCreator creator = new SessionCreator(sessionName, sessionsDir, gameDataDir);
             final TurnData turnData = creator.createSession();
             // reload turn data to confirm it's valid
             final TurnData turnData2 = creator.loadTurnData(turnData.getSession(), turnData.getTurnNumber());

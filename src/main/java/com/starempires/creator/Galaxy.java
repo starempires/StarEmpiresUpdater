@@ -97,15 +97,15 @@ public class Galaxy {
         Validate.isTrue(radius > 1, "Max radius must be > 1");
         log.info("Galaxy radius {}", radius);
 
-        worldDensity = properties.getDouble(Constants.CONFIG_WORLD_DENSITY, Constants.DEFAULT_WORLD_DENSITY);
+        worldDensity = (double)properties.getInt(Constants.CONFIG_WORLD_DENSITY, Constants.DEFAULT_WORLD_DENSITY)/100.0;
         Validate.exclusiveBetween(0.0, 1.0, worldDensity, "World density must be between 0.0 and 0.1");
         log.info("World density {}", worldDensity);
 
-        stormDensity = properties.getDouble(Constants.CONFIG_STORM_DENSITY, Constants.DEFAULT_STORM_DENSITY);
+        stormDensity = (double)properties.getInt(Constants.CONFIG_STORM_DENSITY, Constants.DEFAULT_STORM_DENSITY)/100.0;
         Validate.exclusiveBetween(0.0, 1.0, stormDensity, "Storm density must be between 0.0 and 0.1");
         log.info("Storm density {}", stormDensity);
 
-        nebulaDensity = properties.getDouble(Constants.CONFIG_NEBULA_DENSITY, Constants.DEFAULT_NEBULA_DENSITY);
+        nebulaDensity = (double)properties.getInt(Constants.CONFIG_NEBULA_DENSITY, Constants.DEFAULT_NEBULA_DENSITY)/100.0;
         Validate.exclusiveBetween(0.0, 1.0, nebulaDensity, "Nebula density must be between 0.0 and 0.1");
         log.info("Nebula density {}", nebulaDensity);
 

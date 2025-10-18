@@ -3,25 +3,13 @@ package com.starempires.constants;
 public class Constants {
 
     /* session parameters */
-    public static final String PARAMETER_BLOCKADE_THRESHOLD = "blockadeThreshold";
-    public static final String PARAMETER_DESIGN_MULTIPLIER = "designMutliplier";
-    public static final String PARAMETER_GENERATED_STORM_RATING = "generatedStormRating";
-    public static final String PARAMETER_INTERDICTION_THRESHOLD = "interdictionThreshold";
-    public static final String PARAMETER_MISSILE_TONNAGE_COST = "missileTonnageCost";
-    public static final String PARAMETER_ORBITAL_REPAIR_DP_PER_RU = "orbitalRepairDpPerRu";
-    public static final String PARAMETER_PRODUCTION_MULTIPLIER = "productionMultiplier";
-    public static final String PARAMETER_REPAIR_DP_PER_RU = "repairDpPerRu";
-    public static final String PARAMETER_SALVAGE_THRESHOLD = "salvageThreshold";
     public static final String PARAMETER_SELF_DESTRUCT_TONNAGE_INTERVAL = "selfDestructTonnageInterval";
 
     /* default values for session parameters */
     public static final float DEFAULT_DESIGN_MULTIPLIER = 0.5f;
     public static final float DEFAULT_AUTO_REPAIR_MULTIPLIER = 0.1f;
-    public static final float DEFAULT_INTERDICTION_THRESHOLD = 3.0f;
     public static final int DEFAULT_ORBITAL_REPAIR_DP_PER_RU = 3;
-    public static final float DEFAULT_PRODUCTION_MULTIPLIER = 1.0f;
     public static final int DEFAULT_REPAIR_DP_PER_RU = 2;
-    public static final float DEFAULT_SALVAGE_THRESHOLD = 3.f;
     public static final int DEFAULT_SELF_DESTRUCT_TONNAGE_INTERVAL = 5;
 
     /* tokens used for parsing orders */
@@ -34,11 +22,8 @@ public class Constants {
     public static final String SUFFIX_S = "s";
     public static final String SUFFIX_ES = "es";
 
-    public static final int NUM_SECTOR_EDGES = 6;
-    public static final int HEX_SIDE_LENGTH = 30;
     public static final int SERIAL_NUMBER_HEX_DIGITS = 5;
 
-    public static final String CONFIG_NUM_HOMEWORLDS = "numHomeworlds";
     public static final String CONFIG_HOMEWORLD_PRODUCTION = "homeworldProduction";
     public static final String CONFIG_HOMEWORLD_NEARBY_PRODUCTION = "homeworldNearbyProduction";
     public static final String CONFIG_HOMEWORLD_NUM_NEARBY_WORLDS = "homeworldNumNearbyWorlds";
@@ -55,7 +40,6 @@ public class Constants {
     public static final String CONFIG_MAX_STORM_RATING = "maxStormRating";
     public static final String CONFIG_RADIUS = "radius";
 
-    public static final int DEFAULT_NUM_HOMEWORLDS = 6;
     public static final int DEFAULT_HOMEWORLD_PRODUCTION = 12;
     public static final int DEFAULT_HOMEWORLD_NEARBY_PRODUCTION = 10;
     public static final int DEFAULT_HOMEWORLD_NUM_NEARBY_WORLDS = 2;
@@ -69,7 +53,7 @@ public class Constants {
     public static final int DEFAULT_MAX_STORM_RATING = 10;
     public static final int DEFAULT_GALAXY_RADIUS = 10;
 
-    public static final float DEFAULT_WORLD_DENSITY = 0.1f;
-    public static final float DEFAULT_STORM_DENSITY = 0.05f;
-    public static final float DEFAULT_NEBULA_DENSITY = 0.05f;
+    public static final int DEFAULT_WORLD_DENSITY = 10;
+    public static final int DEFAULT_STORM_DENSITY = 5;
+    public static final int DEFAULT_NEBULA_DENSITY = 5;
 }
