@@ -16,7 +16,7 @@ public class World extends OwnableObject {
     private final int production;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int stockpile;
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = Prohibition.ProhibitionNoneFilter.class)
     private Prohibition prohibition = Prohibition.NONE;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private boolean homeworld;

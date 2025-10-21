@@ -226,10 +226,10 @@ public abstract class StarEmpiresDAO {
         final Map<String, Empire> empires = Maps.newHashMap();
         for (Map<String, Object> data : objectData) {
             final Empire empire = MAPPER.convertValue(data, new TypeReference<Empire>() { });
+            turnData.addEmpire(empire);
             log.debug("Loaded empire {}", empire);
             empires.put(empire.getName(), empire);
         }
-        turnData.addEmpires(empires.values());
 
         // load known objects
         for (Map<String, Object> data : objectData) {
@@ -357,23 +357,6 @@ public abstract class StarEmpiresDAO {
         return empireData;
     }
 
-    public List<String> loadOrders(final String session, final String empire, final int turnNumber) throws Exception {
-        final String filename = getEmpireFilename(session, empire, turnNumber, ORDERS_FILENAME);
-        final String data = loadSessionData(session, filename);
-        final List<String> ordersText = List.of(data.split("\\n"));
-        log.info("Loaded {} orders for empire {}, session {}, turn {}", ordersText.size(), empire, session, turnNumber);
-        return ordersText;
-    }
-
-    public List<String> loadEmpireNames(final String session) throws Exception {
-        final List<String> empireData = loadEmpireData(session);
-        final List<String> empireNames = empireData.stream()
-                .map(str -> str.split(",")[0]) // Split and get the first value
-                .collect(Collectors.toList()); //
-        log.debug("Loaded empire names {}", empireNames);
-        return empireNames;
-    }
-
     public OrderStatus getOrderStatus(final String session, final String empire, final int turnNumber) throws Exception {
         final String readyOrdersFilename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
         if (doesSessionDataExist(session, readyOrdersFilename)) {
@@ -387,8 +370,8 @@ public abstract class StarEmpiresDAO {
         return OrderStatus.NONE;
     }
 
-    public List<Order> loadReadyOrders(final String session, final String empire, final int turnNumber, final TurnData turnData) throws Exception {
-        final String filename = getEmpireFilename(session, empire, turnNumber, READY_ORDERS_FILENAME);
+    public List<Order> loadReadyOrders(final String session, final String empireName, final int turnNumber, final TurnData turnData) throws Exception {
+        final String filename = getEmpireFilename(session, empireName, turnNumber, READY_ORDERS_FILENAME);
         try {
             final String data = loadSessionData(session, filename);
             if (StringUtils.isBlank(data)) {
@@ -401,10 +384,10 @@ public abstract class StarEmpiresDAO {
             module.addDeserializer(Order.class, new CustomOrderDeserializer(turnData));
             mapper.registerModule(module);
             final List<Order> orders = mapper.readValue(data, new TypeReference<List<Order>>() { });
-            log.debug("Loading {} orders: {}", empire, orders);
+            log.debug("Loading {} orders: {}", empireName, orders);
             return orders;
         } catch (NoSuchFileException | NoSuchKeyException ex) {
-            log.warn("No ready orders found for empire {} turn {}", empire, turnNumber);
+            log.warn("No ready orders found for empire {} turn {}", empireName, turnNumber);
             return Collections.emptyList();
         }
 

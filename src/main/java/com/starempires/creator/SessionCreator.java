@@ -165,9 +165,8 @@ public class SessionCreator {
             empireCreations.put(empire, ecd);
             i++;
             log.info("Created empire {} with FOR {}", empire, frame);
+            turnData.addEmpire(empire);
         }
-        turnData.addEmpires(empireCreations.keySet());
-        final Empire gm = Empire.builder().name("GM").abbreviation("GM").empireType(EmpireType.GM).frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE).build();
 
         // create HullParameters
         final String hullJson = dao.loadGameData(HULL_PARAMETERS_FILENAME);
@@ -235,17 +234,6 @@ public class SessionCreator {
 
             // init known ship classes
             shipClasses.forEach(empire::addKnownShipClass);
-
-            // init GM
-            gm.getScanData().mergeScanStatus(galaxy.getAllCoordinates(), ScanStatus.VISIBLE, 0);
-            turnData.getAllEmpires().forEach(gm::addKnownEmpire);
-            shipClasses.forEach(gm::addKnownShipClass);
-            worldCoordinates.values().forEach(gm::addKnownWorld);
-            stormCoordinates.values().forEach(gm::addKnownStorm);
-            portalCoordinates.values().forEach(p -> {
-                gm.addKnownPortal(p);
-                gm.addNavData(p);
-            });
         }
 
         saveTurnData(turnData);

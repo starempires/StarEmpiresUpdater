@@ -2,7 +2,6 @@ package com.starempires.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -42,6 +41,7 @@ public class BaseTest {
     protected ShipClass frigateClass;
     protected Empire empire1;
     protected Empire empire2;
+    protected Empire gm;
     protected World world;
     protected Portal portal;
     protected Storm storm;
@@ -68,6 +68,7 @@ public class BaseTest {
                 .build();
         turnData.addHullParameters(hullParameters);
         turnData.addShipClasses(shipClasses);
+        gm = turnData.addGMEmpire();
         carrierClass = turnData.getShipClass("carrier");
         probeClass = turnData.getShipClass("probe");
         starbaseClass = turnData.getShipClass("starbase");
@@ -104,7 +105,7 @@ public class BaseTest {
                 .frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE)
                 .abbreviation(name.substring(0, 2))
                 .build();
-        turnData.addEmpires(Sets.newHashSet(empire));
+        turnData.addEmpire(empire);
         return empire;
     }
 

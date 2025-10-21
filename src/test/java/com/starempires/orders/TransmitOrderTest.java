@@ -1,8 +1,6 @@
 package com.starempires.orders;
 
-import com.google.common.collect.Sets;
 import com.starempires.objects.Empire;
-import com.starempires.objects.EmpireType;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,8 +57,7 @@ class TransmitOrderTest extends BaseTest {
 
     @Test
     void testParseGM() {
-        final Empire gm = Empire.builder().name("GM").empireType(EmpireType.GM).build();
-        turnData.addEmpires(Sets.newHashSet(gm));
+        final Empire gm = turnData.addGMEmpire();
         empire1.addKnownEmpire(gm);
         final TransmitOrder order = TransmitOrder.parse(turnData, empire1, "portal to GM");
         assertFalse(order.isReady());

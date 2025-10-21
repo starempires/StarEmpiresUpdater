@@ -1,8 +1,6 @@
 package com.starempires.orders;
 
-import com.google.common.collect.Sets;
 import com.starempires.objects.Empire;
-import com.starempires.objects.EmpireType;
 import com.starempires.objects.ShipClass;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,8 +53,7 @@ class GiveOrderTest extends BaseTest {
 
     @Test
     void testParseGM() {
-        final Empire gm = Empire.builder().name("GM").empireType(EmpireType.GM).build();
-        turnData.addEmpires(Sets.newHashSet(gm));
+        final Empire gm = turnData.addGMEmpire();
         empire1.addKnownEmpire(gm);
         final GiveOrder order = GiveOrder.parse(turnData, empire1, "shipclass to GM");
         assertFalse(order.isReady());

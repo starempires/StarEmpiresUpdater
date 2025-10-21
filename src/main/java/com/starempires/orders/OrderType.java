@@ -19,7 +19,7 @@ public enum OrderType {
     LOAD(LoadOrder.class),
     MAPADD(UnknownOrder.class),
     MAPMODIFY(UnknownOrder.class),
-    MAPMOVE(UnknownOrder.class),
+    MOVEMAPOBJECT(MoveMapObjectOrder.class),
     MAPREMOVE(UnknownOrder.class),
     MOVE(MoveOrder.class),
     POOL(PoolOrder.class),

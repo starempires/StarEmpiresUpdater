@@ -24,14 +24,11 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public abstract class ShipBasedOrder extends Order {
 
-    final static protected String COORDINATE_GROUP = "coordinate";
     final static protected String LOCATION_GROUP = "location";
     final static private String COORDINATE_EXCEPT_LIST_GROUP = "coordexcept";
     final static private String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
     final static protected String SHIP_LIST_GROUP = "shiplist";
 
-    final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
-    final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
     final static private String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
     final static protected String LOCATION_CAPTURE_REGEX = "(?<" + LOCATION_GROUP + ">@" + ID_REGEX + ")";
     final static protected String LOCATION_EXCEPT_CAPTURE_REGEX = LOCATION_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";

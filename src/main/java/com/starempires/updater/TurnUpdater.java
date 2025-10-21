@@ -3,6 +3,7 @@ package com.starempires.updater;
 import com.starempires.TurnData;
 import com.starempires.dao.S3StarEmpiresDAO;
 import com.starempires.dao.StarEmpiresDAO;
+import com.starempires.objects.Empire;
 import com.starempires.orders.Order;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
@@ -13,6 +14,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -101,11 +103,14 @@ public class TurnUpdater {
 
     public TurnData updateTurn() throws Exception {
         final TurnData turnData = loadTurnData();
+        final Empire gm = turnData.addGMEmpire();
         loadReadyOrders(turnData);
         processTurn(turnData);
         turnData.setTurnNumber(turnData.getTurnNumber() + 1);
-        saveTurnData(turnData);
         saveNews(turnData);
+        // we don't actually need to serialize all of the GM's info in Empire form
+        turnData.removeEmpire(gm);
+        saveTurnData(turnData);
         return turnData;
     }
 
@@ -130,9 +135,9 @@ public class TurnUpdater {
     }
 
     private void loadReadyOrders(final TurnData turnData) throws Exception {
-        final List<String> empireNames = dao.loadEmpireNames(sessionName);
-        for (String empireName: empireNames) {
-            final List<Order> orders = dao.loadReadyOrders(sessionName, empireName, turnNumber, turnData);
+        final Collection<Empire> empires = turnData.getAllEmpires();
+        for (Empire empire: empires) {
+            final List<Order> orders = dao.loadReadyOrders(sessionName, empire.getName(), turnNumber, turnData);
             turnData.addOrders(orders);
         }
     }

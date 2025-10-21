@@ -27,6 +27,22 @@ import java.util.function.Function;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public abstract class Order {
 
+    final static protected String COORDINATE_GROUP = "coordinate";
+    final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
+    final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
+    final static protected String SPACE_REGEX = "\\s+";
+    final static protected String ID_REGEX = "\\w+";
+    final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
+    final static protected String INT_REGEX = "\\d+";
+    final static protected String MAX_TOKEN = "max";
+    final static protected String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
+    final static protected String AMOUNT_GROUP = "dp";
+    final static protected String AMOUNT_CAPTURE_REGEX = "(?<" + AMOUNT_GROUP + ">" + INT_OR_MAX_REGEX + ")";
+    final static protected String RECIPIENT_LIST_GROUP = "recipientlist";
+    final static protected String RECIPIENT_LIST_CAPTURE_REGEX = "(?<" + RECIPIENT_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
+    final static protected String WORLD_LIST_GROUP = "worldlist";
+    final static protected String WORLD_LIST_CAPTURE_REGEX = "(?<" + WORLD_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
+
     /** empire who gave this order */
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
@@ -40,19 +56,7 @@ public abstract class Order {
     protected OrderType orderType;
     @JsonIgnore
     protected boolean ready;
-
-    protected static final String SPACE_REGEX = "\\s+";
-    protected static final String ID_REGEX = "\\w+";
-    protected static final String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
-    protected static final String INT_REGEX = "\\d+";
-    protected static final String MAX_TOKEN = "max";
-    protected static final String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
-    protected static final String AMOUNT_GROUP = "dp";
-    protected static final String AMOUNT_CAPTURE_REGEX = "(?<" + AMOUNT_GROUP + ">" + INT_OR_MAX_REGEX + ")";
-    protected static final String RECIPIENT_LIST_GROUP = "recipientlist";
-    protected static final String RECIPIENT_LIST_CAPTURE_REGEX = "(?<" + RECIPIENT_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
-    protected static final String WORLD_LIST_GROUP = "worldlist";
-    protected static final String WORLD_LIST_CAPTURE_REGEX = "(?<" + WORLD_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
+    protected boolean gmOnly;
 
     public void addResult(final String text) {
         results.add(text);

@@ -13,6 +13,7 @@ import com.starempires.objects.Coordinate;
 import com.starempires.objects.DeviceType;
 import com.starempires.objects.Empire;
 import com.starempires.objects.EmpireType;
+import com.starempires.objects.FrameOfReference;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.HullType;
 import com.starempires.objects.MappableObject;
@@ -164,8 +165,12 @@ public class TurnData {
         storms.forEach(this::addStorm);
     }
 
-    public void addEmpires(final @NonNull Collection<Empire> empires) {
-        empires.forEach(e -> empireNames.put(e.getName(), e));
+    public void addEmpire(final @NonNull Empire empire) {
+        empireNames.put(empire.getName(), empire);
+    }
+
+    public void removeEmpire(final Empire empire) {
+        empireNames.remove(empire.getName());
     }
 
     public void addOrder(@NonNull Order order) {
@@ -509,5 +514,24 @@ public class TurnData {
 
     public void clearShipConditions() {
         empireNames.values().forEach(Empire::clearShipConditions);
+    }
+
+    public Empire addGMEmpire() {
+        final Empire gm = Empire.builder()
+                .name("GM")
+                .abbreviation("GM")
+                .empireType(EmpireType.GM)
+                .frameOfReference(FrameOfReference.DEFAULT_FRAME_OF_REFERENCE)
+                .build();
+        empireNames.values().forEach(gm::addKnownEmpire);
+        shipClassNames.values().forEach(gm::addKnownShipClass);
+        worldCoordinates.values().forEach(gm::addKnownWorld);
+        stormCoordinates.values().forEach(gm::addKnownStorm);
+        portalCoordinates.values().forEach(p -> {
+            gm.addKnownPortal(p);
+            gm.addNavData(p);
+        });
+        addEmpire(gm);
+        return gm;
     }
 }

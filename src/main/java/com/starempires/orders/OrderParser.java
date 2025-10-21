@@ -118,6 +118,7 @@ public class OrderParser {
 
     public List<String> processOrders(final List<String> orders) throws Exception {
         final TurnData turnData = loadTurnData();
+        turnData.addGMEmpire();
         final Empire empire = turnData.getEmpire(empireName);
         if (empire == null) {
             final String message = "Session %s does not contain empire %s".formatted(sessionName, empireName);
