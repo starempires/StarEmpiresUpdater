@@ -22,8 +22,6 @@ public class BuildOrder extends WorldBasedOrder {
 
     //BUILD world {number|max} design [name* | name1 name2 …]
 
-    final static private String NAMES_GROUP = "names";
-    final static private String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
     final static private String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 

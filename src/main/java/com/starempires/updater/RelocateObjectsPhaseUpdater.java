@@ -3,24 +3,24 @@ package com.starempires.updater;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.MappableObject;
-import com.starempires.orders.MoveMapObjectOrder;
+import com.starempires.orders.RelocateObjectOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.List;
 
-public class MoveMapObjectsPhaseUpdater extends PhaseUpdater {
+public class RelocateObjectsPhaseUpdater extends PhaseUpdater {
 
-    public MoveMapObjectsPhaseUpdater(final TurnData turnData) {
-        super(Phase.MOVE_MAP_OBJECTS, turnData);
+    public RelocateObjectsPhaseUpdater(final TurnData turnData) {
+        super(Phase.RELOCATE_OBJECTS, turnData);
     }
 
     @Override
     public void update() {
-        final List<Order> orders = turnData.getOrders(OrderType.MOVEMAPOBJECT);
+        final List<Order> orders = turnData.getOrders(OrderType.RELOCATEOBJECT);
         orders.forEach(o -> {
-            final MoveMapObjectOrder order = (MoveMapObjectOrder) o;
+            final RelocateObjectOrder order = (RelocateObjectOrder) o;
             final Coordinate coordinate = order.getCoordinate();
             final MappableObject target = ObjectUtils.firstNonNull(order.getWorld(), order.getPortal(), order.getStorm());
             target.setCoordinate(coordinate);

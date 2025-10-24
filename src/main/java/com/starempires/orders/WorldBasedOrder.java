@@ -18,8 +18,6 @@ public abstract class WorldBasedOrder extends Order {
 
     protected final static String WORLD_GROUP = "world";
     protected final static String WORLD_CAPTURE_REGEX = "(?<" + WORLD_GROUP + ">" + ID_REGEX + ")";
-    protected final static String SHIP_CLASS_GROUP = "shipclass";
-    protected final static String SHIP_CLASS_CAPTURE_REGEX = "(?<" + SHIP_CLASS_GROUP + ">" + ID_REGEX + ")";
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)

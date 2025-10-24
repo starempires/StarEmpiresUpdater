@@ -20,14 +20,12 @@ import java.util.regex.Pattern;
 
 @SuperBuilder
 @Getter
-public class MoveMapObjectOrder extends GMOrder {
+public class RelocateObjectOrder extends Order {
 
-    // MOVEMAPOBJECT TYPE NAME coord
-    final static protected String ID_GROUP = "id";
-    final static protected String TYPE_GROUP = "type";
-    final static protected String TYPE_REGEX = "world|portal|storm";
-    final static protected String ID_CAPTURE_REGEX = "(?<" + ID_GROUP + ">" + ID_REGEX + ")";
-    final static protected String TYPE_CAPTURE_REGEX = "(?<" + TYPE_GROUP + ">" + TYPE_REGEX + ")";
+    // RELOCATEOBJECT TYPE NAME coord
+    final static private String TYPE_GROUP = "type";
+    final static private String TYPE_REGEX = "world|portal|storm";
+    final static private String TYPE_CAPTURE_REGEX = "(?<" + TYPE_GROUP + ">" + TYPE_REGEX + ")";
 
     final static private String REGEX = TYPE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + COORDINATE_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
@@ -46,12 +44,12 @@ public class MoveMapObjectOrder extends GMOrder {
     private Storm storm;
     private Coordinate coordinate;
 
-    public static MoveMapObjectOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
-        final MoveMapObjectOrder order = MoveMapObjectOrder.builder()
+    public static RelocateObjectOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
+        final RelocateObjectOrder order = RelocateObjectOrder.builder()
                 .empire(empire)
-                .orderType(OrderType.MOVEMAPOBJECT)
+                .orderType(OrderType.RELOCATEOBJECT)
                 .parameters(parameters)
-                .gmOnly(true)
+                .gmOnly(OrderType.RELOCATEOBJECT.isGmOnly())
                 .build();
         if (!empire.isGM()) {
             order.addError("Command available only to GM");
@@ -84,9 +82,9 @@ public class MoveMapObjectOrder extends GMOrder {
         return order;
     }
 
-    public static MoveMapObjectOrder parseReady(final JsonNode node, final TurnData turnData) {
-        final var builder = MoveMapObjectOrder.builder();
-        Order.parseReady(node, turnData, OrderType.MOVEMAPOBJECT, builder);
+    public static RelocateObjectOrder parseReady(final JsonNode node, final TurnData turnData) {
+        final var builder = RelocateObjectOrder.builder();
+        Order.parseReady(node, turnData, OrderType.RELOCATEOBJECT, builder);
         return builder
                 .world(getTurnDataItemFromJsonNode(node.get("world"), turnData::getWorld))
                 .portal(getTurnDataItemFromJsonNode(node.get("portal"), turnData::getPortal))

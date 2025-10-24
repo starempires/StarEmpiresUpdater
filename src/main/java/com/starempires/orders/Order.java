@@ -31,10 +31,13 @@ public abstract class Order {
     final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
     final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
     final static protected String SPACE_REGEX = "\\s+";
+    final static protected String ID_GROUP = "id";
     final static protected String ID_REGEX = "\\w+";
+    final static protected String ID_CAPTURE_REGEX = "(?<" + ID_GROUP + ">" + ID_REGEX + ")";
     final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
     final static protected String INT_REGEX = "\\d+";
     final static protected String MAX_TOKEN = "max";
+    final static protected String TO_TOKEN = "to";
     final static protected String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
     final static protected String AMOUNT_GROUP = "dp";
     final static protected String AMOUNT_CAPTURE_REGEX = "(?<" + AMOUNT_GROUP + ">" + INT_OR_MAX_REGEX + ")";
@@ -42,6 +45,13 @@ public abstract class Order {
     final static protected String RECIPIENT_LIST_CAPTURE_REGEX = "(?<" + RECIPIENT_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
     final static protected String WORLD_LIST_GROUP = "worldlist";
     final static protected String WORLD_LIST_CAPTURE_REGEX = "(?<" + WORLD_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
+    final static protected String OWNER_GROUP = "owner";
+    final static protected String OWNER_CAPTURE_REGEX = "(?:(?<" + OWNER_GROUP + ">" +ID_REGEX + "))?";
+    final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + OWNER_GROUP + ">" +ID_REGEX + "))?";
+    final static protected String NAMES_GROUP = "names";
+    final static protected String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
+    protected final static String SHIP_CLASS_GROUP = "shipclass";
+    protected final static String SHIP_CLASS_CAPTURE_REGEX = "(?<" + SHIP_CLASS_GROUP + ">" + ID_REGEX + ")";
 
     /** empire who gave this order */
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
@@ -156,6 +166,7 @@ public abstract class Order {
            .empire(turnData.getEmpire(getString(node, "empire")))
            .parameters(getString(node, "parameters"))
            .synthetic(getBoolean(node, "synthetic"))
+           .gmOnly(orderType.isGmOnly())
            .orderType(orderType);
     }
 

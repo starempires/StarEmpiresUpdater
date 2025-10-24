@@ -30,7 +30,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("world 2 destination")
                 .destination(destination)
                 .world(world)
-                .recipient(empire1)
+                .owner(empire1)
                 .amount(1)
                 .build();
         turnData.addOrder(order);
@@ -48,7 +48,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("world 4 destination")
                 .world(world)
                 .destination(destination)
-                .recipient(empire1)
+                .owner(empire1)
                 .amount(4)
                 .build();
         turnData.addOrder(order);
@@ -65,7 +65,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("world max destination")
                 .world(world)
                 .destination(destination)
-                .recipient(empire1)
+                .owner(empire1)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -83,7 +83,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("fromworld max toworld")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -101,7 +101,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("world max toworld")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -119,7 +119,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("world max destination")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -137,7 +137,7 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
                 .parameters("fromworld max toworld empire2")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -152,10 +152,10 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld max toworld recipient")
+                .parameters("fromworld max toworld empire2")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);
@@ -170,10 +170,10 @@ class TransferResourceUnitsPhaseUpdaterTest extends BaseTest {
         final TransferOrder order = TransferOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRANSFER)
-                .parameters("fromworld max toworld recipient")
+                .parameters("fromworld max toworld empire2")
                 .world(world)
                 .destination(destination)
-                .recipient(empire2)
+                .owner(empire2)
                 .transferAll(true)
                 .build();
         turnData.addOrder(order);

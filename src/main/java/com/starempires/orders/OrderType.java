@@ -5,37 +5,44 @@ import lombok.Getter;
 
 @Getter
 public enum OrderType {
-    ADDKNOWN(UnknownOrder.class),
-    AUTHORIZE(UnknownOrder.class),
-    BUILD(BuildOrder.class),
-    CONCEAL(Order.class),
-    DENY(UnknownOrder.class),
-    DEPLOY(DeployOrder.class),
-    DESIGN(DesignOrder.class),
-    DESTRUCT(DestructOrder.class),
-    FIRE(FireOrder.class),
-    GIVE(GiveOrder.class),
-    IDENTIFY(UnknownOrder.class),
-    LOAD(LoadOrder.class),
-    MAPADD(UnknownOrder.class),
-    MAPMODIFY(UnknownOrder.class),
-    MOVEMAPOBJECT(MoveMapObjectOrder.class),
-    MAPREMOVE(UnknownOrder.class),
-    MOVE(MoveOrder.class),
-    POOL(PoolOrder.class),
-    REMOVEKNOWN(UnknownOrder.class),
-    REPAIR(RepairOrder.class),
-    TOGGLE(ToggleOrder.class),
-    TRANSFER(TransferOrder.class),
-    TRANSMIT(TransmitOrder.class),
-    TRAVERSE(TraverseOrder.class),
-    UNKNOWN(UnknownOrder.class),
-    UNLOAD(UnloadOrder.class);
+    ADDKNOWN(UnknownOrder.class, true),
+    ADDPORTAL(AddPortalOrder.class, true),
+    ADDSTORM(AddStormOrder.class, true),
+    ADDSHIP(AddShipOrder.class, true),
+    ADDSHIPCLASS(UnknownOrder.class, true),
+    ADDWORLD(AddWorldOrder.class, true),
+    AUTHORIZE(UnknownOrder.class, false),
+    BUILD(BuildOrder.class, false),
+    CONCEAL(Order.class, false),
+    DENY(UnknownOrder.class, false),
+    DEPLOY(DeployOrder.class, false),
+    DESIGN(DesignOrder.class, false),
+    DESTRUCT(DestructOrder.class, false),
+    FIRE(FireOrder.class, false),
+    GIVE(GiveOrder.class, false),
+    IDENTIFY(UnknownOrder.class, false),
+    LOAD(LoadOrder.class, false),
+    MAPMODIFY(UnknownOrder.class, true),
+    MAPREMOVE(UnknownOrder.class, true),
+    MOVE(MoveOrder.class, false),
+    POOL(PoolOrder.class, false),
+    RELOCATEOBJECT(RelocateObjectOrder.class, true),
+    RELOCATESHIP(RelocateShipOrder.class, true),
+    REMOVEKNOWN(UnknownOrder.class, true),
+    REPAIR(RepairOrder.class, false),
+    TOGGLE(ToggleOrder.class, false),
+    TRANSFER(TransferOrder.class, false),
+    TRANSMIT(TransmitOrder.class, false),
+    TRAVERSE(TraverseOrder.class, false),
+    UNKNOWN(UnknownOrder.class, false),
+    UNLOAD(UnloadOrder.class, false);
 
     private final Class<? extends Order> orderClass;
+    private final boolean gmOnly;
 
-    private OrderType(Class<? extends Order> orderClass) {
+    OrderType(Class<? extends Order> orderClass, final boolean gmOnly) {
         this.orderClass = orderClass;
+        this.gmOnly = gmOnly;
     }
 
     @JsonValue

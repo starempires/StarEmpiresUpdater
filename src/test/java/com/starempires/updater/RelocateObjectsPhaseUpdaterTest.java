@@ -1,6 +1,6 @@
 package com.starempires.updater;
 
-import com.starempires.orders.MoveMapObjectOrder;
+import com.starempires.orders.RelocateObjectOrder;
 import com.starempires.orders.OrderType;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,20 +8,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class MoveMapObjectsPhaseUpdaterTest extends BaseTest {
+class RelocateObjectsPhaseUpdaterTest extends BaseTest {
 
-    private MoveMapObjectsPhaseUpdater updater;
+    private RelocateObjectsPhaseUpdater updater;
 
     @BeforeEach
     void setUp() {
-        updater = new MoveMapObjectsPhaseUpdater(turnData);
+        updater = new RelocateObjectsPhaseUpdater(turnData);
     }
 
     @Test
     void update() {
-        final MoveMapObjectOrder order = MoveMapObjectOrder.builder()
+        final RelocateObjectOrder order = RelocateObjectOrder.builder()
                 .empire(gm)
-                .orderType(OrderType.MOVEMAPOBJECT)
+                .orderType(OrderType.RELOCATEOBJECT)
                 .parameters("world world " + ONE_COORDINATE)
                 .world(world)
                 .coordinate(ONE_COORDINATE)

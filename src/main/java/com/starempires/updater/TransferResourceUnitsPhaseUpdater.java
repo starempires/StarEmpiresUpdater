@@ -24,7 +24,7 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             final Empire empire = order.getEmpire();
             final World world = order.getWorld();
             final World destination = order.getDestination();
-            final Empire recipient = order.getRecipient();
+            final Empire owner = order.getOwner();
             int amount = order.getAmount();
             if (world == null || !world.isOwnedBy(empire)) {
                 addNews(order, "You do not own world " + world);
@@ -36,13 +36,13 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
                 return;
             }
 
-            if (destination == null || !destination.isOwnedBy(recipient)) {
-                if (recipient.equals(empire)) {
+            if (destination == null || !destination.isOwnedBy(owner)) {
+                if (owner.equals(empire)) {
                     addNews(order, "You do not own world " + destination);
                     return;
                 }
                 else {
-                    addNews(order, "World " + destination + " is not owned by intended recipient " + recipient);
+                    addNews(order, "World " + destination + " is not owned by intended owner " + owner);
                     return;
                 }
             }
@@ -67,8 +67,8 @@ public class TransferResourceUnitsPhaseUpdater extends PhaseUpdater {
             destination.adjustStockpile(amount);
 
             addNews(empire, "World " + world + " transferred " + amount + " RU to destination " + destination);
-            if (!recipient.equals(empire)) {
-                addNews(recipient, "World " + destination + " has received " + amount + " RU from " + empire);
+            if (!owner.equals(empire)) {
+                addNews(owner, "World " + destination + " has received " + amount + " RU from " + empire);
             }
         });
     }

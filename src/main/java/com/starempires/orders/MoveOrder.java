@@ -22,7 +22,7 @@ public class MoveOrder extends ShipBasedOrder {
     final static protected String DESTINATION_COORDINATE_CAPTURE_REGEX = "(?<" + DESTINATION_COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
     final static protected String DESTINATION_LOCATION_CAPTURE_REGEX = "(?<" + DESTINATION_LOCATION_GROUP + ">" + ID_REGEX + ")";
 
-    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "to" + SPACE_REGEX + "(?:" + DESTINATION_COORDINATE_CAPTURE_REGEX + "|" + DESTINATION_LOCATION_CAPTURE_REGEX + ")";
+    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX + "(?:" + DESTINATION_COORDINATE_CAPTURE_REGEX + "|" + DESTINATION_LOCATION_CAPTURE_REGEX + ")";
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate destination; // in galactic

@@ -22,10 +22,9 @@ public class TransferOrder extends WorldBasedOrder {
 
     final static protected String DESTINATION_GROUP = "destination";
     final static protected String DESTINATION_CAPTURE_REGEX = "(?<" + DESTINATION_GROUP + ">" + ID_REGEX + ")";
-    final static protected String RECIPIENT_GROUP = "recipient";
-    final static protected String RECIPIENT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + RECIPIENT_GROUP + ">" +ID_REGEX + "))?";
 
-    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + DESTINATION_CAPTURE_REGEX + RECIPIENT_CAPTURE_REGEX;
+    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + DESTINATION_CAPTURE_REGEX +
+                                        OPTIONAL_OWNER_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -35,7 +34,7 @@ public class TransferOrder extends WorldBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
-    private Empire recipient;
+    private Empire owner;
     private int amount;
     private boolean transferAll;
 
@@ -50,7 +49,7 @@ public class TransferOrder extends WorldBasedOrder {
             final String worldName = matcher.group(WORLD_GROUP);
             final String destinationName = matcher.group(DESTINATION_GROUP);
             final String amountText = matcher.group(AMOUNT_GROUP);
-            final String recipientName = matcher.group(RECIPIENT_GROUP); // null if same empire
+            final String ownerName = matcher.group(OWNER_GROUP); // null if same empire
             final World world = turnData.getWorld(worldName);
             if (!empire.isKnownWorld(world) || !world.isOwnedBy(empire)) {
                 order.addError("You do not own world " + worldName);
@@ -66,15 +65,15 @@ public class TransferOrder extends WorldBasedOrder {
                 return order;
             }
 
-            Empire recipient = empire;
-            if (recipientName != null) {
-                recipient = turnData.getEmpire(recipientName);
-                if (!empire.isKnownEmpire(recipient)) {
-                    order.addError("You have no contact with empire " + recipientName);
+            Empire owner = empire;
+            if (ownerName != null) {
+                owner = turnData.getEmpire(ownerName);
+                if (!empire.isKnownEmpire(owner)) {
+                    order.addError("You have no contact with empire " + ownerName);
                     return order;
                 }
-                if (!destination.isOwnedBy(recipient)) {
-                    order.addWarning(destination, "Empire %s does not currently own %s".formatted(recipient, destination));
+                if (!destination.isOwnedBy(owner)) {
+                    order.addWarning(destination, "Empire %s does not currently own %s".formatted(owner, destination));
                 }
             } else if (!destination.isOwnedBy(empire)) {
                 order.addWarning(destination, "You do not currently own world " + destination);
@@ -97,7 +96,7 @@ public class TransferOrder extends WorldBasedOrder {
 
             order.world = world;
             order.destination = destination;
-            order.recipient = recipient;
+            order.owner = owner;
             order.setReady(true);
         } else {
             order.addError("Invalid TRANSFER order: " + parameters);
@@ -111,7 +110,7 @@ public class TransferOrder extends WorldBasedOrder {
         return builder
                 .world(getTurnDataItemFromJsonNode(node.get("world"), turnData::getWorld))
                 .destination(getTurnDataItemFromJsonNode(node.get("destination"), turnData::getWorld))
-                .recipient(getTurnDataItemFromJsonNode(node.get("recipient"), turnData::getEmpire))
+                .owner(getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire))
                 .amount(getInt(node, "amount"))
                 .transferAll(getBoolean(node, "transferAll"))
                 .build();

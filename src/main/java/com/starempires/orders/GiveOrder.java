@@ -23,7 +23,7 @@ public class GiveOrder extends EmpireBasedOrder {
     // GIVE shipclass1 [shipclass2 ...] TO empire1 [empire2 ...]
     private static final String SHIP_CLASSES_GROUP = "shipclasses";
     private static final String SHIP_CLASSES_CAPTURE_REGEX = "(?<" + SHIP_CLASSES_GROUP + ">" + ID_LIST_REGEX + ")";
-    private static final String REGEX = SHIP_CLASSES_CAPTURE_REGEX + SPACE_REGEX + "to" + SPACE_REGEX  + RECIPIENT_LIST_CAPTURE_REGEX;
+    private static final String REGEX = SHIP_CLASSES_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX  + RECIPIENT_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

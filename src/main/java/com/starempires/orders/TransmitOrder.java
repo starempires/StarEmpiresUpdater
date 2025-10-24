@@ -23,7 +23,7 @@ public class TransmitOrder extends EmpireBasedOrder {
     // TRANSMIT portal1 [portal2 ...] TO empire1 [empire2 ...]
     private static final String PORTALS_GROUP = "portals";
     private static final String PORTALS_CAPTURE_REGEX = "(?<" + PORTALS_GROUP + ">" + ID_LIST_REGEX +")";
-    private static final String REGEX = PORTALS_CAPTURE_REGEX + SPACE_REGEX + "to" + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
+    private static final String REGEX = PORTALS_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
