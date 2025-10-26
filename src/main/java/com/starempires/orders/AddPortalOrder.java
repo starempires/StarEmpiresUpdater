@@ -1,10 +1,10 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Portal;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -16,11 +16,13 @@ import java.util.regex.Pattern;
 public class AddPortalOrder extends Order {
 
     // ADDPORTAL coord name
-
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
-    private Portal portal;
+    @JsonInclude
+    private Coordinate coordinate;
+    @JsonInclude
+    private String name;
 
     public static AddPortalOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final AddPortalOrder order = AddPortalOrder.builder()
@@ -35,15 +37,9 @@ public class AddPortalOrder extends Order {
         }
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String portalName = matcher.group(ID_GROUP);
+            order.name = matcher.group(ID_GROUP);
             final String coordText = matcher.group(COORDINATE_GROUP);
-
-            final Coordinate coordinate = Coordinate.parse(coordText);
-
-            order.portal = Portal.builder()
-                    .name(portalName)
-                    .coordinate(coordinate)
-                    .build();
+            order.coordinate = Coordinate.parse(coordText);
             order.setReady(true);
         } else {
             order.addError("Invalid ADDPORTAL order: " + parameters);
@@ -56,7 +52,8 @@ public class AddPortalOrder extends Order {
         final var builder = AddPortalOrder.builder();
         Order.parseReady(node, turnData, OrderType.ADDPORTAL, builder);
         return builder
-                .portal(getTurnDataItemFromJsonNode(node.get("portal"), turnData::getPortal))
+                .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
+                .name(getString(node, "name"))
                 .gmOnly(true)
                 .build();
     }

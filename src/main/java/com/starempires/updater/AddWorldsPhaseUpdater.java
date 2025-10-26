@@ -18,12 +18,18 @@ public class AddWorldsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.ADDWORLD);
         orders.forEach(o -> {
             final AddWorldOrder order = (AddWorldOrder) o;
-            final World world = order.getWorld();
+            final World world = World.builder()
+                    .coordinate(order.getCoordinate())
+                    .name(order.getName())
+                    .production(order.getProduction())
+                    .stockpile(order.getStockpile())
+                    .owner(order.getOwner())
+                    .build();
             turnData.addWorld(world);
-            String message = "Added world " + world;
+            String message = "Added world %s (production %d, stockpile %d) in sector %s".formatted(world, world.getProduction(), world.getStockpile(), world.getCoordinate());
             if (world.isOwned()) {
                 world.getOwner().addKnownWorld(world);
-                message += " owned by " + world.getOwner();
+                message += " (owner %s)".formatted(world.getOwner());
             }
             addNews(order, message);
         });

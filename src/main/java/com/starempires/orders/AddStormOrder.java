@@ -1,10 +1,10 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.objects.Storm;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -21,14 +21,19 @@ public class AddStormOrder extends Order {
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + RATING_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
-    private Storm storm;
+    @JsonInclude
+    private Coordinate coordinate;
+    @JsonInclude
+    private String name;
+    @JsonInclude
+    private int rating;
 
     public static AddStormOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final AddStormOrder order = AddStormOrder.builder()
                 .empire(empire)
-                .orderType(OrderType.ADDPORTAL)
+                .orderType(OrderType.ADDSTORM)
                 .parameters(parameters)
-                .gmOnly(OrderType.ADDPORTAL.isGmOnly())
+                .gmOnly(OrderType.ADDSTORM.isGmOnly())
                 .build();
         if (!empire.isGM()) {
             order.addError("Command available only to GM");
@@ -36,20 +41,13 @@ public class AddStormOrder extends Order {
         }
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String stormName = matcher.group(ID_GROUP);
+            order.name = matcher.group(ID_GROUP);
             final String coordText = matcher.group(COORDINATE_GROUP);
-            final int rating = Integer.parseInt(matcher.group(RATING_GROUP));
-
-            final Coordinate coordinate = Coordinate.parse(coordText);
-
-            order.storm = Storm.builder()
-                    .name(stormName)
-                    .rating(rating)
-                    .coordinate(coordinate)
-                    .build();
+            order.rating = Integer.parseInt(matcher.group(RATING_GROUP));
+            order.coordinate = Coordinate.parse(coordText);
             order.setReady(true);
         } else {
-            order.addError("Invalid ADDPORTAL order: " + parameters);
+            order.addError("Invalid ADDSTORM order: " + parameters);
         }
 
         return order;
@@ -59,7 +57,9 @@ public class AddStormOrder extends Order {
         final var builder = AddStormOrder.builder();
         Order.parseReady(node, turnData, OrderType.ADDSTORM, builder);
         return builder
-                .storm(getTurnDataItemFromJsonNode(node.get("storm"), turnData::getStorm))
+                .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
+                .name(getString(node, "name"))
+                .rating(getInt(node, "rating"))
                 .gmOnly(true)
                 .build();
     }

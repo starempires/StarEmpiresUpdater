@@ -3,6 +3,7 @@ package com.starempires.objects;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -72,6 +73,9 @@ public class Fleet {
     }
 
     public int getLargestBasenameNumber(final String basename) {
+        if (StringUtils.isBlank(basename)) {
+            return 0;
+        }
         final Pattern pattern = Pattern.compile(basename + "\\d+", Pattern.CASE_INSENSITIVE);
         return shipsByName.keySet().stream()
                 .filter(s -> pattern.matcher(s).matches())

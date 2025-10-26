@@ -423,10 +423,15 @@ public class Empire extends IdentifiableObject {
 
     public Ship buildShip(final @NonNull ShipClass shipClass, final @NonNull MappableObject object, final String shipName,
                           final int turnNumber) {
+        return buildShip(shipClass, object.getCoordinate(), shipName, turnNumber);
+    }
+
+    public Ship buildShip(final @NonNull ShipClass shipClass, final @NonNull Coordinate coordinate, final String name,
+                          final int turnNumber) {
         final Ship ship = Ship.builder()
-                .coordinate(object.getCoordinate())
+                .coordinate(coordinate)
                 .dpRemaining(shipClass.getDp())
-                .name(shipName)
+                .name(name)
                 .owner(this)
                 .serialNumber(getNewSerialNumber())
                 .shipClass(shipClass)

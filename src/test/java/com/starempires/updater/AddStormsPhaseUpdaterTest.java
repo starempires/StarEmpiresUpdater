@@ -19,14 +19,18 @@ public class AddStormsPhaseUpdaterTest extends BaseTest {
 
     @Test
     void testUpdate() {
+        final String name = "s1";
+        final int rating = 1;
         final AddStormOrder order = AddStormOrder.builder()
                 .empire(gm)
                 .orderType(OrderType.ADDSTORM)
-                .parameters(ONE_COORDINATE + " " + storm.getName() + " " + storm.getRating())
-                .storm(storm)
+                .parameters(ONE_COORDINATE + " " + name + " " + rating)
+                .name(name)
+                .rating(rating)
+                .coordinate(ONE_COORDINATE)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(storm, turnData.getStorm(storm.getName()));
+        assertEquals(ONE_COORDINATE, turnData.getStorm(name).getCoordinate());
     }
 }

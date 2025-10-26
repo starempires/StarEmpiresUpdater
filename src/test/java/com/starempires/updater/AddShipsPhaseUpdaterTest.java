@@ -23,24 +23,21 @@ public class AddShipsPhaseUpdaterTest extends BaseTest {
     @Test
     void testUpdate() {
         final String name = "f1";
-        final Ship ship = Ship
-                .builder()
-                .shipClass(fighterClass)
-                .dpRemaining(fighterClass.getDp())
-                .coordinate(ONE_COORDINATE)
-                .name(name)
-                .serialNumber("FX12345")
-                .owner(empire1)
-                .build();
         final AddShipOrder order = AddShipOrder.builder()
                 .empire(gm)
                 .orderType(OrderType.ADDSHIP)
-                .parameters(ONE_COORDINATE + " empire1 1 fighter f1")
-                .ships(List.of(ship))
+                .parameters(ONE_COORDINATE + " empire1 1 fighter " + name)
+                .count(1)
+                .coordinate(ONE_COORDINATE)
+                .owner(empire1)
+                .shipClass(fighterClass)
+                .names(List.of(name))
                 .gmOnly(true)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertEquals(ship, empire1.getShip(name));
+        final Ship ship = empire1.getShip(name);
+        assertEquals(name, ship.getName());
+        assertEquals(fighterClass, ship.getShipClass());
     }
 }

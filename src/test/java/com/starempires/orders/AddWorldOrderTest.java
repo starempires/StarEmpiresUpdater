@@ -1,6 +1,5 @@
 package com.starempires.orders;
 
-import com.starempires.objects.World;
 import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.Test;
 
@@ -33,12 +32,12 @@ class AddWorldOrderTest extends BaseTest {
         final String params = ONE_COORDINATE + " " + name + " " + production + " " + stockpile;
         final AddWorldOrder order = AddWorldOrder.parse(turnData, gm, params);
         assertTrue(order.isReady());
-        final World world = order.getWorld();
-        assertEquals(ONE_COORDINATE, world.getCoordinate());
-        assertEquals(name, world.getName());
-        assertEquals(production, world.getProduction());
-        assertEquals(stockpile, world.getStockpile());
-        assertNull(world.getOwner());
+        assertEquals(OrderType.ADDWORLD, order.getOrderType());
+        assertEquals(ONE_COORDINATE, order.getCoordinate());
+        assertEquals(name, order.getName());
+        assertEquals(production, order.getProduction());
+        assertEquals(stockpile, order.getStockpile());
+        assertNull(order.getOwner());
     }
 
     @Test
@@ -49,12 +48,12 @@ class AddWorldOrderTest extends BaseTest {
         final String params = ONE_COORDINATE + " " + name + " " + production + " " + stockpile + " " + empire1;
         final AddWorldOrder order = AddWorldOrder.parse(turnData, gm, params);
         assertTrue(order.isReady());
-        final World world = order.getWorld();
-        assertEquals(ONE_COORDINATE, world.getCoordinate());
-        assertEquals(name, world.getName());
-        assertEquals(production, world.getProduction());
-        assertEquals(stockpile, world.getStockpile());
-        assertEquals(empire1, world.getOwner());
+        assertEquals(OrderType.ADDWORLD, order.getOrderType());
+        assertEquals(ONE_COORDINATE, order.getCoordinate());
+        assertEquals(name, order.getName());
+        assertEquals(production, order.getProduction());
+        assertEquals(stockpile, order.getStockpile());
+        assertEquals(empire1, order.getOwner());
     }
 
     @Test

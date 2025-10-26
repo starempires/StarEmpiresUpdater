@@ -15,12 +15,15 @@ public class AddPortalsPhaseUpdater extends PhaseUpdater {
 
     @Override
     public void update() {
-        final List<Order> orders = turnData.getOrders(OrderType.ADDSHIP);
+        final List<Order> orders = turnData.getOrders(OrderType.ADDPORTAL);
         orders.forEach(o -> {
             final AddPortalOrder order = (AddPortalOrder) o;
-            final Portal portal = order.getPortal();
+            final Portal portal = Portal.builder()
+                    .coordinate(order.getCoordinate())
+                    .name(order.getName())
+                    .build();
             turnData.addPortal(portal);
-            addNews(order, "Added portal " + portal);
+            addNews(order, "Added portal " + portal + " in sector " + portal.getCoordinate());
         });
     }
 }

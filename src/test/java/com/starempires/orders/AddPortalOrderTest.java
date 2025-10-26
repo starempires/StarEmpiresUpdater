@@ -28,7 +28,8 @@ class AddPortalOrderTest extends BaseTest {
         final String name = "portal1";
         final AddPortalOrder order = AddPortalOrder.parse(turnData, gm, ONE_COORDINATE + " " + name);
         assertTrue(order.isReady());
-        assertEquals(ONE_COORDINATE, order.getPortal().getCoordinate());
-        assertEquals(name, order.getPortal().getName());
+        assertEquals(OrderType.ADDPORTAL, order.getOrderType());
+        assertEquals(ONE_COORDINATE, order.getCoordinate());
+        assertEquals(name, order.getName());
     }
 }

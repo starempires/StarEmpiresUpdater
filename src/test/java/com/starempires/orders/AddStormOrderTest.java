@@ -29,8 +29,9 @@ class AddStormOrderTest extends BaseTest {
         final int rating = 1;
         final AddStormOrder order = AddStormOrder.parse(turnData, gm, ONE_COORDINATE + " " + name + " " + rating);
         assertTrue(order.isReady());
-        assertEquals(ONE_COORDINATE, order.getStorm().getCoordinate());
-        assertEquals(name, order.getStorm().getName());
-        assertEquals(rating, order.getStorm().getRating());
+        assertEquals(OrderType.ADDSTORM, order.getOrderType());
+        assertEquals(ONE_COORDINATE, order.getCoordinate());
+        assertEquals(name, order.getName());
+        assertEquals(rating, order.getRating());
     }
 }

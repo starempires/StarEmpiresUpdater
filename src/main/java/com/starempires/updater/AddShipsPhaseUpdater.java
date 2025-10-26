@@ -1,6 +1,7 @@
 package com.starempires.updater;
 
 import com.starempires.TurnData;
+import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import com.starempires.orders.AddShipOrder;
 import com.starempires.orders.Order;
@@ -18,11 +19,19 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.ADDSHIP);
         orders.forEach(o -> {
             final AddShipOrder order = (AddShipOrder) o;
-            final List<Ship> ships = order.getShips();
-            ships.forEach(ship -> {
-                ship.getOwner().addShip(ship);
-                addNews(order, "Added %s %s %s".formatted(ship.getOwner(), ship.getShipClass(), ship));
-            });
+            final Empire owner = order.getOwner();
+            final int startingNumber = owner.getLargestBasenameNumber(order.getBasename());
+            for (int i = 0; i < order.getCount(); ++i) {
+                String name;
+                if (order.getBasename() != null) {
+                    name = order.getBasename() + (startingNumber + i + 1);
+                }
+                else {
+                    name = order.getNames().get(0);
+                }
+                final Ship ship = owner.buildShip(order.getShipClass(), order.getCoordinate(), name, turnData.getTurnNumber());
+                addNews(order, "Added %s %s %s in sector %s".formatted(ship.getOwner(), ship.getShipClass(), ship, ship.getCoordinate()));
+            };
         });
     }
 }

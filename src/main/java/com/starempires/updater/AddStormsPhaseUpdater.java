@@ -18,9 +18,13 @@ public class AddStormsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.ADDSTORM);
         orders.forEach(o -> {
             final AddStormOrder order = (AddStormOrder) o;
-            final Storm storm = order.getStorm();
+            final Storm storm = Storm.builder()
+                    .coordinate(order.getCoordinate())
+                    .name(order.getName())
+                    .rating(order.getRating())
+                    .build();
             turnData.addStorm(storm);
-            addNews(order, "Added storm " + storm);
+            addNews(order, "Added storm %s in sector %s".formatted(storm, storm.getCoordinate()));
         });
     }
 }
