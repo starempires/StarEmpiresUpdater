@@ -28,7 +28,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -49,7 +49,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -70,7 +70,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         ship.destroy(ShipCondition.DESTROYED_IN_COMBAT);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -91,7 +91,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         final Ship ship = createShip(starbaseClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -114,7 +114,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         turnData.load(cargo, carrier);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -137,7 +137,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         turnData.load(cargo, carrier);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -162,7 +162,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         ship.fireGuns(1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, true);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -183,7 +183,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, true);
         final Portal exit = createPortal("exit", ONE_COORDINATE, false);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)
@@ -204,7 +204,7 @@ class TraversePortalsPhaseUpdaterTest extends BaseTest {
         final Ship ship = createShip(probeClass, ZERO_COORDINATE, "ship", empire1);
         final Portal entry = createPortal("entry", ZERO_COORDINATE, false);
         final Portal exit = createPortal("exit", ONE_COORDINATE, true);
-        turnData.addPortalConnection("entry", "exit");
+        entry.addConnection(exit);
         final TraverseOrder order = TraverseOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.TRAVERSE)

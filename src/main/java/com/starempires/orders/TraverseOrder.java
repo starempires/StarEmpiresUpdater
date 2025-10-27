@@ -22,11 +22,8 @@ import java.util.regex.Pattern;
 public class TraverseOrder extends ShipBasedOrder {
 
     // TRAVERSE {ships|location|coord} portal {entry} [{exit}]
-    final static private String ENTRY_GROUP = "entry";
-    final static private String EXIT_GROUP = "exit";
-    final static private String ENTRY_CAPTURE_REGEX = "(?<" + ENTRY_GROUP + ">" + ID_REGEX + ")";
-    final static private String EXIT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + EXIT_GROUP + ">" + ID_REGEX + "))?";
-    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "portal" + SPACE_REGEX + ENTRY_CAPTURE_REGEX + EXIT_CAPTURE_REGEX;
+
+    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "portal" + SPACE_REGEX + ENTRY_CAPTURE_REGEX + OPTIONAL_EXIT_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)

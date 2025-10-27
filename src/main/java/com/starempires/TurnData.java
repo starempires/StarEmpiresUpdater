@@ -348,12 +348,6 @@ public class TurnData {
         device.destroy(ShipCondition.DESTROYED_DEVICE_DEPLOYMENT);
     }
 
-    public void addPortalConnection(final String fromPortalName, final String toPortalName) {
-        final Portal fromPortal = getPortal(fromPortalName);
-        final Portal toPortal = getPortal(toPortalName);
-        fromPortal.addConnection(toPortal);
-    }
-
     public void setHomeworld(final Empire empire, final World world) {
         final World existingHomeworld = homeworlds.get(empire);
         if (existingHomeworld != null) {

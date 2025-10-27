@@ -37,6 +37,7 @@ public class TurnUpdater {
         Map.entry(Phase.REMOVE_MAP_OBJECTS, RemoveMapObjectsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_OBJECTS, RelocateObjectsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_SHIPS, RelocateShipsPhaseUpdater::new),
+        Map.entry(Phase.ADD_CONNECTIONS, AddConnectionsPhaseUpdater::new),
         Map.entry(Phase.ADD_PORTALS, AddPortalsPhaseUpdater::new),
         Map.entry(Phase.ADD_SHIPS, AddShipsPhaseUpdater::new),
         Map.entry(Phase.ADD_STORMS, AddStormsPhaseUpdater::new),

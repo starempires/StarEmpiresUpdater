@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum OrderType {
+    ADDCONNECTION(AddConnectionOrder.class, true),
     ADDKNOWN(UnknownOrder.class, true),
     ADDPORTAL(AddPortalOrder.class, true),
     ADDSTORM(AddStormOrder.class, true),

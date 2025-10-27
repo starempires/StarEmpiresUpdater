@@ -46,12 +46,17 @@ public abstract class Order {
     final static protected String WORLD_LIST_GROUP = "worldlist";
     final static protected String WORLD_LIST_CAPTURE_REGEX = "(?<" + WORLD_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
     final static protected String OWNER_GROUP = "owner";
-    final static protected String OWNER_CAPTURE_REGEX = "(?:(?<" + OWNER_GROUP + ">" +ID_REGEX + "))?";
-    final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "(?<" + OWNER_GROUP + ">" +ID_REGEX + "))?";
+    final static protected String OWNER_CAPTURE_REGEX = "(?<" + OWNER_GROUP + ">" + ID_REGEX + ")";
+    final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + OWNER_CAPTURE_REGEX + ")?";
     final static protected String NAMES_GROUP = "names";
     final static protected String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
-    protected final static String SHIP_CLASS_GROUP = "shipclass";
-    protected final static String SHIP_CLASS_CAPTURE_REGEX = "(?<" + SHIP_CLASS_GROUP + ">" + ID_REGEX + ")";
+    final static protected String SHIP_CLASS_GROUP = "shipclass";
+    final static protected String SHIP_CLASS_CAPTURE_REGEX = "(?<" + SHIP_CLASS_GROUP + ">" + ID_REGEX + ")";
+    final static protected String ENTRY_GROUP = "entry";
+    final static protected String EXIT_GROUP = "exit";
+    final static protected String ENTRY_CAPTURE_REGEX = "(?<" + ENTRY_GROUP + ">" + ID_REGEX + ")";
+    final static protected String EXIT_CAPTURE_REGEX = "(?<" + EXIT_GROUP + ">" + ID_REGEX + ")";
+    final static protected String OPTIONAL_EXIT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXIT_CAPTURE_REGEX + ")?";
 
     /** empire who gave this order */
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
