@@ -1,7 +1,9 @@
 package com.starempires.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.starempires.objects.EmpireType;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.EnumUtils;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -21,6 +23,7 @@ public class AddEmpireHandler extends BaseLambdaHandler {
         final String abbreviation = input.abbreviation();
         final String homeworld = input.homeworld();
         final String starbase = input.starbase();
+        final String empireType = input.empireType();
         final String key = sessionName + "/" + sessionName + "." + EMPIRE_DATA_FILENAME;
 
         String existing = "";
@@ -35,7 +38,7 @@ public class AddEmpireHandler extends BaseLambdaHandler {
                 log.info("No existing empire data found at s3://{}/{} (creating new file)", SESSIONS_LOCATION, key);
             }
 
-            final String newLine = String.join(",", empireName, abbreviation, homeworld, starbase);
+            final String newLine = String.join(",", empireName, abbreviation, empireType, homeworld, starbase);
             final String updatedBody = existing.isEmpty() ? newLine : existing.stripTrailing() + "\n" + newLine;
 
             final PutObjectRequest putReq = PutObjectRequest.builder()
@@ -63,12 +66,14 @@ public class AddEmpireHandler extends BaseLambdaHandler {
             final String abbreviation = input.abbreviation();
             final String homeworld = input.homeworld();
             final String starbase = input.starbase();
+            final String empireType = input.empireType();
 
             Validate.notEmpty(sessionName, "Missing sessionName");
             Validate.notEmpty(empireName, "Missing empireName");
             Validate.notEmpty(abbreviation, "Missing abbreviation");
             Validate.notEmpty(homeworld, "Missing homeworld");
             Validate.notEmpty(starbase, "Missing starbase");
+            Validate.notNull(EnumUtils.getEnumIgnoreCase(EmpireType.class, input.empireType()), "Invalid empire type: " + empireType);
 
             persistEmpireData(input);
 

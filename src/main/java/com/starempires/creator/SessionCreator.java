@@ -59,8 +59,6 @@ public class SessionCreator {
     private static final String ARG_SESSIONS_DIR = "sessionsdir";
 
     final private String sessionName;
-    final private String gameDataDir;
-    final private String sessionsDir;
 
     private final StarEmpiresDAO dao;
 
@@ -90,8 +88,6 @@ public class SessionCreator {
 
     public SessionCreator(final String sessionName, final String sessionsDir, final String gameDataDir) {
         this.sessionName = sessionName;
-        this.gameDataDir = gameDataDir;
-        this.sessionsDir = sessionsDir;
 //        dao = new JsonStarEmpiresDAO(sessionsDir, gameDataDir);
         dao = new S3StarEmpiresDAO(sessionsDir, gameDataDir);
     }
@@ -152,6 +148,9 @@ public class SessionCreator {
             int index = i * interval;
             final Coordinate edge = edgeCoordinates.get(index);
             final String[] empireInfo = Arrays.stream(StringUtils.split(data, ",")).map(String::trim).toArray(String[]::new);
+            if (empireInfo.length != 5) {
+                throw new RuntimeException("Invalid empire data: " + data);
+            }
             final FrameOfReference frame = FrameOfReference.builder()
                         .obliqueOffset(-edge.getOblique())
                         .yOffset(-edge.getY())
@@ -159,9 +158,14 @@ public class SessionCreator {
                         .verticalMirror(random.nextInt(2) == 1)
                         .rotation(HexDirection.from(random.nextInt(HexDirection.values().length)))
                         .build();
-            final Empire empire = Empire.builder().name(empireInfo[0]).abbreviation(empireInfo[1]).empireType(EmpireType.valueOf(empireInfo[2])).
-                    frameOfReference(frame).build();
-            final EmpireCreation ecd = EmpireCreation.builder().homeworldName(empireInfo[3]).starbaseName(empireInfo[4]).center(edge).build();
+            final String empireName = empireInfo[0];
+            final String abbreviation = empireInfo[1];
+            final EmpireType empireType = EmpireType.valueOf(empireInfo[2]);
+            final String homeworldName = empireInfo[3];
+            final String starbaseName = empireInfo[4];
+            final Empire empire = Empire.builder().name(empireName).abbreviation(abbreviation).empireType(empireType)
+                    .frameOfReference(frame).build();
+            final EmpireCreation ecd = EmpireCreation.builder().homeworldName(homeworldName).starbaseName(starbaseName).center(edge).build();
             empireCreations.put(empire, ecd);
             i++;
             log.info("Created empire {} with FOR {}", empire, frame);
