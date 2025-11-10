@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class UnloadOrder extends ShipBasedOrder {
 
-    final static private Pattern PATTERN = Pattern.compile(SHIP_LIST_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
+    // order: UNLOAD ship1 [ship2 ... ]
+    private static final String REGEX = OBJECT_LIST_CAPTURE_REGEX;
+    private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     public static UnloadOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final UnloadOrder order = UnloadOrder
@@ -30,7 +32,7 @@ public class UnloadOrder extends ShipBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String unloadNamesText = matcher.group(SHIP_LIST_GROUP);
+            final String unloadNamesText = matcher.group(OBJECT_LIST_GROUP);
             final List<Ship> cargo = getShipsFromNames(empire, unloadNamesText, order);
             for (final Ship ship : cargo) {
                 if (!ship.isLoaded()) {

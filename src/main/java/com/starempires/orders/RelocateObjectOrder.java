@@ -22,12 +22,9 @@ import java.util.regex.Pattern;
 @Getter
 public class RelocateObjectOrder extends Order {
 
-    // RELOCATEOBJECT TYPE NAME coord
-    final static private String TYPE_GROUP = "type";
-    final static private String TYPE_REGEX = "world|portal|storm";
-    final static private String TYPE_CAPTURE_REGEX = "(?<" + TYPE_GROUP + ">" + TYPE_REGEX + ")";
+    // order: RELOCATEOBJECT object-type object-name coordinate
 
-    final static private String REGEX = TYPE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + COORDINATE_CAPTURE_REGEX;
+    final static private String REGEX = OBJECT_TYPE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + COORDINATE_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -57,7 +54,7 @@ public class RelocateObjectOrder extends Order {
         }
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String typeText = matcher.group(TYPE_GROUP);
+            final String typeText = matcher.group(OBJECT_TYPE_GROUP);
             final String idText = matcher.group(ID_GROUP);
             final String coordText = matcher.group(COORDINATE_GROUP);
 

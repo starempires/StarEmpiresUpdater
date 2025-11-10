@@ -21,9 +21,15 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class TraverseOrder extends ShipBasedOrder {
 
-    // TRAVERSE {ships|location|coord} portal {entry} [{exit}]
+    // owner: TRAVERSE {ships|location|coord} portal {entry} [{exit}]
 
-    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "portal" + SPACE_REGEX + ENTRY_CAPTURE_REGEX + OPTIONAL_EXIT_CAPTURE_REGEX;
+    // order: TRAVERSE (oblique,y) [EXCEPT ship1 ...] THROUGH entry-portal [exit-portal]
+    // order: TRAVERSE @location [EXCEPT ship1 ...] THROUGH entry-portal [exit-portal]
+    // order: TRAVERSE ship1 [ship2 ...] THROUGH entry-portal [exit-portal]
+
+    final static private String REGEX = LOCATION_OR_SHIP_LIST_CAPTURE_REGEX + SPACE_REGEX +
+            THROUGH_TOKEN + SPACE_REGEX + regexWithCaptureGroup(ENTRY_GROUP, ID_REGEX) +
+            "(?:" + SPACE_REGEX + regexWithCaptureGroup(EXIT_GROUP, ID_REGEX) + ")?";
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)

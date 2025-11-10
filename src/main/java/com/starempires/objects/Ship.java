@@ -319,8 +319,8 @@ public class Ship extends OwnableObject {
     }
 
     @JsonIgnore
-    public DeviceType getDeviceType() {
-        return shipClass.getDeviceType();
+    public boolean isDeviceType(final DeviceType deviceType) {
+        return shipClass.isDeviceOfType(deviceType);
     }
 
     @JsonIgnore

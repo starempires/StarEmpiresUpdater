@@ -18,13 +18,10 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class TransferOrder extends WorldBasedOrder {
 
-    //TRANSFER from-world {amount|ALL} to-world [empire]
+    // order: TRANSFER from-world {amount|MAX} to-world [owner]
 
-    final static protected String DESTINATION_GROUP = "destination";
-    final static protected String DESTINATION_CAPTURE_REGEX = "(?<" + DESTINATION_GROUP + ">" + ID_REGEX + ")";
-
-    private static final String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + DESTINATION_CAPTURE_REGEX +
-                                        OPTIONAL_OWNER_CAPTURE_REGEX;
+    private static final String REGEX = ID_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX +
+            DESTINATION_CAPTURE_REGEX + OPTIONAL_OWNER_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -46,7 +43,7 @@ public class TransferOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String worldName = matcher.group(WORLD_GROUP);
+            final String worldName = matcher.group(ID_GROUP);
             final String destinationName = matcher.group(DESTINATION_GROUP);
             final String amountText = matcher.group(AMOUNT_GROUP);
             final String ownerName = matcher.group(OWNER_GROUP); // null if same empire

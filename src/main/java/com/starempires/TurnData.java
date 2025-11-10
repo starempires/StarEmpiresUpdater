@@ -439,15 +439,15 @@ public class TurnData {
     }
 
     public Set<Ship> getDeployedDevices(final DeviceType type) {
-        return deployedDevices.values().stream()
-                .filter(device -> device.getDeviceType().equals(type))
+        return deployedDevices.values().stream().filter(Objects::nonNull)
+                .filter(device -> device.isDeviceType(type))
                 .collect(Collectors.toSet());
     }
 
     public Collection<Ship> getDeployedDevices(final Coordinate coordinate, final DeviceType type) {
         final Collection<Ship> coordinateDevices = deployedDevices.get(coordinate);
         return coordinateDevices.stream()
-                .filter(device -> device.getDeviceType() == type)
+                .filter(device -> device.isDeviceType(type))
                 .collect(Collectors.toSet());
     }
 

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 @Getter
 public class AddConnectionOrder extends Order {
 
-    // ADDCONNECTION entry exit
+    // order: ADDCONNECTION entry-portal exit-portal
     final static private String REGEX = ENTRY_CAPTURE_REGEX + SPACE_REGEX + EXIT_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 

@@ -14,8 +14,9 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class DestructOrder extends ShipBasedOrder {
 
-    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX;
-    final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
+    // order: DESTRUCT ship1 [ship2 ...]
+    private static final String REGEX = LOCATION_OR_SHIP_LIST_CAPTURE_REGEX;
+    private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     public static DestructOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final DestructOrder order = DestructOrder.builder()

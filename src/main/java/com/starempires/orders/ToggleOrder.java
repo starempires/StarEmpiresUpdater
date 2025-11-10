@@ -20,12 +20,10 @@ import java.util.regex.Pattern;
 @Getter
 @SuperBuilder
 public class ToggleOrder extends ShipBasedOrder {
-    // toggle {public|private} ship1 [ship2 ...]
-    // toggle {public|private} ship-class1 [ship-class2 ...]
+    // order: TOGGLE {public|private} ship1 [ship2 ...]
+    // order: TOGGLE {public|private} ship-class1 [ship-class2 ...]
 
-    final private static String MODE_GROUP = "mode";
-    final private static String MODE_CAPTURE_REGEX = "(<" + MODE_GROUP + ">public|private)";
-    final private static String REGEX = MODE_CAPTURE_REGEX + SPACE_REGEX + SHIP_LIST_CAPTURE_REGEX;
+    final private static String REGEX = TOGGLE_MODE_CAPTURE_REGEX + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX;
     final private static Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private boolean publicMode;
@@ -43,8 +41,8 @@ public class ToggleOrder extends ShipBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            order.publicMode = matcher.group(MODE_GROUP).equalsIgnoreCase("public");
-            final String[] shipNames = matcher.group(SHIP_LIST_GROUP).split(" ");
+            order.publicMode = matcher.group(TOGGLE_MODE_GROUP).equalsIgnoreCase("public");
+            final String[] shipNames = matcher.group(OBJECT_LIST_GROUP).split(" ");
             for (String shipName : shipNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipName);
                 if (!empire.isKnownShipClass(shipClass)) {

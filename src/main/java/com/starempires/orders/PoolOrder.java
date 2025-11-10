@@ -20,9 +20,8 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class PoolOrder extends WorldBasedOrder {
 
-    // POOL world [EXCEPT world1 world2….]
-    private static final String EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + "except" + SPACE_REGEX + WORLD_LIST_CAPTURE_REGEX + ")?";
-    private static final String REGEX = WORLD_CAPTURE_REGEX + EXCEPT_CAPTURE_REGEX;
+    // order: POOL world [EXCEPT world1 world2….]
+    private static final String REGEX = ID_CAPTURE_REGEX + OBJECT_LIST_EXCEPT_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -39,7 +38,7 @@ public class PoolOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String worldName = matcher.group(WORLD_GROUP);
+            final String worldName = matcher.group(ID_GROUP);
             final World world = turnData.getWorld(worldName);
             if (!empire.isKnownWorld(world)) {
                 order.addError("Unknown world: " + worldName);
@@ -47,7 +46,7 @@ public class PoolOrder extends WorldBasedOrder {
             }
             order.world = world;
 
-            final String exceptText = matcher.group(WORLD_LIST_GROUP);
+            final String exceptText = matcher.group(OBJECT_LIST_GROUP);
             if (exceptText != null) {
                 for (String worldNameToExcept : exceptText.split(" ")) {
                     final World worldToExcept = turnData.getWorld(worldNameToExcept);

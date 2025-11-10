@@ -21,13 +21,11 @@ import java.util.regex.Pattern;
 @Getter
 public class FireOrder extends ShipBasedOrder {
 
-    final static private String TARGET_ORDER_GROUP = "targetorder";
-    final static private String TARGET_ORDER_CAPTURE_REGEX = "(?:(?<" + TARGET_ORDER_GROUP + ">asc|desc)\\s+)?";
-
-    // parameters are FIRE [asc|desc] (oblique,y) AT empire1 [empire2 ...]
-    // parameters are FIRE [asc|desc] @location AT empire1 [empire2 ...]
-    // parameters are FIRE [asc|desc] ship1 [ship2 ...] AT empire1 [empire2 ...]
-    final static private String REGEX = TARGET_ORDER_CAPTURE_REGEX + SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + "at" + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
+    // order: FIRE [asc|desc] (oblique,y) [EXCEPT ship1 ...] AT empire1 [empire2 ...]
+    // order: FIRE [asc|desc] @location [EXCEPT ship1 ...] AT empire1 [empire2 ...]
+    // order: FIRE [asc|desc] ship1 [ship2 ...] AT empire1 [empire2 ...]
+    final static private String REGEX = OPTIONAL_TARGET_ORDER_CAPTURE_REGEX + LOCATION_OR_SHIP_LIST_CAPTURE_REGEX +
+            SPACE_REGEX + AT_TOKEN + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

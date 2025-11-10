@@ -20,10 +20,8 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class GiveOrder extends EmpireBasedOrder {
 
-    // GIVE shipclass1 [shipclass2 ...] TO empire1 [empire2 ...]
-    private static final String SHIP_CLASSES_GROUP = "shipclasses";
-    private static final String SHIP_CLASSES_CAPTURE_REGEX = "(?<" + SHIP_CLASSES_GROUP + ">" + ID_LIST_REGEX + ")";
-    private static final String REGEX = SHIP_CLASSES_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX  + RECIPIENT_LIST_CAPTURE_REGEX;
+    // order: GIVE shipclass1 [shipclass2 ...] TO empire1 [empire2 ...]
+     private static final String REGEX = OBJECT_LIST_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -41,7 +39,7 @@ public class GiveOrder extends EmpireBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String[] shipClassNames = matcher.group(SHIP_CLASSES_GROUP).split(SPACE_REGEX);
+            final String[] shipClassNames = matcher.group(OBJECT_LIST_GROUP).split(SPACE_REGEX);
             final String[] recipientNames = matcher.group(RECIPIENT_LIST_GROUP).split(SPACE_REGEX);
             for (String shipClassName: shipClassNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipClassName);

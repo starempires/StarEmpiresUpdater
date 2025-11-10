@@ -21,11 +21,10 @@ import java.util.regex.Pattern;
 @Getter
 public class AddShipOrder extends Order {
 
-    // ADDSHIP coordinate owner number design name*
-    final static private String COUNT_GROUP = "count";
-    final static private String COUNT_CAPTURE_REGEX = "(?<" + COUNT_GROUP + ">" + INT_REGEX + ")";
+    // order: ADDSHIP coordinate owner number design name*
 
-    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + OWNER_CAPTURE_REGEX + SPACE_REGEX + COUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + NAMES_CAPTURE_REGEX;
+    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + OWNER_CAPTURE_REGEX + SPACE_REGEX +
+            COUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -60,7 +59,7 @@ public class AddShipOrder extends Order {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String coordText = matcher.group(COORDINATE_GROUP);
-            final String nameText = matcher.group(NAMES_GROUP);
+            final String nameText = matcher.group(SHIP_NAMES_GROUP);
             final int count = Integer.parseInt(matcher.group(COUNT_GROUP));
             final String ownerName = matcher.group(OWNER_GROUP);
             final String shipClassName = matcher.group(SHIP_CLASS_GROUP);

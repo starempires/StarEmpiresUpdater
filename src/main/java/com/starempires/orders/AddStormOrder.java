@@ -15,9 +15,8 @@ import java.util.regex.Pattern;
 @Getter
 public class AddStormOrder extends Order {
 
-    // ADDSTORM coord name rating
-    final static protected String RATING_GROUP = "rating";
-    final static protected String RATING_CAPTURE_REGEX = "(?<" + RATING_GROUP + ">" + INT_REGEX + ")";
+    // order: ADDSTORM coordinate storm-name rating
+
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + RATING_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 

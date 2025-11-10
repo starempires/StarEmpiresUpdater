@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 @Getter
 public class AddPortalOrder extends Order {
 
-    // ADDPORTAL coord name
+    // order: ADDPORTAL coordinate portal-name
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 

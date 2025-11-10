@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class LoadOrder extends ShipBasedOrder {
 
-    private static final String CARRIER_GROUP = "carrier";
-    private static final String CARRIER_CAPTURE_REGEX = "(?<" + CARRIER_GROUP + ">" + ID_REGEX + ")";
-    private static final String REGEX = SHIP_LIST_CAPTURE_REGEX + SPACE_REGEX + "onto" + SPACE_REGEX + CARRIER_CAPTURE_REGEX;
+    // order: LOAD ship1 [ship2 ...] ONTO carrier
+
+    private static final String REGEX = OBJECT_LIST_CAPTURE_REGEX + SPACE_REGEX + ONTO_TOKEN + SPACE_REGEX + SHIP_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -41,12 +41,12 @@ public class LoadOrder extends ShipBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String carrierName = matcher.group(CARRIER_GROUP);
+            final String carrierName = matcher.group(SHIP_GROUP);
             final Ship carrier = empire.getShip(carrierName);
             if (carrier == null) {
                 order.addError("You do not own carrier " + carrierName);
             } else {
-                final List<Ship> cargo = getShipsFromNames(empire, matcher.group(SHIP_LIST_GROUP), order);
+                final List<Ship> cargo = getShipsFromNames(empire, matcher.group(OBJECT_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
                     if (ship.equals(carrier)) {
                         order.addError(ship, "Cannot load ship onto itself");

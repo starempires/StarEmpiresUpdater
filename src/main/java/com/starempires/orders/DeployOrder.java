@@ -15,13 +15,15 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class DeployOrder extends ShipBasedOrder {
 
-    final static private Pattern PATTERN = Pattern.compile(SHIP_LIST_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
+    // order: DEPLOY ship1 [ship2 ... ]
+    private static final String REGEX = OBJECT_LIST_CAPTURE_REGEX;
+    private static final Pattern PATTERN = Pattern.compile(REGEX, java.util.regex.Pattern.CASE_INSENSITIVE);
 
     public static DeployOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final DeployOrder order = DeployOrder.builder().orderType(OrderType.DEPLOY).empire(empire).parameters(parameters).build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String deviceNamesText = matcher.group(SHIP_LIST_GROUP);
+            final String deviceNamesText = matcher.group(OBJECT_LIST_GROUP);
             final List<Ship> devices = getShipsFromNames(empire, deviceNamesText, order);
             for (final Ship device : devices) {
                 if (!device.isDevice()) {

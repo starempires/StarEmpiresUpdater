@@ -20,14 +20,10 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class DesignOrder extends WorldBasedOrder {
 
-    //DESIGN world name hulltype parameters
+    //order: DESIGN world-name ship-class-name hulltype parameters
 
-    final static private String HULLTYPE_GROUP = "hulltype";
-    final static private String PARAMETERS_GROUP = "parameters";
-    final static private String HULLTYPE_CAPTURE_REGEX = "(?<" + HULLTYPE_GROUP + ">" + ID_REGEX + ")";
-    final static private String SHIP_PARAMS_CAPTURE_REGEX = "(?<" + PARAMETERS_GROUP + ">[\\d\\s]+)";
-
-    final static private String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + HULLTYPE_CAPTURE_REGEX + SPACE_REGEX + SHIP_PARAMS_CAPTURE_REGEX;
+    final static private String REGEX = ID_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX +
+            HULLTYPE_CAPTURE_REGEX + SPACE_REGEX + SHIP_PARAMS_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private String name;
@@ -63,10 +59,10 @@ public class DesignOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String worldName = matcher.group(WORLD_GROUP);
+            final String worldName = matcher.group(ID_GROUP);
             final String designName = matcher.group(SHIP_CLASS_GROUP);
             final String hullTypeName = matcher.group(HULLTYPE_GROUP);
-            final String paramText = matcher.group(PARAMETERS_GROUP);
+            final String paramText = matcher.group(DESIGN_PARAMETERS_GROUP);
 
             final World world = turnData.getWorld(worldName);
             if (!empire.isKnownWorld(world)) {

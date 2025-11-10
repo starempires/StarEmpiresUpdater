@@ -22,11 +22,9 @@ import java.util.regex.Pattern;
 @Getter
 @SuperBuilder
 public class RepairOrder extends ShipBasedOrder {
-    // REPAIR ship {dp|ALL} world1 [world2…]
+    // order: REPAIR ship {dp|MAX} world1 [world2…]
 
-    private static final String SHIP_GROUP = "ship";
-    private static final String SHIP_CAPTURE_REGEX = "(?<" + SHIP_GROUP + ">" + ID_REGEX + ")";
-    private static final String REGEX = SHIP_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + WORLD_LIST_CAPTURE_REGEX;
+    private static final String REGEX = SHIP_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private int dpToRepair;
@@ -47,7 +45,7 @@ public class RepairOrder extends ShipBasedOrder {
         if (matcher.matches()) {
             final String shipName = matcher.group(SHIP_GROUP);
             final String dpText = matcher.group(AMOUNT_GROUP);
-            final String worldNames = matcher.group(WORLD_LIST_GROUP);
+            final String worldNames = matcher.group(OBJECT_LIST_GROUP);
             final Ship ship = empire.getShip(shipName);
             if (ship == null) {
                 order.addError("Unknown ship : " + shipName);

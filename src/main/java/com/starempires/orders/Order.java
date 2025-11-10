@@ -27,36 +27,111 @@ import java.util.function.Function;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public abstract class Order {
 
-    final static protected String COORDINATE_GROUP = "coordinate";
-    final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
-    final static protected String COORDINATE_CAPTURE_REGEX = "(?<" + COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
-    final static protected String SPACE_REGEX = "\\s+";
-    final static protected String ID_GROUP = "id";
-    final static protected String ID_REGEX = "\\w+";
-    final static protected String ID_CAPTURE_REGEX = "(?<" + ID_GROUP + ">" + ID_REGEX + ")";
-    final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
-    final static protected String INT_REGEX = "\\d+";
+    // base tokens
     final static protected String MAX_TOKEN = "max";
     final static protected String TO_TOKEN = "to";
+    final static protected String FROM_TOKEN = "from";
+    final static protected String ONTO_TOKEN = "onto";
+    final static protected String AT_TOKEN = "at";
+    final static protected String THROUGH_TOKEN = "through";
+    final static protected String EXCEPT_TOKEN = "except";
+
+    // object regexes
+    final static protected String SPACE_REGEX = "\\s+";
+    final static protected String ID_REGEX = "\\w+";
+    final static protected String INT_REGEX = "\\d+";
     final static protected String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
-    final static protected String AMOUNT_GROUP = "dp";
-    final static protected String AMOUNT_CAPTURE_REGEX = "(?<" + AMOUNT_GROUP + ">" + INT_OR_MAX_REGEX + ")";
+    final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
+    final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
+    final static protected String OBJECT_TYPE_REGEX = "world|portal|storm";
+    final static protected String TOGGLE_MODE_REGEX = "public|private";
+    final static protected String DESIGN_PARAMETERS_REGEX = "[\\d\\s]+";
+    final static protected String TARGET_ORDER_REGEX = "asc|desc";
+
+    // capture groups
+    final static protected String SHIP_GROUP = "ship";
+    final static protected String TARGET_ORDER_GROUP = "targetorder";
+    final static protected String SHIP_LOCATION_GROUP = "location";
+    final static protected String COORDINATE_EXCEPT_LIST_GROUP = "coordexcept";
+    final static protected String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
+    final static protected String DESTINATION_COORDINATE_GROUP = "destcoordinate";
+    final static protected String DESTINATION_LOCATION_GROUP = "destlocation";
+    final static protected String COORDINATE_GROUP = "coordinate";
+    final static protected String HULLTYPE_GROUP = "hulltype";
+    final static protected String DESIGN_PARAMETERS_GROUP = "parameters";
+    final static protected String TOGGLE_MODE_GROUP = "mode";
+    final static protected String DESTINATION_GROUP = "destination";
+    final static protected String COUNT_GROUP = "count";
+    final static protected String RATING_GROUP = "rating";
+    final static protected String PRODUCTION_GROUP = "production";
+    final static protected String STOCKPILE_GROUP = "stockpile";
+    final static protected String OBJECT_TYPE_GROUP = "type";
+    protected final static String WORLD_GROUP = "world";
+
+    final static protected String ID_GROUP = "id";
+    final static protected String AMOUNT_GROUP = "amount";
     final static protected String RECIPIENT_LIST_GROUP = "recipientlist";
-    final static protected String RECIPIENT_LIST_CAPTURE_REGEX = "(?<" + RECIPIENT_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
-    final static protected String WORLD_LIST_GROUP = "worldlist";
-    final static protected String WORLD_LIST_CAPTURE_REGEX = "(?<" + WORLD_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
+    final static protected String OBJECT_LIST_GROUP = "objectlist";
     final static protected String OWNER_GROUP = "owner";
-    final static protected String OWNER_CAPTURE_REGEX = "(?<" + OWNER_GROUP + ">" + ID_REGEX + ")";
-    final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + OWNER_CAPTURE_REGEX + ")?";
-    final static protected String NAMES_GROUP = "names";
-    final static protected String NAMES_CAPTURE_REGEX = "(?<" + NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
-    final static protected String SHIP_CLASS_GROUP = "shipclass";
-    final static protected String SHIP_CLASS_CAPTURE_REGEX = "(?<" + SHIP_CLASS_GROUP + ">" + ID_REGEX + ")";
+    final static protected String SHIP_NAMES_GROUP = "shipnames";
     final static protected String ENTRY_GROUP = "entry";
     final static protected String EXIT_GROUP = "exit";
-    final static protected String ENTRY_CAPTURE_REGEX = "(?<" + ENTRY_GROUP + ">" + ID_REGEX + ")";
-    final static protected String EXIT_CAPTURE_REGEX = "(?<" + EXIT_GROUP + ">" + ID_REGEX + ")";
+    final static protected String SHIP_CLASS_GROUP = "shipclass";
+
+    // named ID_REGEX capture groups
+    final static protected String SHIP_CAPTURE_REGEX = regexWithCaptureGroup(SHIP_GROUP, ID_REGEX);
+    final static protected String SHIP_CLASS_CAPTURE_REGEX = regexWithCaptureGroup(SHIP_CLASS_GROUP, ID_REGEX);
+    final static protected String ENTRY_CAPTURE_REGEX = regexWithCaptureGroup(ENTRY_GROUP, ID_REGEX);
+    final static protected String EXIT_CAPTURE_REGEX = regexWithCaptureGroup(EXIT_GROUP, ID_REGEX);
+    final static protected String HULLTYPE_CAPTURE_REGEX = regexWithCaptureGroup(HULLTYPE_GROUP, ID_REGEX);
+    final static protected String DESTINATION_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_GROUP, ID_REGEX);
+    final static protected String ID_CAPTURE_REGEX = regexWithCaptureGroup(ID_GROUP, ID_REGEX);
+    final static protected String OWNER_CAPTURE_REGEX = regexWithCaptureGroup(OWNER_GROUP, ID_REGEX);
+    final static protected String DESTINATION_LOCATION_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_LOCATION_GROUP, ID_REGEX);
+
+    // named ID_LIST_REGEX capture groups
+    final static protected String RECIPIENT_LIST_CAPTURE_REGEX = regexWithCaptureGroup(RECIPIENT_LIST_GROUP, ID_LIST_REGEX);
+    final static protected String OBJECT_LIST_CAPTURE_REGEX = regexWithCaptureGroup(OBJECT_LIST_GROUP, ID_LIST_REGEX);
+
+    // named INT_REGEX capture groups
+    final static protected String COUNT_CAPTURE_REGEX = regexWithCaptureGroup(COUNT_GROUP, INT_REGEX);
+    final static protected String RATING_CAPTURE_REGEX = regexWithCaptureGroup(RATING_GROUP, INT_REGEX);
+    final static protected String PRODUCTION_CAPTURE_REGEX = regexWithCaptureGroup(PRODUCTION_GROUP, INT_REGEX);
+    final static protected String STOCKPILE_CAPTURE_REGEX = regexWithCaptureGroup(STOCKPILE_GROUP, INT_REGEX);
+
+    // optional capture regexes
+    final static protected String OPTIONAL_TARGET_ORDER_CAPTURE_REGEX = "(?:" + regexWithCaptureGroup(TARGET_ORDER_GROUP, TARGET_ORDER_REGEX) + SPACE_REGEX + ")?";
+    final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + OWNER_CAPTURE_REGEX + ")?";
     final static protected String OPTIONAL_EXIT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXIT_CAPTURE_REGEX + ")?";
+    final static protected String OPTIONAL_COORDINATE_EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXCEPT_TOKEN + SPACE_REGEX +
+            regexWithCaptureGroup(COORDINATE_EXCEPT_LIST_GROUP, ID_LIST_REGEX) + ")?";
+    final static protected String OPTIONAL_LOCATION_EXCEPT_CAPTURE_REGEX = "(?:"+ SPACE_REGEX + EXCEPT_TOKEN + SPACE_REGEX +
+            regexWithCaptureGroup(LOCATION_EXCEPT_LIST_GROUP, ID_LIST_REGEX) + ")?";
+
+    // special capture regexes
+    final static protected String COORDINATE_CAPTURE_REGEX = regexWithCaptureGroup(COORDINATE_GROUP, COORDINATE_REGEX);
+    final static protected String DESTINATION_COORDINATE_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_COORDINATE_GROUP, COORDINATE_REGEX);
+    final static protected String AMOUNT_CAPTURE_REGEX = regexWithCaptureGroup(AMOUNT_GROUP, INT_OR_MAX_REGEX);
+    final static protected String OBJECT_TYPE_CAPTURE_REGEX = regexWithCaptureGroup(OBJECT_TYPE_GROUP, OBJECT_TYPE_REGEX);
+    final static protected String TOGGLE_MODE_CAPTURE_REGEX = regexWithCaptureGroup(TOGGLE_MODE_GROUP, TOGGLE_MODE_REGEX);
+    final static protected String SHIP_PARAMS_CAPTURE_REGEX = regexWithCaptureGroup(DESIGN_PARAMETERS_GROUP, DESIGN_PARAMETERS_REGEX);
+
+    final static protected String OBJECT_LIST_EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXCEPT_TOKEN + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX + ")?";
+    final static protected String SHIP_LOCATION_CAPTURE_REGEX = "(?<" + SHIP_LOCATION_GROUP + ">@" + ID_REGEX + ")";
+    final static protected String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + OPTIONAL_COORDINATE_EXCEPT_CAPTURE_REGEX;
+    final static protected String SHIP_LOCATION_EXCEPT_CAPTURE_REGEX = SHIP_LOCATION_CAPTURE_REGEX + OPTIONAL_LOCATION_EXCEPT_CAPTURE_REGEX;
+
+    final static protected String LOCATION_OR_SHIP_LIST_CAPTURE_REGEX = "(" + COORDINATE_CAPTURE_EXCEPT_REGEX + "|" +
+                                                                              SHIP_LOCATION_EXCEPT_CAPTURE_REGEX + "|" +
+                                                                              OBJECT_LIST_CAPTURE_REGEX + ")";
+
+    final static protected String SHIP_NAMES_CAPTURE_REGEX = "(?<" + SHIP_NAMES_GROUP + ">(" + ID_LIST_REGEX + "|" + ID_REGEX + "\\*))";
+
+
+
+    protected static String regexWithCaptureGroup(final String name, final String regex) {
+        return "(?<" + name + ">" + regex + ")";
+    }
 
     /** empire who gave this order */
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)

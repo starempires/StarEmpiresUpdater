@@ -17,12 +17,11 @@ import java.util.regex.Pattern;
 @SuperBuilder
 public class MoveOrder extends ShipBasedOrder {
 
-    final static protected String DESTINATION_COORDINATE_GROUP = "destcoordinate";
-    final static protected String DESTINATION_LOCATION_GROUP = "destlocation";
-    final static protected String DESTINATION_COORDINATE_CAPTURE_REGEX = "(?<" + DESTINATION_COORDINATE_GROUP + ">" + COORDINATE_REGEX + ")";
-    final static protected String DESTINATION_LOCATION_CAPTURE_REGEX = "(?<" + DESTINATION_LOCATION_GROUP + ">" + ID_REGEX + ")";
-
-    final static private String REGEX = SHIP_GROUP_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX + "(?:" + DESTINATION_COORDINATE_CAPTURE_REGEX + "|" + DESTINATION_LOCATION_CAPTURE_REGEX + ")";
+    // order: MOVE (oblique,y) [EXCEPT ship1 ...] TO (coordinate|location)
+    // order: MOVE @location [EXCEPT ship1 ...] TO (coordinate|location)
+    // order: MOVE ship1 [ship2 ...] TO (coordinate|location)
+    final static private String REGEX = LOCATION_OR_SHIP_LIST_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX +
+            "(?:" + DESTINATION_COORDINATE_CAPTURE_REGEX + "|" + DESTINATION_LOCATION_CAPTURE_REGEX + ")";
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate destination; // in galactic

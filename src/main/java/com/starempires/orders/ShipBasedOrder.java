@@ -18,24 +18,10 @@ import org.apache.commons.lang3.ObjectUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 @SuperBuilder
 public abstract class ShipBasedOrder extends Order {
-
-    final static protected String LOCATION_GROUP = "location";
-    final static private String COORDINATE_EXCEPT_LIST_GROUP = "coordexcept";
-    final static private String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
-    final static protected String SHIP_LIST_GROUP = "shiplist";
-
-    final static private String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + COORDINATE_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
-    final static protected String LOCATION_CAPTURE_REGEX = "(?<" + LOCATION_GROUP + ">@" + ID_REGEX + ")";
-    final static protected String LOCATION_EXCEPT_CAPTURE_REGEX = LOCATION_CAPTURE_REGEX + "(?:\\s+except\\s+(?<" + LOCATION_EXCEPT_LIST_GROUP + ">" + ID_LIST_REGEX + "))?";
-    final static protected String SHIP_LIST_CAPTURE_REGEX = "(?<" + SHIP_LIST_GROUP + ">" + ID_LIST_REGEX + ")";
-
-    final static protected String SHIP_GROUP_CAPTURE_REGEX = "(?:" + COORDINATE_CAPTURE_EXCEPT_REGEX + "|" + LOCATION_EXCEPT_CAPTURE_REGEX + "|" + SHIP_LIST_CAPTURE_REGEX + ")";
-    final static private Pattern SHIP_GROUP_PATTERN = Pattern.compile(SHIP_GROUP_CAPTURE_REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -99,8 +85,8 @@ public abstract class ShipBasedOrder extends Order {
         final List<Ship> locationShips = Lists.newArrayList();
         if (matcher.matches()) {
             final String coordText = matcher.group(COORDINATE_GROUP);
-            String locationText = matcher.group(LOCATION_GROUP);
-            final String shipListText = matcher.group(SHIP_LIST_GROUP);
+            String locationText = matcher.group(SHIP_LOCATION_GROUP);
+            final String shipListText = matcher.group(OBJECT_LIST_GROUP);
             if (coordText != null) {
                 final String exceptListText = matcher.group(COORDINATE_EXCEPT_LIST_GROUP);
                 final Coordinate localCoordinate = Coordinate.parse(coordText);

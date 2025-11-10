@@ -18,14 +18,9 @@ import java.util.regex.Pattern;
 @Getter
 public class AddWorldOrder extends Order {
 
-    // ADDWORLD coord name production stockpile owner
-    final static protected String PRODUCTION_GROUP = "production";
-    final static protected String PRODUCTION_CAPTURE_REGEX = "(?<" + PRODUCTION_GROUP + ">" + INT_REGEX + ")";
-    final static protected String STOCKPILE_GROUP = "stockpile";
-    final static protected String STOCKPILE_CAPTURE_REGEX = "(?<" + STOCKPILE_GROUP + ">" + INT_REGEX + ")";
-
-    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + PRODUCTION_CAPTURE_REGEX + SPACE_REGEX + STOCKPILE_CAPTURE_REGEX +
-                                        OPTIONAL_OWNER_CAPTURE_REGEX;
+    // order: ADDWORLD coordinate world-name production stockpile owner
+    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX +
+            PRODUCTION_CAPTURE_REGEX + SPACE_REGEX + STOCKPILE_CAPTURE_REGEX + OPTIONAL_OWNER_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude

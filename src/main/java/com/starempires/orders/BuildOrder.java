@@ -20,9 +20,10 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 public class BuildOrder extends WorldBasedOrder {
 
-    //BUILD world {number|max} design [name* | name1 name2 …]
+    //order: BUILD world-name {number|max} ship-class-name [name* | name1 name2 …]
 
-    final static private String REGEX = WORLD_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + NAMES_CAPTURE_REGEX;
+    final static private String REGEX = ID_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX +
+            SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -45,10 +46,10 @@ public class BuildOrder extends WorldBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            final String worldName = matcher.group(WORLD_GROUP);
+            final String worldName = matcher.group(ID_GROUP);
             final String numberText = matcher.group(AMOUNT_GROUP);
             final String designName = matcher.group(SHIP_CLASS_GROUP);
-            final String nameText = matcher.group(NAMES_GROUP);
+            final String nameText = matcher.group(SHIP_NAMES_GROUP);
 
             boolean buildMax = false;
             int count = 0;

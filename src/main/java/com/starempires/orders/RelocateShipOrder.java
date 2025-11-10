@@ -17,9 +17,10 @@ import java.util.regex.Pattern;
 @Getter
 public class RelocateShipOrder extends ShipBasedOrder {
 
-    // RELOCATESHIP empire ship1 [ship2 ... ] to coordinate
+    // order: RELOCATESHIP empire-name ship1 [ship2 ... ] to coordinate
 
-    final static private String REGEX = OWNER_CAPTURE_REGEX + SPACE_REGEX + SHIP_LIST_CAPTURE_REGEX + SPACE_REGEX + TO_TOKEN + SPACE_REGEX + COORDINATE_CAPTURE_REGEX;
+    final static private String REGEX = OWNER_CAPTURE_REGEX + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX + SPACE_REGEX +
+            TO_TOKEN + SPACE_REGEX + COORDINATE_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate coordinate;
@@ -49,7 +50,7 @@ public class RelocateShipOrder extends ShipBasedOrder {
                 return order;
             }
             order.owner = owner;
-            final List<Ship> movers = getShipsFromNames(owner, matcher.group(SHIP_LIST_GROUP), order);
+            final List<Ship> movers = getShipsFromNames(owner, matcher.group(OBJECT_LIST_GROUP), order);
 
             if (movers.isEmpty()) {
                 order.addError("No valid ships to relocate");
