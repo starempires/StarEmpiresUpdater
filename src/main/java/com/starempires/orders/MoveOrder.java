@@ -48,7 +48,7 @@ public class MoveOrder extends ShipBasedOrder {
                     order.destination = empire.toGalactic(Coordinate.parse(coordText));
                 } else if (locationText != null) {
                     order.destinationText = locationText;
-                    order.destination = getCoordinateFromMapObject(empire, locationText);
+                    order.destination = getCoordinateFromKnownMapObject(empire, locationText);
                     if (order.destination == null) {
                         order.addError("Unknown destination: " + locationText);
                         return order;

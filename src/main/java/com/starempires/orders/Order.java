@@ -10,13 +10,17 @@ import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
+import com.starempires.objects.MappableObject;
+import com.starempires.objects.Ship;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,6 +39,7 @@ public abstract class Order {
     final static protected String AT_TOKEN = "at";
     final static protected String THROUGH_TOKEN = "through";
     final static protected String EXCEPT_TOKEN = "except";
+    final static protected String ALL_TOKEN = "all";
 
     // object regexes
     final static protected String SPACE_REGEX = "\\s+";
@@ -66,8 +71,8 @@ public abstract class Order {
     final static protected String PRODUCTION_GROUP = "production";
     final static protected String STOCKPILE_GROUP = "stockpile";
     final static protected String OBJECT_TYPE_GROUP = "type";
-    protected final static String WORLD_GROUP = "world";
-
+    final static protected String WORLD_GROUP = "world";
+    final static protected String RADIUS_GROUP = "radius";
     final static protected String ID_GROUP = "id";
     final static protected String AMOUNT_GROUP = "amount";
     final static protected String RECIPIENT_LIST_GROUP = "recipientlist";
@@ -98,6 +103,7 @@ public abstract class Order {
     final static protected String RATING_CAPTURE_REGEX = regexWithCaptureGroup(RATING_GROUP, INT_REGEX);
     final static protected String PRODUCTION_CAPTURE_REGEX = regexWithCaptureGroup(PRODUCTION_GROUP, INT_REGEX);
     final static protected String STOCKPILE_CAPTURE_REGEX = regexWithCaptureGroup(STOCKPILE_GROUP, INT_REGEX);
+    final static protected String RADIUS_CAPTURE_REGEX = regexWithCaptureGroup(RADIUS_GROUP, INT_REGEX);
 
     // optional capture regexes
     final static protected String OPTIONAL_TARGET_ORDER_CAPTURE_REGEX = "(?:" + regexWithCaptureGroup(TARGET_ORDER_GROUP, TARGET_ORDER_REGEX) + SPACE_REGEX + ")?";
@@ -239,6 +245,46 @@ public abstract class Order {
             return null;
         }
         return new Coordinate(getInt(node, "oblique"), getInt(node, "y"));
+    }
+
+    protected static MappableObject getMappableObjectFromName(Collection<? extends MappableObject> mappableObjects, final String name) {
+        for (final MappableObject mappableObject : mappableObjects) {
+            if (mappableObject.getName().equalsIgnoreCase(name)) {
+                return mappableObject;
+            }
+        }
+        return null;
+    }
+
+    protected static MappableObject getKnownMappableObjectFromName(final Empire empire, final String name) {
+        return ObjectUtils.firstNonNull(
+                getMappableObjectFromName(empire.getKnownWorlds(), name),
+                getMappableObjectFromName(empire.getKnownPortals(), name),
+                getMappableObjectFromName(empire.getKnownStorms(), name));
+    }
+
+    /**
+     * Given a list of ship names, return the matching list of Ships.
+     * @param empire
+     * @param text
+     * @return
+     */
+    protected static List<Ship> getLiveShipsFromNames(final Empire empire, final String text, final Order order) {
+        final List<Ship> ships = Lists.newArrayList();
+        if (text != null) {
+            final String[] shipNames = text.split(SPACE_REGEX);
+            for (String shipName : shipNames) {
+                final Ship ship = empire.getShip(shipName);
+                if (ship == null) {
+                    order.addError(shipName, "Unknown ship");
+                } else if (!ship.isAlive()) {
+                    order.addError(ship, "Ship is destroyed");
+                } else {
+                    ships.add(ship);
+                }
+            }
+        }
+        return ships;
     }
 
     protected static void parseReady(final JsonNode node, final TurnData turnData, final OrderType orderType, final Order.OrderBuilder<?, ?> builder) {

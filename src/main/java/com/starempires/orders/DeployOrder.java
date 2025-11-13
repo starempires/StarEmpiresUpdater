@@ -24,7 +24,7 @@ public class DeployOrder extends ShipBasedOrder {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String deviceNamesText = matcher.group(OBJECT_LIST_GROUP);
-            final List<Ship> devices = getShipsFromNames(empire, deviceNamesText, order);
+            final List<Ship> devices = getLiveShipsFromNames(empire, deviceNamesText, order);
             for (final Ship device : devices) {
                 if (!device.isDevice()) {
                     order.addError(device, "Ship class %s is not a deployable device".formatted(device.getShipClass()));

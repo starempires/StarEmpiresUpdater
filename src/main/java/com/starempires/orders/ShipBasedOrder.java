@@ -13,7 +13,6 @@ import com.starempires.objects.MappableObject;
 import com.starempires.objects.Ship;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,44 +27,8 @@ public abstract class ShipBasedOrder extends Order {
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     protected final List<Ship> ships;
 
-    /**
-     * Given a list of ship names, return the matching list of Ships.
-     * @param empire
-     * @param text
-     * @return
-     */
-    protected static List<Ship> getShipsFromNames(final Empire empire, final String text, final Order order) {
-        final List<Ship> ships = Lists.newArrayList();
-        if (text != null) {
-            final String[] shipNames = text.split(SPACE_REGEX);
-            for (String shipName : shipNames) {
-                final Ship ship = empire.getShip(shipName);
-                if (ship == null) {
-                    order.addError(shipName, "Unknown ship");
-                } else if (!ship.isAlive()) {
-                    order.addError(ship, "Ship is destroyed");
-                } else {
-                    ships.add(ship);
-                }
-            }
-        }
-        return ships;
-    }
-
-    protected static MappableObject getMappableObjectFromName(Collection<? extends MappableObject> mappableObjects, final String name) {
-        for (final MappableObject mappableObject : mappableObjects) {
-            if (mappableObject.getName().equalsIgnoreCase(name)) {
-                return mappableObject;
-            }
-        }
-        return null;
-    }
-
-    protected static Coordinate getCoordinateFromMapObject(final Empire empire, final String name) {
-        final MappableObject mappableObject = ObjectUtils.firstNonNull(
-                getMappableObjectFromName(empire.getKnownWorlds(), name),
-                getMappableObjectFromName(empire.getKnownPortals(), name),
-                getMappableObjectFromName(empire.getKnownStorms(), name));
+    protected static Coordinate getCoordinateFromKnownMapObject(final Empire empire, final String name) {
+        final MappableObject mappableObject = getKnownMappableObjectFromName(empire, name);
         if (mappableObject == null) {
             return null;
         }
@@ -93,22 +56,22 @@ public abstract class ShipBasedOrder extends Order {
                 final Coordinate galacticCoordinate = empire.toGalactic(localCoordinate);
                 locationShips.addAll(empire.getShips(galacticCoordinate));
                 locationShips.removeIf(Ship::isLoaded);
-                final Collection<Ship> exceptShips = getShipsFromNames(empire, exceptListText, order);
+                final Collection<Ship> exceptShips = getLiveShipsFromNames(empire, exceptListText, order);
                 exceptShips.forEach(locationShips::remove);
             } else if (locationText != null) {
                 locationText = locationText.replace("@", "");
-                final Coordinate coordinate = getCoordinateFromMapObject(empire, locationText);
+                final Coordinate coordinate = getCoordinateFromKnownMapObject(empire, locationText);
                 if (coordinate == null) {
                     order.addError(locationText, "Unknown location");
                 } else {
                     final String exceptListText = matcher.group(LOCATION_EXCEPT_LIST_GROUP);
                     locationShips.addAll(empire.getShips(coordinate));
                     locationShips.removeIf(Ship::isLoaded);
-                    final Collection<Ship> exceptShips = getShipsFromNames(empire, exceptListText, order);
+                    final Collection<Ship> exceptShips = getLiveShipsFromNames(empire, exceptListText, order);
                     exceptShips.forEach(locationShips::remove);
                 }
             } else if (shipListText != null) {
-                locationShips.addAll(getShipsFromNames(empire, shipListText, order));
+                locationShips.addAll(getLiveShipsFromNames(empire, shipListText, order));
             }
         }
         return locationShips;

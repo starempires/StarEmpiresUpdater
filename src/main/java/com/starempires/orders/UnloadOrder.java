@@ -33,7 +33,7 @@ public class UnloadOrder extends ShipBasedOrder {
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String unloadNamesText = matcher.group(OBJECT_LIST_GROUP);
-            final List<Ship> cargo = getShipsFromNames(empire, unloadNamesText, order);
+            final List<Ship> cargo = getLiveShipsFromNames(empire, unloadNamesText, order);
             for (final Ship ship : cargo) {
                 if (!ship.isLoaded()) {
                     order.addError(ship, "Ship is not loaded");

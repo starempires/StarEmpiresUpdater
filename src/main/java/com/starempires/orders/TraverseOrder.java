@@ -61,8 +61,6 @@ public class TraverseOrder extends ShipBasedOrder {
             for (final Ship ship : movers) {
                 if (ship.isLoaded()) {
                     order.addError(ship, "Loaded ships cannot move");
-                } else if (!ship.isAlive()) {
-                    order.addError(ship, "Ship has been destroyed");
                 } else if (ship.getAvailableEngines() < 1) {
                     order.addError(ship, "No operational engines");
                 } else if (ship.isOrderedToFire()) {
@@ -86,7 +84,7 @@ public class TraverseOrder extends ShipBasedOrder {
                 return order;
             }
             if (!entry.getCoordinate().equals(shipCoordinate)) {
-                order.addError("Ships not in same sector as Entry portal " + entry);
+                order.addError("Ships not in same sector as entry portal " + entry);
                 return order;
             }
             if (entry.isCollapsed()) {
@@ -102,7 +100,7 @@ public class TraverseOrder extends ShipBasedOrder {
                 }
                 if (empire.hasNavData(exit)) {
                     if (!entry.isConnectedTo(exit)) {
-                        order.addError("Entry portal %s and exit portal %s are not connected".formatted(entry, exit));
+                        order.addError("Portals %s and %s are not connected".formatted(entry, exit));
                         return order;
                     }
                     order.exit = exit;

@@ -46,7 +46,7 @@ public class LoadOrder extends ShipBasedOrder {
             if (carrier == null) {
                 order.addError("You do not own carrier " + carrierName);
             } else {
-                final List<Ship> cargo = getShipsFromNames(empire, matcher.group(OBJECT_LIST_GROUP), order);
+                final List<Ship> cargo = getLiveShipsFromNames(empire, matcher.group(OBJECT_LIST_GROUP), order);
                 for (final Ship ship : cargo) {
                     if (ship.equals(carrier)) {
                         order.addError(ship, "Cannot load ship onto itself");

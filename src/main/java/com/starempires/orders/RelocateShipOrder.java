@@ -50,7 +50,7 @@ public class RelocateShipOrder extends ShipBasedOrder {
                 return order;
             }
             order.owner = owner;
-            final List<Ship> movers = getShipsFromNames(owner, matcher.group(OBJECT_LIST_GROUP), order);
+            final List<Ship> movers = getLiveShipsFromNames(owner, matcher.group(OBJECT_LIST_GROUP), order);
 
             if (movers.isEmpty()) {
                 order.addError("No valid ships to relocate");
