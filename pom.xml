@@ -9,10 +9,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aws.java.sdk.version>2.30.6</aws.java.sdk.version>
+
+        <!-- Updated AWS SDK BOM -->
+        <aws.java.sdk.version>2.38.6</aws.java.sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -38,54 +40,66 @@
             <artifactId>dynamodb</artifactId>
         </dependency>
 
+        <!-- AWS Lambda core/events/logging -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
-            <version>1.2.3</version>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-events</artifactId>
-            <version>3.15.0</version>
+            <version>3.16.1</version>
         </dependency>
 
+        <!-- Switched from log4j 1.x bridge to log4j2 bridge -->
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-lambda-java-log4j</artifactId>
-            <version>1.0.1</version>
+            <artifactId>aws-lambda-java-log4j2</artifactId>
+            <version>1.6.0</version>
         </dependency>
 
+        <!-- Log4j 2 (bumped to 2.25.2) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.24.1</version>
+            <version>2.25.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.24.1</version>
+            <version>2.25.2</version>
         </dependency>
 
+        <!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.17.0</version>
+            <version>3.18.0</version>
         </dependency>
 
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>1.9.0</version>
+            <version>1.11.0</version>
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
+        <!-- Lombok (already current) -->
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
+            <version>1.18.42</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- Jackson (bumped to 2.20.1) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -102,40 +116,38 @@
             <version>2.18.2</version>
         </dependency>
 
+        <!-- Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.4.0-jre</version>
+            <version>33.5.0-jre</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.5.0-M3</version>
-        </dependency>
-
-        <!-- JUnit (for testing purposes) -->
+        <!-- JUnit (bumped to 6.x) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.4</version>
+            <version>6.0.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- JetBrains annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>26.0.2</version>
+            <version>26.0.2-1</version>
             <scope>compile</scope>
         </dependency>
 
-        <!-- Mockito -->
+        <!-- Mockito (core + JUnit 5 integration) -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.15.2</version>
+            <version>5.20.0</version>
             <scope>test</scope>
         </dependency>
 
+        <!-- mockito-inline remains at its latest (5.2.0) -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
@@ -146,15 +158,32 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.15.2</version>
+            <version>5.20.0</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
 
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -168,29 +197,30 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.4.1</version>
                 <executions>
-                   <execution>
-                       <id>SessionCreator</id>
-                       <configuration>
-                           <mainClass>com.starempires.creator.SessionCreator</mainClass>
-                       </configuration>
-                       <goals>
-                           <goal>java</goal>
-                       </goals>
-                   </execution>
-                   <execution>
+                    <execution>
+                        <id>SessionCreator</id>
+                        <configuration>
+                            <mainClass>com.starempires.creator.SessionCreator</mainClass>
+                        </configuration>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>SnapshotGenerator</id>
                         <configuration>
                             <mainClass>com.starempires.generator.SnapshotGenerator</mainClass>
                         </configuration>
-                       <goals>
-                           <goal>java</goal>
-                       </goals>
-                   </execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
 
                     <execution>
                         <id>OrderParser</id>
@@ -216,6 +246,17 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
             </plugin>
@@ -235,15 +276,13 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.14</version>
                 <executions>
-                    <!-- Prepare JaCoCo for code coverage -->
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- Generate the report after tests -->
                     <execution>
                         <id>report</id>
                         <phase>prepare-package</phase>

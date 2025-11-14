@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
@@ -22,29 +21,11 @@ public class RadialCoordinate extends Coordinate {
         this.radius = radius;
     }
 
-    public static Set<Coordinate> getSurroundingCoordinates(final RadialCoordinate coordinate) {
-        return getSurroundingCoordinates(coordinate, coordinate.getRadius());
+    public RadialCoordinate(final Coordinate coordinate, final int radius) {
+        this(coordinate.getOblique(), coordinate.getY(), radius);
     }
 
-    /**
-     * Parse text of the form "(oblique,y,radius)" into a Coordinate.
-     * 
-     * @param text
-     *            The text to parse
-     * @return The parsed Coordinate or null if blank input or unable to parse
-     */
-    public static RadialCoordinate parseRadial(final String text) {
-        RadialCoordinate rv = null;
-        if (StringUtils.isNotBlank(text)) {
-            final String values = text.replace("(", "").replace(")", "").replace(" ", "");
-            final String[] tokens = values.split(",");
-            if (tokens.length == 3) {
-                final int oblique = Integer.parseInt(tokens[0]);
-                final int y = Integer.parseInt(tokens[1]);
-                final int radius = Integer.parseInt(tokens[2]);
-                rv = new RadialCoordinate(oblique, y, radius);
-            }
-        }
-        return rv;
+    public static Set<Coordinate> getSurroundingCoordinates(final RadialCoordinate coordinate) {
+        return getSurroundingCoordinates(coordinate, coordinate.getRadius());
     }
 }

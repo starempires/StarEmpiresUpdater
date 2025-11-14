@@ -13,7 +13,6 @@ import com.starempires.objects.Ship;
 import com.starempires.objects.World;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -65,7 +64,7 @@ public class RepairOrder extends ShipBasedOrder {
             final int dpPerRU = ship.isOrbital() ? Constants.DEFAULT_ORBITAL_REPAIR_DP_PER_RU : Constants.DEFAULT_REPAIR_DP_PER_RU;
 
             int dpToRepair;
-            if (StringUtils.equalsIgnoreCase(dpText, MAX_TOKEN)) {
+            if (MAX_TOKEN.equalsIgnoreCase(dpText)) {
                 dpToRepair = ship.getDp();
             } else {
                 dpToRepair = Integer.parseInt(dpText);

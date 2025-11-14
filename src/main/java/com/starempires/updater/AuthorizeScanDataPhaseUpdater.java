@@ -1,17 +1,19 @@
 package com.starempires.updater;
 
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
+import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.orders.Order;
-import com.starempires.orders.OrderType;
 import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
+import com.starempires.orders.AuthorizeOrder;
+import com.starempires.orders.Order;
+import com.starempires.orders.OrderType;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
 
@@ -19,35 +21,36 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
         super(Phase.AUTHORIZE_SCAN_ACCESS, turnData);
     }
 
-    void authorizeSectorData(final Order order, final List<Empire> recipients, final List<String> sectors) {
+    private void authorizeSectorData(final Order order, final List<Empire> recipients, final Coordinate coordinate, final int radius) {
         final Empire empire = order.getEmpire();
-        final List<RadialCoordinate> coordinates = sectors.stream().map(sector -> {
-            final RadialCoordinate coordinate = RadialCoordinate.parseRadial(sector);
-            if (coordinate == null) {
-                addNews(order, "Unknown coordinate " + sector);
-                return null;
-            }
-            return coordinate;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        final RadialCoordinate radialCoordinate = new RadialCoordinate(coordinate, radius);
         recipients.forEach(recipient -> {
-            empire.addCoordinateScanAccess(recipient, coordinates);
+            empire.addCoordinateScanAccess(recipient, radialCoordinate);
             addNews(order, "You have authorized empire " + recipient + " access to "
-                    + plural(coordinates.size(), "sector") + " of scan data");
+                    + plural(RadialCoordinate.getSurroundingCoordinates(radialCoordinate).size(), "sector") + " of scan data");
         });
     }
 
-    void authorizeShipData(final Order order, final List<Empire> recipients, final List<String> shipHandles) {
+    private void authorizeShipData(final Order order, final List<Empire> recipients, final List<Ship> ships) {
         final Empire empire = order.getEmpire();
-        final List<Ship> ships = empire.getShips(shipHandles);
+        final List<Ship> validShips = Lists.newArrayList();
+        for (Ship ship: ships) {
+            if (!ship.isAlive()) {
+                addNews(empire, "Ship %s is destroyed".formatted(ship));
+            }
+            else {
+                validShips.add(ship);
+            }
+        }
 
         recipients.forEach(recipient -> {
-            empire.addShipScanAccess(recipient, ships);
+            empire.addShipScanAccess(recipient, validShips);
             addNews(order, "You have authorized empire " + recipient
-                    + " access to scan data from " + plural(ships.size(), "ship"));
+                    + " access to scan data from " + plural(validShips.size(), "ship"));
         });
     }
 
-    void authorizeShipClassData(final Order order, final List<Empire> recipients, final List<String> shipClassNames) {
+    private void authorizeShipClassData(final Order order, final List<Empire> recipients, final List<String> shipClassNames) {
         final Empire empire = order.getEmpire();
         final List<ShipClass> shipClasses = turnData.getShipClasses(empire, shipClassNames);
 
@@ -59,48 +62,32 @@ public class AuthorizeScanDataPhaseUpdater extends PhaseUpdater {
         });
     }
 
-    void authorizeAllData(final Order order, final List<Empire> recipients) {
+    private void authorizeAllData(final Order order, final List<Empire> recipients) {
         final Empire empire = order.getEmpire();
         recipients.forEach(recipient -> {
             empire.addEmpireScanAccess(recipient);
-            addNews(order,
-                    "You have authorized empire " + recipient + " access to all scan data");
+            addNews(order, "You have authorized empire " + recipient + " access to all scan data");
         });
     }
 
     @Override
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.AUTHORIZE);
-        orders.forEach(order -> {
-//            final Empire empire = order.getEmpire();
-//            final int index = order.indexOfIgnoreCase(Constants.TOKEN_TO);
-//            final String authorizeType = order.getStringParameter(0);
-//            final List<String> recipientNames = order.getParameterSubList(index + 1);
-//            final List<Empire> recipients = recipientNames.stream()
-//                    .map(recipientName -> {
-//                        Empire recipient = turnData.getEmpire(recipientName);
-//                        if (recipient == null || !empire.isKnownEmpire(recipient)) {
-//                            addNewsResult(order, empire, "Unknown empire " + recipientName);
-//                            return null;
-//                        }
-//                        return recipient;
-//                    }).filter(Objects::nonNull).collect(Collectors.toList());
-//
-//            if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SECTOR)) {
-//                final List<String> sectors = order.getParameterSubList(1, index);
-//                authorizeSectorData(order, recipients, sectors);
-//            }
-//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_SHIP)) {
-//                final List<String> shipHandles = order.getParameterSubList(1, index);
-//                authorizeShipData(order, recipients, shipHandles);
-//            }
-//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_CLASS)) {
-//                final List<String> shipClassNames = order.getParameterSubList(1, index);
-//                authorizeShipClassData(order, recipients, shipClassNames);
-//            }
-//            else if (authorizeType.equalsIgnoreCase(Constants.TOKEN_ALLDATA)) {
-//                authorizeAllData(order, recipients);
-//            }
+        orders.forEach(o -> {
+            final AuthorizeOrder order = (AuthorizeOrder)o;
+            final List<Empire> recipients = order.getRecipients();
+            if (order.getCoordinate() != null) {
+                authorizeSectorData(order, recipients, order.getCoordinate(), order.getRadius());
+            }
+            else if (order.getMapObject() != null) {
+                authorizeSectorData(order, recipients, order.getMapObject().getCoordinate(), order.getRadius());
+            }
+            else if (!CollectionUtils.isEmpty(order.getShips())) {
+                authorizeShipData(order, recipients, order.getShips());
+            }
+            else if (order.isAllSectors()) {
+                authorizeAllData(order, recipients);
+            }
         });
     }
 }

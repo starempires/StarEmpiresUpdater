@@ -229,8 +229,8 @@ public class Empire extends IdentifiableObject {
         return getScanStatus(object.getCoordinate());
     }
 
-    public void removeCoordinateScanAccess(final Empire empire, final Collection<RadialCoordinate> coordinates) {
-        shareCoordinates.get(empire).removeAll(coordinates);
+    public void removeCoordinateScanAccess(final Empire empire, final RadialCoordinate coordinate) {
+        shareCoordinates.get(empire).remove(coordinate);
     }
 
     public void addCoordinateScanAccess(final Empire empire, final RadialCoordinate coordinate) {

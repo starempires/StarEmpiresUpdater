@@ -67,13 +67,12 @@ class DenyOrderTest extends BaseTest {
         final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
         turnData.load(probe, carrier);
         final DenyOrder order = DenyOrder.parse(turnData, empire1, probe + " to empire2");
-        assertFalse(order.isReady());
+        assertTrue(order.isReady());
         assertNull(order.getMapObject());
         assertNull(order.getCoordinate());
         assertFalse(order.isAllSectors());
         assertEquals(0, order.getRadius());
-        assertTrue(order.getShips().isEmpty());
-        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Ship is loaded")));
+        assertTrue(order.getShips().contains(probe));
     }
 
     @Test

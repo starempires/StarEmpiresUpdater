@@ -28,7 +28,7 @@ public abstract class OwnableObject extends MappableObject {
                     return 1;
                 }
                 else {
-                    return StringUtils.compare(e1.getName(), e2.getName());
+                    return StringUtils.compare(e1.getName(), e2.getName(), true);
                 }
             });
         }
@@ -44,7 +44,7 @@ public abstract class OwnableObject extends MappableObject {
         this.owner = owner;
     }
 
-    public boolean isOwnedBy(final Empire empire) {
+    public boolean isOwnedBy(@NonNull final Empire empire) {
         return Objects.equals(owner, empire);
     }
 }

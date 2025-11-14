@@ -73,7 +73,7 @@ class AuthorizeOrderTest extends BaseTest {
         assertFalse(order.isAllSectors());
         assertEquals(0, order.getRadius());
         assertTrue(order.getShips().isEmpty());
-        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Ship is loaded")));
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Loaded ships cannot share")));
     }
 
     @Test

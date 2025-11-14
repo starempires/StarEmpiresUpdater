@@ -26,7 +26,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -67,21 +67,21 @@ public class SessionCreator {
         return Lists.newArrayList(data.split("\n"));
     }
 
-    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException, IOException {
         final Options options = new Options();
         try {
-            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
+            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().get());
             // location where session creation data and other session-independent files are found
-            options.addOption(Option.builder("gd").argName("game data dir").longOpt(ARG_GAME_DATA_DIR).hasArg().desc("location of game data").required().build());
+            options.addOption(Option.builder("gd").argName("game data dir").longOpt(ARG_GAME_DATA_DIR).hasArg().desc("location of game data").required().get());
             // location where individual session folders are found
-            options.addOption(Option.builder("sd").argName("sessions dir").longOpt(ARG_SESSIONS_DIR).hasArg().desc("location of session data").required().build());
+            options.addOption(Option.builder("sd").argName("sessions dir").longOpt(ARG_SESSIONS_DIR).hasArg().desc("location of session data").required().get());
 
             final CommandLineParser parser = new DefaultParser();
             return parser.parse(options, args);
 
         } catch (ParseException e) {
-            final HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("SessionCreator", options);
+            final HelpFormatter formatter = HelpFormatter.builder().get();
+            formatter.printHelp("SessionCreator", null, options, null, true);
             throw e;
         }
     }

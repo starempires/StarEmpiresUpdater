@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -265,7 +264,7 @@ public class Ship extends OwnableObject {
     public boolean equals(final Object obj) {
         boolean rv = false;
         if (obj instanceof Ship ship) {
-            if (StringUtils.equals(getHandle(), ship.getHandle()) &&
+            if (getHandle().equalsIgnoreCase(ship.getHandle()) &&
                     Objects.equals(owner, ship.getOwner())) {
                 rv = true;
             }

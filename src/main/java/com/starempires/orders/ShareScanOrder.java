@@ -93,15 +93,15 @@ public abstract class ShareScanOrder extends EmpireBasedOrder {
 
             final List<Ship> liveShips = getLiveShipsFromNames(empire, shipListText, order);
             for (Ship ship : liveShips) {
-                if (ship.isLoaded()) {
-                    order.addError(ship, "Ship is loaded");
+                if (order.getOrderType() == OrderType.AUTHORIZE && ship.isLoaded()) {
+                    order.addWarning(ship, "Loaded ships cannot share scan data");
                 } else {
                     order.ships.add(ship);
                 }
             }
 
             if (order.ships.isEmpty()) {
-                order.addError("No valid ships to authorize");
+                order.addError("No valid ships found");
                 return order;
             }
         } else {

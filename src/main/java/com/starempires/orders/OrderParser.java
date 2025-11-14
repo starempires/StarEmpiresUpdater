@@ -9,12 +9,13 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.EnumUtils;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
@@ -36,20 +37,20 @@ public class OrderParser {
     private final int turnNumber;
     private final String empireName;
 
-    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException {
+    private static CommandLine extractCommandLineOptions(final String[] args) throws ParseException, IOException {
         final Options options = new Options();
         try {
-            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().build());
-            options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().build());
-            options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE).hasArg().desc("empire name").required().build());
-            options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().build());
-            options.addOption(Option.builder("o").argName("orders file").longOpt(ARG_ORDERS_FILE).hasArg().desc("orders file").required().build());
+            options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().get());
+            options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().get());
+            options.addOption(Option.builder("e").argName("empire name").longOpt(ARG_EMPIRE).hasArg().desc("empire name").required().get());
+            options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().get());
+            options.addOption(Option.builder("o").argName("orders file").longOpt(ARG_ORDERS_FILE).hasArg().desc("orders file").required().get());
 
             final CommandLineParser parser = new DefaultParser();
             return parser.parse(options, args);
         } catch (ParseException e) {
-            final HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("OrderParser", options);
+            final HelpFormatter formatter = HelpFormatter.builder().get();
+            formatter.printHelp("OrderParser", null, options, null, true);
             throw e;
         }
     }
