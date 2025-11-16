@@ -9,12 +9,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthorizeOrderTest extends BaseTest {
 
-    private static final int RADIUS = 3;
     private Ship probe;
 
     @BeforeEach
@@ -33,18 +31,17 @@ class AuthorizeOrderTest extends BaseTest {
 
     @Test
     void parseNoValidRecipients() {
-        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, ONE_COORDINATE + " " + RADIUS + " to unknown");
+        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, ONE_COORDINATE + " to unknown");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("No valid recipients")));
     }
 
     @Test
     void parseAuthCoordinate() {
-        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, ONE_COORDINATE + " " + RADIUS + " to empire2");
+        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, ZERO_COORDINATE + " " + ONE_COORDINATE + " to empire2");
         assertTrue(order.isReady());
-        assertEquals(ONE_COORDINATE, order.getCoordinate());
-        assertNull(order.getMapObject());
-        assertEquals(RADIUS, order.getRadius());
+        assertEquals(List.of(ZERO_COORDINATE, ONE_COORDINATE), order.getCoordinates());
+        assertTrue(order.getMapObjects().isEmpty());
         assertTrue(order.getShips().isEmpty());
         assertFalse(order.isAllSectors());
         assertEquals(List.of(empire2), order.getRecipients());
@@ -52,14 +49,25 @@ class AuthorizeOrderTest extends BaseTest {
 
     @Test
     void parseAuthLocation() {
-        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, "@" + world + " " + RADIUS + " to empire2");
+        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, "@" + world + " to empire2");
         assertTrue(order.isReady());
-        assertEquals(world, order.getMapObject());
-        assertNull(order.getCoordinate());
-        assertEquals(RADIUS, order.getRadius());
+        assertEquals(List.of(world), order.getMapObjects());
+        assertTrue(order.getCoordinates().isEmpty());
         assertTrue(order.getShips().isEmpty());
         assertFalse(order.isAllSectors());
         assertEquals(List.of(empire2), order.getRecipients());
+    }
+
+    @Test
+    void parseAuthUnknownLocation() {
+        final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, "@unknown to empire2");
+        assertFalse(order.isReady());
+        assertTrue(order.getMapObjects().isEmpty());
+        assertTrue(order.getCoordinates().isEmpty());
+        assertTrue(order.getShips().isEmpty());
+        assertFalse(order.isAllSectors());
+        assertEquals(List.of(empire2), order.getRecipients());
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown location")));
     }
 
     @Test
@@ -68,10 +76,9 @@ class AuthorizeOrderTest extends BaseTest {
         turnData.load(probe, carrier);
         final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, probe + " to empire2");
         assertFalse(order.isReady());
-        assertNull(order.getMapObject());
-        assertNull(order.getCoordinate());
+        assertTrue(order.getMapObjects().isEmpty());
+        assertTrue(order.getCoordinates().isEmpty());
         assertFalse(order.isAllSectors());
-        assertEquals(0, order.getRadius());
         assertTrue(order.getShips().isEmpty());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Loaded ships cannot share")));
     }
@@ -80,10 +87,9 @@ class AuthorizeOrderTest extends BaseTest {
     void parseAuthShip() {
         final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, probe + " to empire2");
         assertTrue(order.isReady());
-        assertNull(order.getMapObject());
-        assertNull(order.getCoordinate());
+        assertTrue(order.getMapObjects().isEmpty());
+        assertTrue(order.getCoordinates().isEmpty());
         assertFalse(order.isAllSectors());
-        assertEquals(0, order.getRadius());
         assertEquals(List.of(probe), order.getShips());
     }
 
@@ -91,9 +97,8 @@ class AuthorizeOrderTest extends BaseTest {
     void parseAuthAll() {
         final AuthorizeOrder order = AuthorizeOrder.parse(turnData, empire1, "all to empire2");
         assertTrue(order.isReady());
-        assertNull(order.getMapObject());
-        assertNull(order.getCoordinate());
-        assertEquals(0, order.getRadius());
+        assertTrue(order.getMapObjects().isEmpty());
+        assertTrue(order.getCoordinates().isEmpty());
         assertTrue(order.getShips().isEmpty());
         assertTrue(order.isAllSectors());
     }

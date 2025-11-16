@@ -11,7 +11,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AuthorizeOrder extends ShareScanOrder {
 
-    // order: AUTHORIZE (coordinate|@location) radius TO empire1 [empire2 ...]
+    // order: AUTHORIZE coordinate1 [coordinate2 ...] TO empire1 [empire2 ...]
+    // order: AUTHORIZE @location1 [@location2 ...] TO empire1 [empire2 ...]
     // order: AUTHORIZE ship1 [ship2 ...] TO empire1 [empire2 ...]
     // order: AUTHORIZE ALL TO empire1 [empire2 ...]
 
@@ -21,6 +22,8 @@ public class AuthorizeOrder extends ShareScanOrder {
                 .orderType(OrderType.AUTHORIZE)
                 .parameters(parameters)
                 .recipients(Lists.newArrayList())
+                .mapObjects(Lists.newArrayList())
+                .coordinates(Lists.newArrayList())
                 .ships(Lists.newArrayList())
                 .build();
         return parse(turnData, empire, parameters, order);

@@ -1,6 +1,5 @@
 package com.starempires.updater;
 
-import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipCondition;
 import com.starempires.orders.AuthorizeOrder;
@@ -11,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthorizeScanDataPhaseUpdaterTest extends BaseTest {
 
@@ -76,12 +75,11 @@ class AuthorizeScanDataPhaseUpdaterTest extends BaseTest {
                 .orderType(OrderType.AUTHORIZE)
                 .parameters("0,0 1 to empire2")
                 .recipients(List.of(empire2))
-                .coordinate(ZERO_COORDINATE)
-                .radius(1)
+                .coordinates(List.of(ZERO_COORDINATE))
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertTrue(empire1.getShareCoordinates().get(empire2).contains(new RadialCoordinate(ZERO_COORDINATE, 1)));
+        assertTrue(empire1.getShareCoordinates().get(empire2).contains(ZERO_COORDINATE));
     }
 
     @Test
@@ -91,11 +89,10 @@ class AuthorizeScanDataPhaseUpdaterTest extends BaseTest {
                 .orderType(OrderType.AUTHORIZE)
                 .parameters("@world to empire2")
                 .recipients(List.of(empire2))
-                .mapObject(world)
-                .radius(1)
+                .mapObjects(List.of(world))
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertTrue(empire1.getShareCoordinates().get(empire2).contains(new RadialCoordinate(ZERO_COORDINATE, 1)));
+        assertTrue(empire1.getShareObjects().get(empire2).contains(world));
     }
 }

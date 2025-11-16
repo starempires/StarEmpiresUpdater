@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
@@ -22,37 +23,33 @@ import java.util.regex.Pattern;
 public abstract class ShareScanOrder extends EmpireBasedOrder {
     private static final String REGEX =
             "(?:" +
-                    // SECTOR authorization: (coordinate|@location) radius
-                    "(?:" + COORDINATE_CAPTURE_REGEX + "|" + SHIP_LOCATION_CAPTURE_REGEX + ")" +
-                    SPACE_REGEX + RADIUS_CAPTURE_REGEX +
-                    "|" +
-                    // ALL authorization: ALL
-                    ALL_TOKEN +
-                    "|" +
-                    // SHIP authorization: ship1 [ship2 ...]
-                    OBJECT_LIST_CAPTURE_REGEX +
-                    ")" +
-                    SPACE_REGEX + TO_TOKEN + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
+                  // coordinate list
+                  COORDINATE_LIST_CAPTURE_REGEX + "|" +
+                  // map object list
+                  SHIP_LOCATION_LIST_CAPTURE_REGEX + "|" +
+                  // ALL authorization
+                  ALL_TOKEN + "|" +
+                  // SHIP :list
+                  OBJECT_LIST_CAPTURE_REGEX +
+              ")" +
+              SPACE_REGEX + TO_TOKEN + SPACE_REGEX + RECIPIENT_LIST_CAPTURE_REGEX;
     protected static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Coordinate coordinate;
+    private static final Pattern COORD_PATTERN =
+            Pattern.compile("\\(?\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)?");
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
-    MappableObject mapObject;
 
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    int radius;
+    private static List<String> splitCoordinates(String text) {
+        final List<String> results = Lists.newArrayList();
+        final Matcher m = COORD_PATTERN.matcher(text);
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
-    final List<Ship> ships;
-
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    boolean allSectors;
+        while (m.find()) {
+            final String oblique = m.group(1);
+            final String y = m.group(2);
+            results.add(oblique + "," + y);   // normalized form
+        }
+        return results;
+    }
 
     public static <T extends ShareScanOrder> T parse(final TurnData turnData, final Empire empire, final String parameters, final T order) {
         final Matcher matcher = PATTERN.matcher(parameters);
@@ -73,24 +70,31 @@ public abstract class ShareScanOrder extends EmpireBasedOrder {
         order.recipients.addAll(recipients);
 
         // Determine authorization type and parse accordingly
-        final String coordText = matcher.group(COORDINATE_GROUP);
-        final String locationText = matcher.group(SHIP_LOCATION_GROUP);
-        final String radiusText = matcher.group(RADIUS_GROUP);
+        final String coordListText = matcher.group(COORDINATE_LIST_GROUP);
+        final String locationListText = matcher.group(SHIP_LOCATION_GROUP);
         final String shipListText = matcher.group(OBJECT_LIST_GROUP);
 
-        if (coordText != null || locationText != null) {
-            order.radius = Integer.parseInt(radiusText);
-            if (coordText != null) {
-                // Parse as coordinate
-                order.coordinate = Coordinate.parse(coordText);
-            } else {
-                // Parse as named location - remove @ prefix
-                final String mapObjectName = locationText.replace("@", "");
-                order.mapObject = getKnownMappableObjectFromName(empire, mapObjectName);
+        if (coordListText != null) {
+            order.coordinates.addAll(Coordinate.parse(splitCoordinates(coordListText)));
+        }
+        else if (locationListText != null) {
+            final String[] objectNames = locationListText.replace("@", "").split(SPACE_REGEX);
+            for (String objectName: objectNames) {
+                final MappableObject object = getKnownMappableObjectFromName(empire, objectName);
+                if (object == null) {
+                    order.addError(objectName, "Unknown location");
+                }
+                else {
+                    order.mapObjects.add(object);
+                }
             }
-        } else if (shipListText != null) {
+            if (order.mapObjects.isEmpty()) {
+                order.addError("No valid locations found");
+                return order;
+            }
+        }
+        else if (shipListText != null) {
             // SHIP authorization
-
             final List<Ship> liveShips = getLiveShipsFromNames(empire, shipListText, order);
             for (Ship ship : liveShips) {
                 if (order.getOrderType() == OrderType.AUTHORIZE && ship.isLoaded()) {
@@ -114,17 +118,32 @@ public abstract class ShareScanOrder extends EmpireBasedOrder {
     }
 
     protected static <T extends ShareScanOrder> T parseReadyShareScan(final JsonNode node,
-        final TurnData turnData,
-        final OrderType orderType,
-        final ShareScanOrder.ShareScanOrderBuilder<T, ?> builder) {
-            EmpireBasedOrder.parseReady(node, turnData, orderType, builder);
-            final Empire empire = turnData.getEmpire(node.get("empire").asText());
-            return builder
-                    .ships(getTurnDataListFromJsonNode(node.get("ships"), empire::getShip))
-                    .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
-                    .radius(getInt(node, "radius"))
-                    .mapObject(getKnownMappableObjectFromName(empire, node.get("mapObject").asText()))
-                    .allSectors(getBoolean(node, "allSectors"))
-                    .build();
-        }
+                                                                      final TurnData turnData,
+                                                                      final OrderType orderType,
+                                                                      final ShareScanOrder.ShareScanOrderBuilder<T, ?> builder) {
+        EmpireBasedOrder.parseReady(node, turnData, orderType, builder);
+        final Empire empire = turnData.getEmpire(node.get("empire").asText());
+        return builder
+                .ships(getTurnDataListFromJsonNode(node.get("ships"), empire::getShip))
+                .coordinates(getCoordinateListFromJsonNode(node.get("coordinates")))
+                .mapObjects(getMapObjectListFromNames(empire, getStringList(node, "mapObjects")))
+                .allSectors(getBoolean(node, "allSectors"))
+                .build();
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<Coordinate> coordinates;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
+    List<MappableObject> mapObjects;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
+    final List<Ship> ships;
+
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    boolean allSectors;
 }

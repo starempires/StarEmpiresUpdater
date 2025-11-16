@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.ScanData;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
@@ -15,7 +14,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class ShareScanDataPhaseUpdater extends PhaseUpdater {
 
@@ -52,13 +50,10 @@ public class ShareScanDataPhaseUpdater extends PhaseUpdater {
      *            Map of empire to their ScanData
      */
     private void mergeSharedCoordinates(final Empire empire, final Map<Empire, ScanData> scans) {
-        final Multimap<Empire, RadialCoordinate> shareCoordinates = empire.getShareCoordinates();
+        final Multimap<Empire, Coordinate> shareCoordinates = empire.getShareCoordinates();
         final ScanData scan = empire.getScanData();
-        shareCoordinates.asMap().forEach((recipient, radials) -> {
+        shareCoordinates.asMap().forEach((recipient, coordinates) -> {
             final ScanData recipientScan = scans.get(recipient);
-            Set<Coordinate> coordinates = radials.stream()
-                    .flatMap(coord -> RadialCoordinate.getSurroundingCoordinates(coord).stream())
-                    .collect(Collectors.toSet());
             final int count = recipientScan.mergeScanStatusAndShare(empire, scan, coordinates);
             addNews(recipient, "You have received " + plural(count, "sector") + " of scan data from empire " + empire);
         });

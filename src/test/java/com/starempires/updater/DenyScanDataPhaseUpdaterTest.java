@@ -1,6 +1,7 @@
 package com.starempires.updater;
 
-import com.starempires.objects.RadialCoordinate;
+import com.starempires.objects.Coordinate;
+import com.starempires.objects.MappableObject;
 import com.starempires.objects.Ship;
 import com.starempires.orders.DenyOrder;
 import com.starempires.orders.OrderType;
@@ -55,35 +56,33 @@ class DenyScanDataPhaseUpdaterTest extends BaseTest {
 
     @Test
     void updateDenyCoordinate() {
-        final RadialCoordinate coordinate = new RadialCoordinate(ZERO_COORDINATE, 1);
-        empire1.addCoordinateScanAccess(empire2, coordinate);
+        final List<Coordinate> coordinates = List.of(ZERO_COORDINATE);
+        empire1.addCoordinateScanAccess(empire2, coordinates);
         final DenyOrder order = DenyOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.DENY)
                 .parameters("0,0 1 to empire2")
                 .recipients(List.of(empire2))
-                .coordinate(ZERO_COORDINATE)
-                .radius(1)
+                .coordinates(coordinates)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertFalse(empire1.getShareCoordinates().get(empire2).contains(coordinate));
+        assertFalse(empire1.getShareCoordinates().get(empire2).contains(ZERO_COORDINATE));
     }
 
     @Test
     void updateDenyLocation() {
-        final RadialCoordinate coordinate = new RadialCoordinate(world.getCoordinate(), 1);
-        empire1.addCoordinateScanAccess(empire2, coordinate);
+        final List<MappableObject> mapObjects = List.of(world);
+        empire1.addObjectScanAccess(empire2, mapObjects);
         final DenyOrder order = DenyOrder.builder()
                 .empire(empire1)
                 .orderType(OrderType.DENY)
                 .parameters("@world to empire2")
                 .recipients(List.of(empire2))
-                .mapObject(world)
-                .radius(1)
+                .mapObjects(mapObjects)
                 .build();
         turnData.addOrder(order);
         updater.update();
-        assertFalse(empire1.getShareCoordinates().get(empire2).contains(coordinate));
+        assertFalse(empire1.getShareObjects().get(empire2).contains(world));
     }
 }

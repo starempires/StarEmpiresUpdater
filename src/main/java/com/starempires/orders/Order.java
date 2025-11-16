@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Data
 @SuperBuilder
@@ -47,7 +48,10 @@ public abstract class Order {
     final static protected String INT_REGEX = "\\d+";
     final static protected String INT_OR_MAX_REGEX = INT_REGEX + "|" + MAX_TOKEN;
     final static protected String COORDINATE_REGEX = "\\(?\\s*-?\\d+\\s*,\\s*-?\\d+\\s*\\)?";
+    final static protected String SHIP_LOCATION_REGEX = "@" + ID_REGEX;
     final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
+    final static protected String COORDINATE_LIST_REGEX = COORDINATE_REGEX + "(?:" + SPACE_REGEX + COORDINATE_REGEX + ")*";
+    final static protected String SHIP_LOCATION_LIST_REGEX = SHIP_LOCATION_REGEX + "(?:" + SPACE_REGEX + SHIP_LOCATION_REGEX + ")*";
     final static protected String OBJECT_TYPE_REGEX = "world|portal|storm";
     final static protected String TOGGLE_MODE_REGEX = "public|private";
     final static protected String DESIGN_PARAMETERS_REGEX = "[\\d\\s]+";
@@ -57,11 +61,13 @@ public abstract class Order {
     final static protected String SHIP_GROUP = "ship";
     final static protected String TARGET_ORDER_GROUP = "targetorder";
     final static protected String SHIP_LOCATION_GROUP = "location";
+    final static protected String SHIP_LOCATION_LIST_GROUP = "locations";
     final static protected String COORDINATE_EXCEPT_LIST_GROUP = "coordexcept";
     final static protected String LOCATION_EXCEPT_LIST_GROUP = "locationexcept";
     final static protected String DESTINATION_COORDINATE_GROUP = "destcoordinate";
     final static protected String DESTINATION_LOCATION_GROUP = "destlocation";
     final static protected String COORDINATE_GROUP = "coordinate";
+    final static protected String COORDINATE_LIST_GROUP = "coordinates";
     final static protected String HULLTYPE_GROUP = "hulltype";
     final static protected String DESIGN_PARAMETERS_GROUP = "parameters";
     final static protected String TOGGLE_MODE_GROUP = "mode";
@@ -116,6 +122,7 @@ public abstract class Order {
 
     // special capture regexes
     final static protected String COORDINATE_CAPTURE_REGEX = regexWithCaptureGroup(COORDINATE_GROUP, COORDINATE_REGEX);
+    final static protected String COORDINATE_LIST_CAPTURE_REGEX = regexWithCaptureGroup(COORDINATE_LIST_GROUP, COORDINATE_LIST_REGEX);
     final static protected String DESTINATION_COORDINATE_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_COORDINATE_GROUP, COORDINATE_REGEX);
     final static protected String AMOUNT_CAPTURE_REGEX = regexWithCaptureGroup(AMOUNT_GROUP, INT_OR_MAX_REGEX);
     final static protected String OBJECT_TYPE_CAPTURE_REGEX = regexWithCaptureGroup(OBJECT_TYPE_GROUP, OBJECT_TYPE_REGEX);
@@ -123,7 +130,8 @@ public abstract class Order {
     final static protected String SHIP_PARAMS_CAPTURE_REGEX = regexWithCaptureGroup(DESIGN_PARAMETERS_GROUP, DESIGN_PARAMETERS_REGEX);
 
     final static protected String OBJECT_LIST_EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXCEPT_TOKEN + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX + ")?";
-    final static protected String SHIP_LOCATION_CAPTURE_REGEX = "(?<" + SHIP_LOCATION_GROUP + ">@" + ID_REGEX + ")";
+    final static protected String SHIP_LOCATION_CAPTURE_REGEX = regexWithCaptureGroup(SHIP_LOCATION_GROUP, SHIP_LOCATION_REGEX);
+    final static protected String SHIP_LOCATION_LIST_CAPTURE_REGEX = regexWithCaptureGroup(SHIP_LOCATION_GROUP, SHIP_LOCATION_LIST_REGEX);
     final static protected String COORDINATE_CAPTURE_EXCEPT_REGEX = COORDINATE_CAPTURE_REGEX + OPTIONAL_COORDINATE_EXCEPT_CAPTURE_REGEX;
     final static protected String SHIP_LOCATION_EXCEPT_CAPTURE_REGEX = SHIP_LOCATION_CAPTURE_REGEX + OPTIONAL_LOCATION_EXCEPT_CAPTURE_REGEX;
 
@@ -247,6 +255,18 @@ public abstract class Order {
         return new Coordinate(getInt(node, "oblique"), getInt(node, "y"));
     }
 
+    protected static List<Coordinate> getCoordinateListFromJsonNode(final JsonNode node) {
+        final List<Coordinate> coordinates = new ArrayList<>();
+        if (node != null && node.isArray()) {
+            for (JsonNode coordinate : node) {
+                coordinates.add(getCoordinateFromJsonNode(coordinate));
+            }
+        }
+        return coordinates;
+    }
+
+
+
     protected static MappableObject getMappableObjectFromName(Collection<? extends MappableObject> mappableObjects, final String name) {
         for (final MappableObject mappableObject : mappableObjects) {
             if (mappableObject.getName().equalsIgnoreCase(name)) {
@@ -261,6 +281,10 @@ public abstract class Order {
                 getMappableObjectFromName(empire.getKnownWorlds(), name),
                 getMappableObjectFromName(empire.getKnownPortals(), name),
                 getMappableObjectFromName(empire.getKnownStorms(), name));
+    }
+
+    protected static List<MappableObject> getMapObjectListFromNames(final Empire empire, final List<String> names) {
+        return names.stream().map(name -> getKnownMappableObjectFromName(empire, name)).collect(Collectors.toList());
     }
 
     /**

@@ -16,7 +16,6 @@ import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.HullParameters;
 import com.starempires.objects.Portal;
-import com.starempires.objects.RadialCoordinate;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
 import com.starempires.objects.Storm;
@@ -275,14 +274,14 @@ public abstract class StarEmpiresDAO {
 
             final Map<String, List<Map<String, Object>>> shareCoordinates =
                     (Map<String, List<Map<String, Object>>>) data.getOrDefault("shareCoordinates", Collections.emptyMap());
-            final Map<Empire, List<RadialCoordinate>> shareRadialCoords = shareCoordinates.entrySet().stream()
+            final Map<Empire, List<Coordinate>> shareCoords = shareCoordinates.entrySet().stream()
                     .collect(Collectors.toMap(
                             entry -> empires.get(entry.getKey()),
                             entry -> entry.getValue().stream()
-                                    .map(data2 -> MAPPER.convertValue(data2, RadialCoordinate.class))  // Convert each map to a Coordinate
+                                    .map(data2 -> MAPPER.convertValue(data2, Coordinate.class))  // Convert each map to a Coordinate
                                     .collect(Collectors.toList())
                     ));
-            shareRadialCoords.forEach(empire::addCoordinateScanAccess);
+            shareCoords.forEach(empire::addCoordinateScanAccess);
 
             final Collection<String> shareEmpires = getStringCollection(data, "shareEmpires");
             shareEmpires.stream().map(empires::get).forEach(empire::addEmpireScanAccess);

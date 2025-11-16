@@ -84,11 +84,15 @@ public class Empire extends IdentifiableObject {
      */
     private final ScanData scanData = new ScanData();
     /**
-     * map of foreign empires to Sets of RadialCoordinates for which scan access has been authorized
+     * map of foreign empires to Sets of Coordinates for which scan access has been authorized
      */
     @JsonSerialize(using = Coordinate.EmpireCoordinateMultimapSerializer.class)
     @JsonDeserialize(using = Coordinate.DeferredEmpireCoordinateMultimapDeserializer.class)
-    private final Multimap<Empire, RadialCoordinate> shareCoordinates = HashMultimap.create();
+    private final Multimap<Empire, Coordinate> shareCoordinates = HashMultimap.create();
+
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectMultimapSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectMultimapDeserializer.class)
+    private final Multimap<Empire, MappableObject> shareObjects = HashMultimap.create();
     /**
      * map of empires to sets of Ships for which scan access has been authorized
      */
@@ -229,16 +233,20 @@ public class Empire extends IdentifiableObject {
         return getScanStatus(object.getCoordinate());
     }
 
-    public void removeCoordinateScanAccess(final Empire empire, final RadialCoordinate coordinate) {
-        shareCoordinates.get(empire).remove(coordinate);
-    }
-
-    public void addCoordinateScanAccess(final Empire empire, final RadialCoordinate coordinate) {
-        shareCoordinates.put(empire, coordinate);
-    }
-
-    public void addCoordinateScanAccess(final Empire empire, final Collection<RadialCoordinate> coordinates) {
+    public void addCoordinateScanAccess(final Empire empire, final List<Coordinate> coordinates) {
         shareCoordinates.putAll(empire, coordinates);
+    }
+
+    public void removeCoordinateScanAccess(final Empire empire, final List<Coordinate> coordinates) {
+        shareCoordinates.get(empire).removeAll(coordinates);
+    }
+
+    public void addObjectScanAccess(final Empire empire, final List<MappableObject> objects) {
+        shareObjects.putAll(empire, objects);
+    }
+
+    public void removeObjectScanAccess(final Empire empire, final List<MappableObject> objects) {
+        shareObjects.get(empire).removeAll(objects);
     }
 
     public void addEmpireScanAccess(final Empire empire) {
@@ -250,32 +258,21 @@ public class Empire extends IdentifiableObject {
         // removing "all data" access also removes other forms of sharing
         shareEmpires.remove(empire);
         shareCoordinates.removeAll(empire);
+        shareObjects.removeAll(empire);
         shareShips.removeAll(empire);
         shareShipClasses.removeAll(empire);
-    }
-
-    public void removeShipScanAccess(final Empire empire, final Collection<Ship> ships) {
-        shareShips.get(empire).removeAll(ships);
-    }
-
-    public void addShipScanAccess(final Empire empire, final Ship ship) {
-        shareShips.put(empire, ship);
     }
 
     public void addShipScanAccess(final Empire empire, final Collection<Ship> ships) {
         shareShips.putAll(empire, ships);
     }
 
+    public void removeShipScanAccess(final Empire empire, final Collection<Ship> ships) {
+        shareShips.get(empire).removeAll(ships);
+    }
+
     public void addShipClassScanAccess(final Empire empire, final Collection<ShipClass> shipClasses) {
         shareShipClasses.putAll(empire, shipClasses);
-    }
-
-    public void addShipClassScanAccess(final Empire empire, final ShipClass shipClass) {
-        shareShipClasses.put(empire, shipClass);
-    }
-
-    public void removeShipClassScanAccess(final Empire empire, final ShipClass shipClass) {
-        shareShipClasses.remove(empire, shipClass);
     }
 
     public void removeShipClassScanAccess(final Empire empire, final Collection<ShipClass> shipClasses) {
