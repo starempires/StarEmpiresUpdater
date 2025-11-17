@@ -1,6 +1,6 @@
-1_Mile_North
 1000_Hurts
 14th_Street
+1_Mile_North
 386DX
 8675309
 Aardvark_Motel
@@ -97,8 +97,8 @@ Bauble
 Beeblebrox
 Belerophon
 Belfalas
-Bens_Plaything
 Benjac
+Bens_Plaything
 Berenyi
 Berseneff
 Bertolotti
@@ -140,6 +140,7 @@ Breadnaught
 Bree
 Britannia
 Brontitall
+Bronx
 Brooklyn
 Bruce_Crossing
 Bruford
@@ -169,6 +170,7 @@ Cattaraugus
 Celebrant
 Cenote
 Centar_Zupa
+Center_Ring
 Chaco_Boreal
 Chain_Home
 Chapman
@@ -223,8 +225,8 @@ Dead_Battery
 Deadend
 Death_Blossom
 Dedekind_Domain
-Dees_Betrayal
 Deepness
+Dees_Betrayal
 Delms_Heap
 Demimonde
 Descartes
@@ -238,9 +240,9 @@ Didact
 Disaster_Area
 Dogger_Bank
 Dol_Amroth
-Dont_Come_Here
 Donkey
 Donnelly
+Dont_Come_Here
 Doofusville
 Dorsai
 Dorthonion
@@ -436,6 +438,7 @@ Howe
 Howyadoin
 Hufflepuff
 Hungnam
+Hyatt
 Hyperbole
 Hyperion
 Iastony
@@ -674,6 +677,7 @@ Out_of_Gas
 Outer_Ketchikan
 Outland
 Outpost_Alpha
+Overlook
 Paddlefoot
 Paladia
 Pantone_209
@@ -758,6 +762,7 @@ Reiston_Proxima
 Relay
 Rellim
 Remus
+Rest_Stop
 Retiro_Park
 Rhombicuboctahedron
 Rhovanion
@@ -794,6 +799,7 @@ Sandy_Bottom
 Saratoga
 Sazerac
 Scapa_Flow
+Schars_World
 Schiz
 Schmutz_Prime
 Scrape
@@ -854,17 +860,20 @@ Star_58
 Star_City
 Staromestska
 Stendili_256
+Sticks
 Stone_Temple
 Stor
 Strachan
 Strange_Artifact
 Straumli_Realm
 Stroh
+Style_Planet
 Sui_Generis
 Sullivans_Gulch
 Sunnydale
 Surf_City
 Surface_Of_Eceon
+Sursamen
 Sweetpotater
 Tacubaya
 Taft
@@ -895,19 +904,12 @@ Thalassa
 Thantap
 The_Archology
 The_Below
-The_Bronx
-The_Center_Ring
 The_Cryptgardens
 The_Hill
-The_Hyatt
-The_Overlook
 The_Planet
 The_Prison_Planet
-The_Rest_Stop
 The_Rock_Collection
 The_Shire
-The_Sticks
-The_Style_Planet
 The_Village
 The_Wolfling_World
 Thesaurus
@@ -959,8 +961,8 @@ Urgh
 Urthurs_Stronghold
 Urupa
 Vallvidrera_Superior
-Van_Deussen
 VanNess
+Van_Deussen
 Vangaurdia
 Vassey
 Vatos

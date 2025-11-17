@@ -5,6 +5,7 @@ Aurora_Deluge
 Celestial_Barricade
 Celestial_Vortex
 Cosmic_Gale
+Dustbowl
 Eclipse_Torrent
 Flux_Spire
 Gargantua
@@ -34,7 +35,6 @@ Starfire_Surge
 Talons_Wrath
 Tempest_Shroud
 Thalassas_Fury
-The_Dustbowl
 Twilight_Torrent
 Voidbreaker_Surge
 Voidstream_Collapse

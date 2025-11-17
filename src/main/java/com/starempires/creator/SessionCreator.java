@@ -46,13 +46,13 @@ import static com.starempires.objects.Coordinate.COORDINATE_COMPARATOR;
 public class SessionCreator {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String COLORS_FILENAME = "Colors.txt";
-    private static final String PORTAL_NAMES_FILENAME = "PortalNames.txt";
-    private static final String WORLD_NAMES_FILENAME = "WorldNames.txt";
-    private static final String STORM_NAMES_FILENAME = "StormNames.txt";
-    private static final String NEBULA_NAMES_FILENAME = "NebulaNames.txt";
-    private static final String HULL_PARAMETERS_FILENAME = "HullParameters.json";
-    private static final String SHIP_CLASSES_FILENAME = "ShipClasses.json";
+    private static final String COLORS_FILENAME = "colors.txt";
+    private static final String PORTAL_NAMES_FILENAME = "portal-names.txt";
+    private static final String WORLD_NAMES_FILENAME = "world-names.txt";
+    private static final String STORM_NAMES_FILENAME = "storm-names.txt";
+    private static final String NEBULA_NAMES_FILENAME = "nebula-names.txt";
+    private static final String HULL_PARAMETERS_FILENAME = "hull-parameters.json";
+    private static final String SHIP_CLASSES_FILENAME = "ship-classes.json";
 
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_GAME_DATA_DIR = "gamedatadir";
