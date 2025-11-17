@@ -1,6 +1,7 @@
 package com.starempires.orders;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
@@ -20,7 +21,12 @@ public class DeployOrder extends ShipBasedOrder {
     private static final Pattern PATTERN = Pattern.compile(REGEX, java.util.regex.Pattern.CASE_INSENSITIVE);
 
     public static DeployOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
-        final DeployOrder order = DeployOrder.builder().orderType(OrderType.DEPLOY).empire(empire).parameters(parameters).build();
+        final DeployOrder order = DeployOrder.builder()
+                .orderType(OrderType.DEPLOY)
+                .empire(empire)
+                .parameters(parameters)
+                .ships(Lists.newArrayList())
+                .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
             final String deviceNamesText = matcher.group(OBJECT_LIST_GROUP);

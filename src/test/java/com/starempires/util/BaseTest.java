@@ -39,6 +39,7 @@ public class BaseTest {
     protected ShipClass missileClass;
     protected ShipClass fighterClass;
     protected ShipClass frigateClass;
+    protected ShipClass hammerClass;
     protected Empire empire1;
     protected Empire empire2;
     protected Empire gm;
@@ -75,6 +76,7 @@ public class BaseTest {
         missileClass = turnData.getShipClass("nuke");
         fighterClass = turnData.getShipClass("fighter");
         frigateClass = turnData.getShipClass("frigate");
+        hammerClass = turnData.getShipClass("hammer");
         empire1 = createEmpire("empire1");
         empire2 = createEmpire("empire2");
         world = createWorld("world", ZERO_COORDINATE, 12);

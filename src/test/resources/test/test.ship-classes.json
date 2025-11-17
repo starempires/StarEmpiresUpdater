@@ -85,7 +85,7 @@
     "scan": 0,
     "racks": 0,
     "tonnage": 1,
-    "cost": 1,
+    "cost": 2,
     "ar": 1,
     "hullType": "wing",
     "buildable": true
@@ -101,6 +101,62 @@
     "cost": 1,
     "ar": 0,
     "hullType": "missile",
+    "buildable": true
+  },
+  {
+    "name": "hammer",
+    "guns": 0,
+    "dp": 1,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 2,
+    "cost": 1,
+    "ar": 0,
+    "hullType": "device",
+    "deviceType": "portal_hammer",
+    "buildable": true
+  },
+  {
+    "name": "small_shield",
+    "guns": 0,
+    "dp": 3,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 3,
+    "ar": 0,
+    "hullType": "device",
+    "deviceType": "ion_shield",
+    "buildable": true
+  },
+  {
+    "name": "medium_shield",
+    "guns": 0,
+    "dp": 7,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 7,
+    "ar": 0,
+    "hullType": "device",
+    "deviceType": "ion_shield",
+    "buildable": true
+  },
+  {
+    "name": "large_shield",
+    "guns": 0,
+    "dp": 15,
+    "engines": 0,
+    "scan": 0,
+    "racks": 0,
+    "tonnage": 1,
+    "cost": 15,
+    "ar": 0,
+    "hullType": "device",
+    "deviceType": "ion_shield",
     "buildable": true
   }
 ]

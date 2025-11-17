@@ -1,13 +1,14 @@
 package com.starempires.objects;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
 
 public enum DeviceType {
-    ION_SHIELD,
-    PORTAL_HAMMER;
+    @JsonProperty("portal_hammer")
+    PORTAL_HAMMER,
+    @JsonProperty("ion_shield")
+    ION_SHIELD;
 
-    @JsonValue
     @Override
     public @NotNull String toString() {
         return name().toLowerCase().replace('_', ' ');
