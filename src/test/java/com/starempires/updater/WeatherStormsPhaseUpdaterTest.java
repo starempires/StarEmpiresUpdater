@@ -45,4 +45,14 @@ class WeatherStormsPhaseUpdaterTest extends BaseTest {
         assertFalse(ship.hasCondition(ShipCondition.DAMAGED_BY_STORM));
         assertFalse(starbase.hasCondition(ShipCondition.DAMAGED_BY_STORM));
     }
+
+    @Test
+    void updateIonShieldDeployed() {
+        final Ship ship = createShip(fighterClass, ZERO_COORDINATE, "ship", empire1);
+        final Ship shield = createShip(shieldClass, ZERO_COORDINATE, "shield", empire1);
+        turnData.deploy(shield);
+        updater.update();;
+        assertEquals(0, ship.getStormDamageAccrued());
+        assertFalse(ship.hasCondition(ShipCondition.DAMAGED_BY_STORM));
+    }
 }

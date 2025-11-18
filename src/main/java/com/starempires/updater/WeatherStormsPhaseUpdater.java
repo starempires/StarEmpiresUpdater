@@ -1,10 +1,8 @@
 package com.starempires.updater;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.AtomicLongMap;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.DeviceType;
@@ -15,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -43,32 +40,6 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         super(Phase.WEATHER_STORMS, turnData);
     }
 
-    private int degradeShields(final Collection<Ship> shields, final int totalRating, final Collection<Empire> empires) {
-        if (shields.isEmpty()) {
-            return totalRating;
-        }
-        int unshieldedDamage = totalRating;
-        List<Ship> shieldList = Lists.newArrayList(shields);
-        final AtomicLongMap<Ship> shieldDp = AtomicLongMap.create();
-        final AtomicLongMap<Ship> shieldDamage = AtomicLongMap.create();
-        shieldList.forEach(shield -> shieldDp.put(shield, shield.getDpRemaining()));
-        shieldList.sort(new ShieldComparator());
-        while (unshieldedDamage > 0 && !shieldList.isEmpty()) {
-            final Ship shield = shieldList.remove(0);
-            shield.inflictStormDamage(1);
-            final long remaining = shieldDp.decrementAndGet(shield);
-            shieldDamage.incrementAndGet(shield);
-            if (remaining > 0L) {
-                shieldList.add(shield);
-            }
-            unshieldedDamage--;
-        }
-        shieldDamage.asMap().keySet().forEach(shield -> {
-            addNews(empires, "Shield " + shield + " absorbed " + shieldDamage.get(shield) + " ion storm damage");
-        });
-        return unshieldedDamage;
-    }
-
     @Override
     public void update() {
         final Multimap<Coordinate, Storm> stormCoordinates = turnData.getStormCoordinates();
@@ -77,14 +48,17 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
             final Collection<Storm> storms = entry.getValue();
             final int totalRating = storms.stream().mapToInt(Storm::getRating).sum();
             if (totalRating > 0) {
+                final Collection<Empire> empiresPresent = turnData.getEmpiresPresent(coordinate);
+                // get all live unloaded ships present
+                final Collection<Ship> ships = turnData.getLiveShips(coordinate).stream().filter(s -> !s.isLoaded()).collect(Collectors.toSet());
+
                 // get starbases within range
                 final Set<Coordinate> surroundingCoordinates = Coordinate.getSurroundingCoordinates(coordinate, STARBASE_PROTECTION_RANGE);
                 final Set<Ship> starbases = Sets.newHashSet();
                 surroundingCoordinates.forEach(c -> starbases.addAll(turnData.getStarbases(c)));
-                final Collection<Empire> empiresPresent = turnData.getEmpiresPresent(coordinate);
-                final Collection<Ship> ships = turnData.getLiveShips(coordinate).stream().filter(s -> !s.isLoaded()).collect(Collectors.toSet());
                 ships.removeAll(starbases);
 
+                // remove empires with starbase protection
                 final Multimap<Empire, Ship> shipsByEmpire = HashMultimap.create();
                 ships.forEach(ship -> shipsByEmpire.put(ship.getOwner(), ship));
                 String stormText = StringUtils.join(storms, ",");
@@ -94,20 +68,18 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                     shipsByEmpire.removeAll(s.getOwner());
                 });
 
+                // remove empires with deployed ion shield protection
                 final Collection<Ship> allShields = turnData.getDeployedDevices(coordinate, DeviceType.ION_SHIELD);
-                allShields.removeIf(Ship::hasAccruedTotalDamageExceededRemainingDp);
-                final Multimap<Empire, Ship> shieldsByEmpire = HashMultimap.create();
-                allShields.forEach(shield -> shieldsByEmpire.put(shield.getOwner(), shield));
+                allShields.forEach(s -> {
+                    addNews(empiresPresent, "Shield %s protects %s ships from damage from %s".formatted(s, s.getOwner(), stormText));
+                    shipsByEmpire.removeAll(s.getOwner());
+                });
 
                 shipsByEmpire.asMap().forEach((empire, shipList) -> {
-                    final Collection<Ship> empireShields = shieldsByEmpire.get(empire);
-                    final int unshieldedStormRating = degradeShields(empireShields, totalRating, empiresPresent);
-                    if (unshieldedStormRating > 0) {
-                        shipList.forEach(ship -> {
-                            addNews(empiresPresent, "Ship " + ship + " suffered " + unshieldedStormRating + " storm damage");
-                            ship.inflictStormDamage(unshieldedStormRating);
-                        });
-                    }
+                    shipList.forEach(ship -> {
+                        addNews(empiresPresent, "Ship " + ship + " suffered " + totalRating + " storm damage");
+                        ship.inflictStormDamage(totalRating);
+                    });
                 });
             }
         }

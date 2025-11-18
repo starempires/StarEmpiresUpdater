@@ -70,14 +70,4 @@ class DeployOrderTest extends BaseTest {
         assertFalse(order.isReady());
         assertTrue(order.ships.isEmpty());
     }
-
-    @Test
-    void parseDeployAtStarbase() {
-        final Ship starbase = createShip(starbaseClass, ZERO_COORDINATE, "starbase", empire1);
-        final DeployOrder order = DeployOrder.parse(turnData, empire1, "hammer");
-
-        // Then
-        assertFalse(order.isReady());
-        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("prevents deployment")));
-    }
 }

@@ -6,10 +6,8 @@ import com.starempires.TurnData;
 import com.starempires.objects.Empire;
 import com.starempires.objects.Ship;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,23 +33,16 @@ public class DeployOrder extends ShipBasedOrder {
                 if (!device.isDevice()) {
                     order.addError(device, "Ship class %s is not a deployable device".formatted(device.getShipClass()));
                 } else {
-                    final Set<Ship> starbases = turnData.getStarbases(device);
-                    if (CollectionUtils.isEmpty(starbases)) {
-                        order.addOKResult(device);
-                        if (device.isLoaded()) {
-                            order.addWarning(device, "Device will be unloaded");
-                        }
-                        order.ships.add(device);
-                        turnData.deploy(device);
-                    } else {
-                        order.addError(device, "Starbase %s prevents deployment of devices in sector %s".formatted(
-                                starbases.stream().findFirst().orElseThrow(), device.getCoordinate()));
+                    if (device.isLoaded()) {
+                        order.addWarning(device, "Device will be unloaded");
                     }
+                    order.ships.add(device);
+                    turnData.deploy(device);
+                    order.addOKResult(device);
                 }
             }
             order.setReady(!order.ships.isEmpty());
-        }
-        else {
+        } else {
             order.addError("Invalid DEPLOY order: " + parameters);
         }
         return order;

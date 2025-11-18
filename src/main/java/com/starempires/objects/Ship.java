@@ -328,6 +328,11 @@ public class Ship extends OwnableObject {
     }
 
     @JsonIgnore
+    public String getDeviceType() {
+        return shipClass.getDeviceType().toString();
+    }
+
+    @JsonIgnore
     public boolean isMissile() {
         return shipClass.isMissile();
     }
