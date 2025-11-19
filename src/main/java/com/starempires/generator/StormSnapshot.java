@@ -13,12 +13,12 @@ import lombok.experimental.SuperBuilder;
 @JsonPropertyOrder(alphabetic = true)
 public class StormSnapshot extends IdentifiableObjectSnapshot {
 
-    final int rating;
+    final int intensity;
 
     public static StormSnapshot fromStorm(final Storm storm) {
         return StormSnapshot.builder()
                 .name(storm.getName())
-                .rating(storm.getRating())
+                .intensity(storm.getIntensity())
                 .build();
     }
 }

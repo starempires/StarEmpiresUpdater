@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 @Getter
 public class AddStormOrder extends Order {
 
-    // order: ADDSTORM coordinate storm-name rating
+    // order: ADDSTORM coordinate storm-name intensity
 
-    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + RATING_CAPTURE_REGEX;
+    final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + ID_CAPTURE_REGEX + SPACE_REGEX + INTENSITY_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -25,7 +25,7 @@ public class AddStormOrder extends Order {
     @JsonInclude
     private String name;
     @JsonInclude
-    private int rating;
+    private int intensity;
 
     public static AddStormOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final AddStormOrder order = AddStormOrder.builder()
@@ -42,7 +42,7 @@ public class AddStormOrder extends Order {
         if (matcher.matches()) {
             order.name = matcher.group(ID_GROUP);
             final String coordText = matcher.group(COORDINATE_GROUP);
-            order.rating = Integer.parseInt(matcher.group(RATING_GROUP));
+            order.intensity = Integer.parseInt(matcher.group(INTENSITY_GROUP));
             order.coordinate = Coordinate.parse(coordText);
             order.setReady(true);
         } else {
@@ -58,7 +58,7 @@ public class AddStormOrder extends Order {
         return builder
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
                 .name(getString(node, "name"))
-                .rating(getInt(node, "rating"))
+                .intensity(getInt(node, "intensity"))
                 .gmOnly(true)
                 .build();
     }

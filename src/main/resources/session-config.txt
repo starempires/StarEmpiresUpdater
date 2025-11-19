@@ -11,5 +11,5 @@ maxWormnetPortals = 2
 minPortalToPortalDistance = 3
 minPortalToHomeworldDistance = 2
 minNebulaToHomeworldDistance = 2
-maxStormRating = 5
+maxStormIntensity = 10
 radius = 4

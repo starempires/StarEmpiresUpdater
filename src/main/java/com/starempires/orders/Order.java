@@ -73,7 +73,7 @@ public abstract class Order {
     final static protected String TOGGLE_MODE_GROUP = "mode";
     final static protected String DESTINATION_GROUP = "destination";
     final static protected String COUNT_GROUP = "count";
-    final static protected String RATING_GROUP = "rating";
+    final static protected String INTENSITY_GROUP = "intensity";
     final static protected String PRODUCTION_GROUP = "production";
     final static protected String STOCKPILE_GROUP = "stockpile";
     final static protected String OBJECT_TYPE_GROUP = "type";
@@ -106,7 +106,7 @@ public abstract class Order {
 
     // named INT_REGEX capture groups
     final static protected String COUNT_CAPTURE_REGEX = regexWithCaptureGroup(COUNT_GROUP, INT_REGEX);
-    final static protected String RATING_CAPTURE_REGEX = regexWithCaptureGroup(RATING_GROUP, INT_REGEX);
+    final static protected String INTENSITY_CAPTURE_REGEX = regexWithCaptureGroup(INTENSITY_GROUP, INT_REGEX);
     final static protected String PRODUCTION_CAPTURE_REGEX = regexWithCaptureGroup(PRODUCTION_GROUP, INT_REGEX);
     final static protected String STOCKPILE_CAPTURE_REGEX = regexWithCaptureGroup(STOCKPILE_GROUP, INT_REGEX);
     final static protected String RADIUS_CAPTURE_REGEX = regexWithCaptureGroup(RADIUS_GROUP, INT_REGEX);

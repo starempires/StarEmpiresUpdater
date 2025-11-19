@@ -15,25 +15,25 @@ import java.util.List;
 @Setter
 public class Storm extends MappableObject {
 
-    /** current storm rating */
-    private int rating;
-    /** rating fluctuations for this storm */
+    /** current storm intesity */
+    private int intensity;
+    /** intesity fluctuations for this storm */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<Integer> fluctuations = Lists.newArrayList();
 
     @Builder
-    private Storm(final String name, final Coordinate coordinate, final int rating) {
+    private Storm(final String name, final Coordinate coordinate, final int intensity) {
         super(name, coordinate);
-        this.rating = rating;
+        this.intensity = intensity;
     }
 
     @JsonCreator
     private Storm(@JsonProperty("name") final String name,
                   @JsonProperty("oblique") final int oblique,
                   @JsonProperty("y") final int y,
-                  @JsonProperty("rating") final int rating) {
+                  @JsonProperty("intensity") final int intensity) {
         super(name, new Coordinate(oblique, y));
-        this.rating = rating;
+        this.intensity = intensity;
     }
 
     public int getFluctuation(final int num) {
@@ -50,6 +50,6 @@ public class Storm extends MappableObject {
 
     @Override
     public String toString() {
-        return super.toString() + " (rating " + rating + ")";
+        return super.toString() + " (intesity " + intensity + ")";
     }
 }

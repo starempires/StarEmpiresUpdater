@@ -45,9 +45,9 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         final Multimap<Coordinate, Storm> stormCoordinates = turnData.getStormCoordinates();
         for (final Map.Entry<Coordinate, Collection<Storm>> entry : stormCoordinates.asMap().entrySet()) {
             final Coordinate coordinate = entry.getKey();
-            final Set<Storm> storms = entry.getValue().stream().filter(s -> s.getRating() > 0).collect(Collectors.toSet());
-            final int totalRating = storms.stream().mapToInt(Storm::getRating).sum();
-            if (totalRating > 0) {
+            final Set<Storm> storms = entry.getValue().stream().filter(s -> s.getIntensity() > 0).collect(Collectors.toSet());
+            final int totalIntensity = storms.stream().mapToInt(Storm::getIntensity).sum();
+            if (totalIntensity > 0) {
                 final Collection<Empire> empiresPresent = turnData.getEmpiresPresent(coordinate);
                 // get all live unloaded ships present
                 final Collection<Ship> ships = turnData.getLiveShips(coordinate).stream().filter(s -> !s.isLoaded()).collect(Collectors.toSet());
@@ -78,8 +78,8 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                 shipsByEmpire.asMap().forEach((empire, shipList) -> {
                     shipList.forEach(ship -> {
                         addNews(empiresPresent, "%s ship %s suffered %d storm damage from %s"
-                                .formatted(ship.getOwner(), ship, totalRating, stormText));
-                        ship.inflictStormDamage(totalRating);
+                                .formatted(ship.getOwner(), ship, totalIntensity, stormText));
+                        ship.inflictStormDamage(totalIntensity);
                     });
                 });
             }

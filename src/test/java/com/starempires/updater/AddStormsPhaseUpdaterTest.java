@@ -20,13 +20,13 @@ public class AddStormsPhaseUpdaterTest extends BaseTest {
     @Test
     void testUpdate() {
         final String name = "s1";
-        final int rating = 1;
+        final int intensity = 1;
         final AddStormOrder order = AddStormOrder.builder()
                 .empire(gm)
                 .orderType(OrderType.ADDSTORM)
-                .parameters(ONE_COORDINATE + " " + name + " " + rating)
+                .parameters(ONE_COORDINATE + " " + name + " " + intensity)
                 .name(name)
-                .rating(rating)
+                .intensity(intensity)
                 .coordinate(ONE_COORDINATE)
                 .build();
         turnData.addOrder(order);

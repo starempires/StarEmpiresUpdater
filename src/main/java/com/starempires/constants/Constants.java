@@ -37,7 +37,7 @@ public class Constants {
     public static final String CONFIG_MIN_PORTAL_TO_PORTAL_DISTANCE = "minPortalToPortalDistance";
     public static final String CONFIG_MIN_PORTAL_TO_HOMEWORLD_DISTANCE = "minPortalToHomeworldDistance";
     public static final String CONFIG_MIN_NEBULA_TO_HOMEWORLD_DISTANCE = "minNebulaToHomeworldDistance";
-    public static final String CONFIG_MAX_STORM_RATING = "maxStormRating";
+    public static final String CONFIG_MAX_STORM_INTENSITY = "maxStormIntensity";
     public static final String CONFIG_RADIUS = "radius";
 
     public static final int DEFAULT_HOMEWORLD_PRODUCTION = 12;
@@ -50,7 +50,7 @@ public class Constants {
     public static final int DEFAULT_MIN_PORTAL_TO_PORTAL_DISTANCE = 8;
     public static final int DEFAULT_MIN_PORTAL_TO_HOMEWORLD_DISTANCE = 3;
     public static final int DEFAULT_MIN_NEBULA_TO_HOMEWORLD_DISTANCE = 2;
-    public static final int DEFAULT_MAX_STORM_RATING = 10;
+    public static final int DEFAULT_MAX_STORM_INTENSITY = 10;
     public static final int DEFAULT_GALAXY_RADIUS = 10;
 
     public static final int DEFAULT_WORLD_DENSITY = 10;

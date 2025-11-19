@@ -21,7 +21,7 @@ public class AddStormsPhaseUpdater extends PhaseUpdater {
             final Storm storm = Storm.builder()
                     .coordinate(order.getCoordinate())
                     .name(order.getName())
-                    .rating(order.getRating())
+                    .intensity(order.getIntensity())
                     .build();
             turnData.addStorm(storm);
             addNews(order, "Added storm %s in sector %s".formatted(storm, storm.getCoordinate()));

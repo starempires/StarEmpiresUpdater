@@ -39,7 +39,7 @@ public class Galaxy {
     private final int minNebulaToHomeworldDistance;
     private final double nebulaDensity;
     private final double stormDensity;
-    private final int maxStormRating;
+    private final int maxStormIntensity;
     private final int radius;
     private final List<Coordinate> unoccupied;
     private final Set<Coordinate> allCoordinates;
@@ -89,9 +89,9 @@ public class Galaxy {
         Validate.isTrue(minNebulaToHomeworldDistance > 1, "Min nebula to homeworld distance must be > 1");
         log.info("Min nebula to homeworld distance {}", minNebulaToHomeworldDistance);
 
-        maxStormRating = properties.getInt(Constants.CONFIG_MAX_STORM_RATING, Constants.DEFAULT_MAX_STORM_RATING);
-        Validate.isTrue(maxStormRating >= 0, "Max storm rating must be non-negative");
-        log.info("Max storm rating {}", maxStormRating);
+        maxStormIntensity = properties.getInt(Constants.CONFIG_MAX_STORM_INTENSITY, Constants.DEFAULT_MAX_STORM_INTENSITY);
+        Validate.isTrue(maxStormIntensity >= 0, "Max storm intensity must be non-negative");
+        log.info("Max storm intensity {}", maxStormIntensity);
 
         radius = properties.getInt(Constants.CONFIG_RADIUS, Constants.DEFAULT_GALAXY_RADIUS);
         Validate.isTrue(radius > 1, "Max radius must be > 1");
@@ -254,16 +254,16 @@ public class Galaxy {
             if (!homeworlds.containsKey(coordinate) &&
                     coordinate.isBeyondMinDistanceToObjects(homeworlds.values(), minNebulaToHomeworldDistance)) {
                 if (ThreadLocalRandom.current().nextDouble() < stormDensity) {
-                    final int rating = ThreadLocalRandom.current().nextInt(maxStormRating) + 1;
+                    final int intensity = ThreadLocalRandom.current().nextInt(maxStormIntensity) + 1;
                     final String name = getName(stormNames);
-                    final Storm storm = Storm.builder().coordinate(coordinate).name(name).rating(rating)
+                    final Storm storm = Storm.builder().coordinate(coordinate).name(name).intensity(intensity)
                             .build();
                     storms.add(storm);
                     log.info("Added storm {}", storm);
                 }
                 else if (ThreadLocalRandom.current().nextDouble() < nebulaDensity) {
                     final String name = getName(nebulaNames);
-                    final Storm nebula = Storm.builder().coordinate(coordinate).name(name).rating(0)
+                    final Storm nebula = Storm.builder().coordinate(coordinate).name(name).intensity(0)
                             .build();
                     storms.add(nebula);
                     log.info("Added nebula {}", nebula);

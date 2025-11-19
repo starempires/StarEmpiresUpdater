@@ -133,11 +133,11 @@ public class BaseTest {
         return portal;
     }
 
-    protected Storm createStorm(final String name, final Coordinate coordinate, final int rating) {
+    protected Storm createStorm(final String name, final Coordinate coordinate, final int intensity) {
         final Storm storm = Storm.builder()
                 .name(name)
                 .coordinate(coordinate)
-                .rating(rating)
+                .intensity(intensity)
                 .build();
         turnData.addStorm(storm);
         return storm;

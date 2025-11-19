@@ -18,10 +18,10 @@ public class FluctuateStormsPhaseUpdater extends PhaseUpdater {
         storms.forEach(storm -> {
             final int fluctuation = storm.getFluctuation(turnData.getTurnNumber());
             if (fluctuation > 0) {
-                final int rating = storm.getRating() + fluctuation;
-                storm.setRating(rating);
+                final int intensity = storm.getIntensity() + fluctuation;
+                storm.setIntensity(intensity);
                 final Collection<Empire> empires = turnData.getEmpiresPresent(storm);
-                addNews(empires, "Rating for storm %s fluctuates %d to %d".formatted(storm, fluctuation, rating));
+                addNews(empires, "Intensity for storm %s fluctuates %d to %d".formatted(storm, fluctuation, intensity));
             }
         });
     }

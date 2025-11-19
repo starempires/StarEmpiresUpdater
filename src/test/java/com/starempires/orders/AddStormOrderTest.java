@@ -26,12 +26,12 @@ class AddStormOrderTest extends BaseTest {
     @Test
     void testAddStorm() {
         final String name = "storm1";
-        final int rating = 1;
-        final AddStormOrder order = AddStormOrder.parse(turnData, gm, ONE_COORDINATE + " " + name + " " + rating);
+        final int intensity = 1;
+        final AddStormOrder order = AddStormOrder.parse(turnData, gm, ONE_COORDINATE + " " + name + " " + intensity);
         assertTrue(order.isReady());
         assertEquals(OrderType.ADDSTORM, order.getOrderType());
         assertEquals(ONE_COORDINATE, order.getCoordinate());
         assertEquals(name, order.getName());
-        assertEquals(rating, order.getRating());
+        assertEquals(intensity, order.getIntensity());
     }
 }
