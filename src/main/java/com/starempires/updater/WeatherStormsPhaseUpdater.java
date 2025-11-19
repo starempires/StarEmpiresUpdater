@@ -45,7 +45,7 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
         final Multimap<Coordinate, Storm> stormCoordinates = turnData.getStormCoordinates();
         for (final Map.Entry<Coordinate, Collection<Storm>> entry : stormCoordinates.asMap().entrySet()) {
             final Coordinate coordinate = entry.getKey();
-            final Collection<Storm> storms = entry.getValue();
+            final Set<Storm> storms = entry.getValue().stream().filter(s -> s.getRating() > 0).collect(Collectors.toSet());
             final int totalRating = storms.stream().mapToInt(Storm::getRating).sum();
             if (totalRating > 0) {
                 final Collection<Empire> empiresPresent = turnData.getEmpiresPresent(coordinate);
@@ -61,23 +61,24 @@ public class WeatherStormsPhaseUpdater extends PhaseUpdater {
                 // remove empires with starbase protection
                 final Multimap<Empire, Ship> shipsByEmpire = HashMultimap.create();
                 ships.forEach(ship -> shipsByEmpire.put(ship.getOwner(), ship));
-                String stormText = StringUtils.join(storms, ",");
+                String stormText = "storm" + (storms.size() > 1 ? "s" : "") + " " + StringUtils.join(storms, ",");
 
                 starbases.forEach(s -> {
-                    addNews(empiresPresent, "Starbase %s protects %s ships from damage from %s".formatted(s, s.getOwner(), stormText));
+                    addNews(empiresPresent, "Starbase %s protects %s ships from %s".formatted(s, s.getOwner(), stormText));
                     shipsByEmpire.removeAll(s.getOwner());
                 });
 
                 // remove empires with deployed ion shield protection
                 final Collection<Ship> allShields = turnData.getDeployedDevices(coordinate, DeviceType.ION_SHIELD);
                 allShields.forEach(s -> {
-                    addNews(empiresPresent, "Shield %s protects %s ships from damage from %s".formatted(s, s.getOwner(), stormText));
+                    addNews(empiresPresent, "Shield %s protects %s ships from %s".formatted(s, s.getOwner(), stormText));
                     shipsByEmpire.removeAll(s.getOwner());
                 });
 
                 shipsByEmpire.asMap().forEach((empire, shipList) -> {
                     shipList.forEach(ship -> {
-                        addNews(empiresPresent, "Ship " + ship + " suffered " + totalRating + " storm damage");
+                        addNews(empiresPresent, "%s ship %s suffered %d storm damage from %s"
+                                .formatted(ship.getOwner(), ship, totalRating, stormText));
                         ship.inflictStormDamage(totalRating);
                     });
                 });

@@ -345,7 +345,6 @@ public class TurnData {
     public void deploy(final Ship device) {
         device.deploy();
         deployedDevices.put(device.getCoordinate(), device);
-        device.destroy(ShipCondition.DESTROYED_DEVICE_DEPLOYMENT);
     }
 
     public void setHomeworld(final Empire empire, final World world) {
@@ -438,12 +437,6 @@ public class TurnData {
         return getDeployedDevices(object.getCoordinate(), type);
     }
 
-    public Set<Ship> getDeployedDevices(final DeviceType type) {
-        return deployedDevices.values().stream().filter(Objects::nonNull)
-                .filter(device -> device.isDeviceType(type))
-                .collect(Collectors.toSet());
-    }
-
     public Collection<Ship> getDeployedDevices(final Coordinate coordinate, final DeviceType type) {
         final Collection<Ship> coordinateDevices = deployedDevices.get(coordinate);
         return coordinateDevices.stream()
@@ -467,6 +460,10 @@ public class TurnData {
 
     public List<Ship> shipsStormDamagedThisTurn() {
         return getAllShips().stream().filter(Ship::hasReceivedStormDamage).collect(Collectors.toList());
+    }
+
+    public List<Ship> shipsDeployedThisTurn() {
+        return getAllShips().stream().filter(s -> s.hasCondition(ShipCondition.DEPLOYED)).collect(Collectors.toList());
     }
 
     @JsonProperty("empires")

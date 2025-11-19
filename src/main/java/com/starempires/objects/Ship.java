@@ -204,6 +204,11 @@ public class Ship extends OwnableObject {
         checkDestroyed(ShipCondition.DESTROYED_BY_STORM);
     }
 
+    public void applyDeploymentDamage() {
+        dpRemaining = 0;
+        destroy(ShipCondition.DEPLOYED);
+    }
+
     public void destroy(final ShipCondition destroyedCondition) {
         dpRemaining = 0;
         addCondition(destroyedCondition);
@@ -386,13 +391,18 @@ public class Ship extends OwnableObject {
 
     @JsonIgnore
     public boolean isSalvageable() {
-        return !isAlive() && !isSelfDestructed()
+        return !isAlive() && !isSelfDestructed() && !isDeployed()
                 && (!conditions.contains(ShipCondition.FIRED_GUNS) || !isMissile());
     }
 
     @JsonIgnore
     public boolean isSelfDestructed() {
         return conditions.contains(ShipCondition.SELF_DESTRUCTED);
+    }
+
+    @JsonIgnore
+    public boolean isDeployed() {
+        return conditions.contains(ShipCondition.DEPLOYED);
     }
 
     @JsonIgnore
@@ -411,10 +421,6 @@ public class Ship extends OwnableObject {
 
     public boolean hasReceivedStormDamage() {
         return stormDamageAccrued > 0;
-    }
-
-    public boolean hasAccruedTotalDamageExceededRemainingDp() {
-        return combatDamageAccrued + stormDamageAccrued > dpRemaining;
     }
 
     @JsonIgnore

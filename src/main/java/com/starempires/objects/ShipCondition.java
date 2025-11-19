@@ -25,7 +25,6 @@ public enum ShipCondition {
     DAMAGED_BY_STORM("D"),
     DEPLOYED("P"),
     DESTROYED_BY_STORM("Xs"),
-    DESTROYED_DEVICE_DEPLOYMENT("Xd"),
     DESTROYED_IN_COMBAT("Xc"),
     FIRED_GUNS("F"),
     HIT_IN_COMBAT("H"),

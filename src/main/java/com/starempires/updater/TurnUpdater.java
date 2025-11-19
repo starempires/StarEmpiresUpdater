@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-
 @Log4j2
 public class TurnUpdater {
 
@@ -35,6 +34,9 @@ public class TurnUpdater {
     // Registry mapping Phase enums to their updater factories
     private static final Map<Phase, Function<TurnData, PhaseUpdater>> PHASE_REGISTRY = Map.ofEntries(
         Map.entry(Phase.FLUCTUATE_STORMS, FluctuateStormsPhaseUpdater::new),
+        Map.entry(Phase.DRIFT_MAP_OBJECTS, DriftMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.STABILIZE_PORTALS, StabilizePortalsPhaseUpdater::new),
+        Map.entry(Phase.COLLAPSE_PORTALS, CollapsePortalsPhaseUpdater::new),
         Map.entry(Phase.REMOVE_MAP_OBJECTS, RemoveMapObjectsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_OBJECTS, RelocateObjectsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_SHIPS, RelocateShipsPhaseUpdater::new),
@@ -46,11 +48,9 @@ public class TurnUpdater {
         Map.entry(Phase.MODIFY_MAP_OBJECTS, ModifyMapObjectsPhaseUpdater::new),
         Map.entry(Phase.REMOVE_KNOWN_ITEMS, RemoveKnownItemsPhaseUpdater::new),
         Map.entry(Phase.ADD_KNOWN_ITEMS, AddKnownItemsPhaseUpdater::new),
-        Map.entry(Phase.DRIFT_MAP_OBJECTS, DriftMapObjectsPhaseUpdater::new),
-        Map.entry(Phase.STABILIZE_PORTALS, StabilizePortalsPhaseUpdater::new),
-        Map.entry(Phase.COLLAPSE_PORTALS, CollapsePortalsPhaseUpdater::new),
         Map.entry(Phase.UNLOAD_SHIPS, UnloadShipPhaseUpdater::new),
         Map.entry(Phase.DEPLOY_DEVICES, DeployDevicesPhaseUpdater::new),
+        Map.entry(Phase.APPLY_DEPLOYMENT_DAMAGE, ApplyDeploymentDamagePhaseUpdater::new),
         Map.entry(Phase.LOAD_SHIPS, LoadShipPhaseUpdater::new),
         Map.entry(Phase.SELF_DESTRUCT_SHIPS, DestructShipsPhaseUpdater::new),
         Map.entry(Phase.FIRE_GUNS, FireGunsPhaseUpdater::new),

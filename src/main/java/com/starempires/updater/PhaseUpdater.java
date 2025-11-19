@@ -3,15 +3,12 @@ package com.starempires.updater;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.constants.Constants;
-import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
-import com.starempires.objects.MappableObject;
-import com.starempires.orders.Order;
 import com.starempires.objects.Ship;
 import com.starempires.objects.ShipClass;
+import com.starempires.orders.Order;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,17 +62,6 @@ public abstract class PhaseUpdater {
             rv += suffix;
         }
         return rv;
-    }
-
-    protected Coordinate getCoordinateFromLocation(final String location) {
-        final MappableObject mapObject = ObjectUtils.firstNonNull(turnData.getWorld(location),turnData.getPortal(location),
-                turnData.getStorm(location));
-        if (mapObject == null) {
-            return null;
-        }
-        else {
-            return mapObject.getCoordinate();
-        }
     }
 
     protected List<Ship> getShipsByHandle(final Order order, final List<String> shipHandles) {

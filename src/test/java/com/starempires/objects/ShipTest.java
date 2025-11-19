@@ -349,13 +349,6 @@ class ShipTest extends BaseTest {
     }
 
     @Test
-    void hasAccruedTotalDamageExceededRemainingDp() {
-        assertFalse(carrier.hasAccruedTotalDamageExceededRemainingDp());
-        carrier.inflictCombatDamage(20);
-        assertTrue(carrier.hasAccruedTotalDamageExceededRemainingDp());
-    }
-
-    @Test
     void isRepairable() {
         assertFalse(carrier.isRepairable());
         carrier.setDpRemaining(1);

@@ -21,6 +21,7 @@ public enum Phase {
     // Logistics
     UNLOAD_SHIPS,
     DEPLOY_DEVICES,
+    APPLY_DEPLOYMENT_DAMAGE,
     LOAD_SHIPS,
     // Combat
     SELF_DESTRUCT_SHIPS,
