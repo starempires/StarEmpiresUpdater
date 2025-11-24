@@ -8,6 +8,7 @@ import com.starempires.orders.FireOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 import com.starempires.orders.UnloadOrder;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,9 +21,10 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
     }
 
     private void createUnloadOrders(final Empire empire, final List<Ship> ships) {
+        if (CollectionUtils.isNotEmpty(ships)) {
             final String parameters = ships.stream()
-                .map(Ship::getName)
-                .collect(Collectors.joining(" "));
+                    .map(Ship::getName)
+                    .collect(Collectors.joining(" "));
             final Order order = UnloadOrder.builder()
                     .empire(empire)
                     .orderType(OrderType.UNLOAD)
@@ -31,6 +33,7 @@ public class UnloadShipPhaseUpdater extends PhaseUpdater {
                     .ships(ships)
                     .build();
             turnData.addOrder(order);
+        }
     }
 
     private void createAutoUnloadOrders() {
