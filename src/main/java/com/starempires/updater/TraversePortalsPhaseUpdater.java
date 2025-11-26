@@ -76,6 +76,10 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
              Portal exit = order.getExit();
              if (exit == null) {
                  exit = entry.selectRandomConnection();
+                 if (exit == null) {
+                     addNews(order, "No valid exit portal found");
+                     return;
+                 }
              }
              else if (!entry.isConnectedTo(exit)) {
                  addNews(order, "Entry portal %s and exit portal %s are not connected".formatted(entry, exit));

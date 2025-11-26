@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class Storm extends MappableObject {
 
     /** current storm intesity */
     private int intensity;
-    /** intesity fluctuations for this storm */
+    /** intensity fluctuations for this storm */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<Integer> fluctuations = Lists.newArrayList();
 
@@ -43,9 +42,8 @@ public class Storm extends MappableObject {
         return fluctuations.get(num % fluctuations.size());
     }
 
-    public void addFluctuation(final int step, final int fluctuation) {
-        Validate.isTrue(step < fluctuations.size(), String.format("Step %d exceeeds fluctuation list size", step));
-        fluctuations.set(step, fluctuation);
+    public void addFluctuations(final List<Integer> fluctuations) {
+        this.fluctuations.addAll(fluctuations);
     }
 
     @Override

@@ -54,9 +54,4 @@ public class ScanRecord {
                 .append("last scanned turn", lastTurnScanned)
                 .toString();
     }
-
-    @JsonIgnore
-    public boolean isAnyKnownStatus() {
-        return scanStatus.isMoreVisible(ScanStatus.UNKNOWN);
-    }
 }

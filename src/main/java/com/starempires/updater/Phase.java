@@ -2,8 +2,7 @@ package com.starempires.updater;
 
 public enum Phase {
 
-    // Astronomics
-    FLUCTUATE_STORMS,
+    // Administration
     REMOVE_MAP_OBJECTS,
     RELOCATE_OBJECTS,
     RELOCATE_SHIPS,
@@ -15,14 +14,16 @@ public enum Phase {
     MODIFY_MAP_OBJECTS,
     REMOVE_KNOWN_ITEMS,
     ADD_KNOWN_ITEMS,
-    DRIFT_MAP_OBJECTS,
-    STABILIZE_PORTALS,
-    COLLAPSE_PORTALS,
     // Logistics
     UNLOAD_SHIPS,
     DEPLOY_DEVICES,
     APPLY_DEPLOYMENT_DAMAGE,
     LOAD_SHIPS,
+    // Astronomics
+    STABILIZE_PORTALS,
+    COLLAPSE_PORTALS,
+    FLUCTUATE_STORMS,
+    DRIFT_MAP_OBJECTS,
     // Combat
     SELF_DESTRUCT_SHIPS,
     FIRE_GUNS,

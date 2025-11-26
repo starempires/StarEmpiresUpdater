@@ -143,10 +143,6 @@ public class ScanData extends HashMap<Coordinate, ScanRecord> {
         coordinates.forEach(coordinate -> mergeScanStatus(coordinate, status, turnNumber));
     }
 
-    public void mergeScanStatus(final Coordinate coordinate, final @NotNull ScanRecord record, final int turnNumber) {
-        mergeScanStatus(coordinate, record.getScanStatus(), turnNumber);
-    }
-
     public void mergeScanStatusAndShare(final Empire empire, final ScanData scan) {
         mergeScanStatusAndShare(empire, scan, scan.getCoordinates());
     }

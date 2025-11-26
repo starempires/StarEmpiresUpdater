@@ -15,12 +15,12 @@ public class StabilizePortalsPhaseUpdater extends PhaseUpdater {
     @Override
     public void update() {
         final Collection<Portal> portals = turnData.getAllPortals();
-        portals.forEach(portal -> {
-            if (portal.isCollapsed()) {
-                portal.setCollapsed(false);
-                final Collection<Empire> empires = turnData.getEmpiresPresent(portal);
-                addNews(empires, "Portal " + portal + " has stabilized");
-            }
-        });
+        portals.stream()
+                .filter(Portal::isCollapsed)
+                .forEach(portal -> {
+                    portal.setCollapsed(false);
+                    final Collection<Empire> empires = turnData.getEmpiresPresent(portal);
+                    addNews(empires, "Portal " + portal + " has stabilized");
+                });
     }
 }

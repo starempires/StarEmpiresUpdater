@@ -433,19 +433,11 @@ public class TurnData {
         return connections;
     }
 
-    public Collection<Ship> getDeployedDevices(final MappableObject object, final DeviceType type) {
-        return getDeployedDevices(object.getCoordinate(), type);
-    }
-
     public Collection<Ship> getDeployedDevices(final Coordinate coordinate, final DeviceType type) {
         final Collection<Ship> coordinateDevices = deployedDevices.get(coordinate);
         return coordinateDevices.stream()
                 .filter(device -> device.isDeviceType(type))
                 .collect(Collectors.toSet());
-    }
-
-    public void addParameter(String name, String value) {
-        parameters.put(name, value);
     }
 
     public List<ShipClass> getShipClasses(final Empire empire, final Collection<String> shipClassNames) {

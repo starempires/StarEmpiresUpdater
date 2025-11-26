@@ -20,7 +20,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
 
     public void update(final List<Ship> damagedShips, final Consumer<Ship> applyDamageType) {
         damagedShips.sort(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR);
-        Multimap<Ship, Empire> newsEmpires = HashMultimap.create();
+        final Multimap<Ship, Empire> newsEmpires = HashMultimap.create();
         damagedShips.forEach(ship -> {
             final Collection<Empire> empires = turnData.getEmpiresPresent(ship);
             newsEmpires.putAll(ship, empires);
