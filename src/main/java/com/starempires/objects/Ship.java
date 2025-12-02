@@ -51,6 +51,8 @@ public class Ship extends OwnableObject {
     private int combatDamageAccrued;
     @JsonIgnore
     private int stormDamageAccrued;
+    @JsonIgnore
+    private int deploymentDamageAccrued;
     /** the ShipClass of this ship */
     @JsonSerialize(using = IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = DeferredIdentifiableObjectDeserializer.class)
@@ -174,6 +176,7 @@ public class Ship extends OwnableObject {
 
     public void deploy() {
         if (isDevice()) {
+            inflictDeploymentDamage(getDpRemaining());
             addCondition(ShipCondition.DEPLOYED);
         }
     }
@@ -186,6 +189,11 @@ public class Ship extends OwnableObject {
     public void inflictStormDamage(final int damage) {
         stormDamageAccrued += damage;
         addCondition(ShipCondition.DAMAGED_BY_STORM);
+    }
+
+    public void inflictDeploymentDamage(final int damage) {
+        deploymentDamageAccrued += damage;
+        addCondition(ShipCondition.DEPLOYED);
     }
 
     private void checkDestroyed(ShipCondition condition) {
@@ -205,8 +213,8 @@ public class Ship extends OwnableObject {
     }
 
     public void applyDeploymentDamage() {
-        dpRemaining = 0;
-        destroy(ShipCondition.DEPLOYED);
+        dpRemaining -= deploymentDamageAccrued;
+        checkDestroyed(ShipCondition.DEPLOYED);
     }
 
     public void destroy(final ShipCondition destroyedCondition) {

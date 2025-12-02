@@ -170,8 +170,4 @@ class OrderTest {
     void getCoordinateFromJsonNodeNull() throws JsonProcessingException {
         assertNull(Order.getCoordinateFromJsonNode(null));
     }
-
-    @Test
-    void parseReady() {
-    }
 }

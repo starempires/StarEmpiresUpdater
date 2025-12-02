@@ -73,7 +73,6 @@ public class RelocateShipOrder extends ShipBasedOrder {
         return builder
                 .ships(getTurnDataListFromJsonNode(node.get("ships"), empire::getShip))
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
-                .gmOnly(true)
                 .build();
     }
 }

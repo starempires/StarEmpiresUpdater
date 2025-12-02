@@ -2,6 +2,7 @@ package com.starempires.objects;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.starempires.util.BaseTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -10,10 +11,11 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CoordinateTest {
+public class CoordinateTest extends BaseTest {
 
     private final Coordinate c1 = new Coordinate(0, 0);
     private final Coordinate c2 = new Coordinate(1, 0);
@@ -131,5 +133,11 @@ public class CoordinateTest {
     @Test
     public void testNegate() {
         assertEquals(new Coordinate(-1, 0), Coordinate.negate(new Coordinate(1, 0)));
+    }
+
+    @Test
+    public void testIsBeyondMinDistanceToObjects() {
+        assertFalse(c1.isBeyondMinDistanceToObjects(Set.of(portal), 1));
+        assertTrue(c2.isBeyondMinDistanceToObjects(Set.of(portal), 0));
     }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplyCombatDamagePhaseUpdaterTest extends BaseTest {
@@ -27,5 +28,18 @@ class ApplyCombatDamagePhaseUpdaterTest extends BaseTest {
         assertEquals(damage, ship.getCombatDamageAccrued());
         assertEquals(ship.getDp() - damage, ship.getDpRemaining());
         assertTrue(ship.hasCondition(ShipCondition.HIT_IN_COMBAT));
+    }
+
+    @Test
+    void updateDestroyLoadedCargo() {
+        final Ship carrier = createShip(carrierClass, ZERO_COORDINATE, "carrier", empire1);
+        final Ship probe = createShip(probeClass, ZERO_COORDINATE, "probe", empire1);
+        turnData.load(probe, carrier);
+        carrier.inflictCombatDamage(100);
+        updater.update();
+        assertFalse(carrier.isAlive());
+        assertFalse(probe.isAlive());
+        assertTrue(carrier.hasCondition(ShipCondition.HIT_IN_COMBAT));
+        assertTrue(probe.hasCondition(ShipCondition.HIT_IN_COMBAT));
     }
 }

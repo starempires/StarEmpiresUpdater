@@ -16,22 +16,18 @@ public class DeployDevicesPhaseUpdater extends PhaseUpdater {
         super(Phase.DEPLOY_DEVICES, turnData);
     }
 
-    private void deployDevice(final Ship device) {
-        final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(device);
-        turnData.deploy(device);
-        newsEmpires.forEach(newsEmpire -> {
-            addNews(newsEmpire, "%s deployed %s %s in sector %s".formatted(device.getOwner(), device.getDeviceType(), device, newsEmpire.toLocal(device.getCoordinate())));
-        });
-    }
-
     @Override
     public void update() {
         final List<Order> orders = turnData.getOrders(OrderType.DEPLOY);
         orders.forEach(o -> {
             final DeployOrder order = (DeployOrder) o;
             addOrderText(order);
-            for (final Ship ship : order.getShips()) {
-                deployDevice(ship);
+            for (final Ship device : order.getShips()) {
+                final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(device);
+                turnData.deploy(device);
+                newsEmpires.forEach(newsEmpire -> {
+                    addNews(newsEmpire, "%s deployed %s %s in sector %s".formatted(device.getOwner(), device.getDeviceType(), device, newsEmpire.toLocal(device.getCoordinate())));
+                });
             }
         });
     }

@@ -20,11 +20,11 @@ public abstract class TransponderChangesPhaseUpdater extends PhaseUpdater {
         final List<Empire> validEmpires = Lists.newArrayList();
         empireNames.forEach(empireName -> {
             final Empire transponderEmpire = turnData.getEmpire(empireName);
-            if (transponderEmpire == null || !empire.isKnownEmpire(transponderEmpire)) {
-                addNews(order, "You have no information about empire " + empireName);
+            if (empire.isKnownEmpire(transponderEmpire)) {
+                validEmpires.add(transponderEmpire);
             }
             else {
-                validEmpires.add(transponderEmpire);
+                addNews(order, "You have no contact with empire " + empireName);
             }
         });
         return validEmpires;

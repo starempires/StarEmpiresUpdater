@@ -26,6 +26,7 @@ public class RepairOrder extends ShipBasedOrder {
     private static final String REGEX = SHIP_CAPTURE_REGEX + SPACE_REGEX + AMOUNT_CAPTURE_REGEX + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX;
     private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int dpToRepair;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)

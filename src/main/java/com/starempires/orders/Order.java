@@ -52,7 +52,7 @@ public abstract class Order {
     final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
     final static protected String COORDINATE_LIST_REGEX = COORDINATE_REGEX + "(?:" + SPACE_REGEX + COORDINATE_REGEX + ")*";
     final static protected String SHIP_LOCATION_LIST_REGEX = SHIP_LOCATION_REGEX + "(?:" + SPACE_REGEX + SHIP_LOCATION_REGEX + ")*";
-    final static protected String OBJECT_TYPE_REGEX = "world|portal|storm";
+    final static protected String OBJECT_TYPE_REGEX = "world|portal|storm|shipclass|contact";
     final static protected String TOGGLE_MODE_REGEX = "public|private";
     final static protected String DESIGN_PARAMETERS_REGEX = "[\\d\\s]+";
     final static protected String TARGET_ORDER_REGEX = "asc|desc";
@@ -88,6 +88,7 @@ public abstract class Order {
     final static protected String ENTRY_GROUP = "entry";
     final static protected String EXIT_GROUP = "exit";
     final static protected String SHIP_CLASS_GROUP = "shipclass";
+    final static protected String DP_GROUP = "dp";
 
     // named ID_REGEX capture groups
     final static protected String SHIP_CAPTURE_REGEX = regexWithCaptureGroup(SHIP_GROUP, ID_REGEX);
@@ -110,6 +111,7 @@ public abstract class Order {
     final static protected String PRODUCTION_CAPTURE_REGEX = regexWithCaptureGroup(PRODUCTION_GROUP, INT_REGEX);
     final static protected String STOCKPILE_CAPTURE_REGEX = regexWithCaptureGroup(STOCKPILE_GROUP, INT_REGEX);
     final static protected String RADIUS_CAPTURE_REGEX = regexWithCaptureGroup(RADIUS_GROUP, INT_REGEX);
+    final static protected String DP_CAPTURE_REGEX = regexWithCaptureGroup(DP_GROUP, INT_REGEX);
 
     // optional capture regexes
     final static protected String OPTIONAL_TARGET_ORDER_CAPTURE_REGEX = "(?:" + regexWithCaptureGroup(TARGET_ORDER_GROUP, TARGET_ORDER_REGEX) + SPACE_REGEX + ")?";
@@ -289,9 +291,9 @@ public abstract class Order {
 
     /**
      * Given a list of ship names, return the matching list of Ships.
-     * @param empire
-     * @param text
-     * @return
+     * @param empire the empire that owns the ships
+     * @param text The text containing ship names
+     * @return List of ships
      */
     protected static List<Ship> getLiveShipsFromNames(final Empire empire, final String text, final Order order) {
         final List<Ship> ships = Lists.newArrayList();

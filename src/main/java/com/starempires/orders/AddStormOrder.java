@@ -59,7 +59,6 @@ public class AddStormOrder extends Order {
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
                 .name(getString(node, "name"))
                 .intensity(getInt(node, "intensity"))
-                .gmOnly(true)
                 .build();
     }
 }

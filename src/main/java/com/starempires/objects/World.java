@@ -13,7 +13,7 @@ import lombok.Setter;
 public class World extends OwnableObject {
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    private final int production;
+    private int production;
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private int stockpile;
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = Prohibition.ProhibitionNoneFilter.class)

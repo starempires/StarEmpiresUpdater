@@ -91,10 +91,6 @@ public class ShareScanDataPhaseUpdater extends PhaseUpdater {
         });
     }
 
-    private void mergeNewScans(final Map<Empire, ScanData> scans) {
-        scans.forEach(Empire::mergeScanStatusAndShare);
-    }
-
     @Override
     public void update() {
         final Collection<Empire> empires = turnData.getAllEmpires();
@@ -107,6 +103,6 @@ public class ShareScanDataPhaseUpdater extends PhaseUpdater {
             mergeSharedShipClassScan(empire, scans);
             mergeSharedShipScan(empire, scans);
         });
-        mergeNewScans(scans);
+        scans.forEach(Empire::mergeScanStatusAndShare);
     }
 }

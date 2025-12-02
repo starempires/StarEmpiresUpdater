@@ -27,10 +27,12 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
                     name = order.getBasename() + (startingNumber + i + 1);
                 }
                 else {
-                    name = order.getNames().get(0);
+                    name = order.getNames().getFirst();
                 }
                 final Ship ship = owner.buildShip(order.getShipClass(), order.getCoordinate(), name, turnData.getTurnNumber());
-                addNews(order, "Added %s %s %s in sector %s".formatted(ship.getOwner(), ship.getShipClass(), ship, ship.getCoordinate()));
+                final String message = "Added %s %s %s in sector %s".formatted(owner, ship.getShipClass(), ship, ship.getCoordinate());
+                addNews(order, message);
+                addNews(ship.getOwner(), message);
             };
         });
     }

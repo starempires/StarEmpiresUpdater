@@ -22,11 +22,13 @@ public class RelocateShipsPhaseUpdater extends PhaseUpdater {
         orders.forEach(o -> {
             final RelocateShipOrder order = (RelocateShipOrder) o;
             final Coordinate coordinate = order.getCoordinate();
-            final Empire owner = order.getEmpire();
+            final Empire owner = order.getOwner();
             final List<Ship> ships = order.getShips();
             ships.forEach(ship -> {
                 ship.setCoordinate(coordinate);
-                addNews(order, "Ship " + ship + " has been moved to sector " + coordinate);
+                final String message = "Ship %s has been relocated to coordiante %s".formatted(ship, coordinate);
+                addNews(owner, message);
+                addNews(order.getEmpire(), message);
             });
         });
     }

@@ -3,7 +3,9 @@ package com.starempires.updater;
 public enum Phase {
 
     // Administration
-    REMOVE_MAP_OBJECTS,
+    REMOVE_CONNECTIONS,
+    REMOVE_OBJECTS,
+    REMOVE_SHIPS,
     RELOCATE_OBJECTS,
     RELOCATE_SHIPS,
     ADD_CONNECTIONS,
@@ -11,7 +13,9 @@ public enum Phase {
     ADD_SHIPS,
     ADD_STORMS,
     ADD_WORLDS,
-    MODIFY_MAP_OBJECTS,
+    MODIFY_SHIPS,
+    MODIFY_STORMS,
+    MODIFY_WORLDS,
     REMOVE_KNOWN_ITEMS,
     ADD_KNOWN_ITEMS,
     // Logistics

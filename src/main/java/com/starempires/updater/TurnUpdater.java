@@ -33,7 +33,9 @@ public class TurnUpdater {
 
     // Registry mapping Phase enums to their updater factories
     private static final Map<Phase, Function<TurnData, PhaseUpdater>> PHASE_REGISTRY = Map.ofEntries(
-        Map.entry(Phase.REMOVE_MAP_OBJECTS, RemoveMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.REMOVE_CONNECTIONS, RemoveConnectionsPhaseUpdater::new),
+        Map.entry(Phase.REMOVE_OBJECTS, RemoveObjectsPhaseUpdater::new),
+        Map.entry(Phase.REMOVE_SHIPS, RemoveShipsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_OBJECTS, RelocateObjectsPhaseUpdater::new),
         Map.entry(Phase.RELOCATE_SHIPS, RelocateShipsPhaseUpdater::new),
         Map.entry(Phase.ADD_CONNECTIONS, AddConnectionsPhaseUpdater::new),
@@ -41,7 +43,9 @@ public class TurnUpdater {
         Map.entry(Phase.ADD_SHIPS, AddShipsPhaseUpdater::new),
         Map.entry(Phase.ADD_STORMS, AddStormsPhaseUpdater::new),
         Map.entry(Phase.ADD_WORLDS, AddWorldsPhaseUpdater::new),
-        Map.entry(Phase.MODIFY_MAP_OBJECTS, ModifyMapObjectsPhaseUpdater::new),
+        Map.entry(Phase.MODIFY_SHIPS, ModifyShipsPhaseUpdater::new),
+        Map.entry(Phase.MODIFY_STORMS, ModifyStormsPhaseUpdater::new),
+        Map.entry(Phase.MODIFY_WORLDS, ModifyWorldsPhaseUpdater::new),
         Map.entry(Phase.REMOVE_KNOWN_ITEMS, RemoveKnownItemsPhaseUpdater::new),
         Map.entry(Phase.ADD_KNOWN_ITEMS, AddKnownItemsPhaseUpdater::new),
         Map.entry(Phase.UNLOAD_SHIPS, UnloadShipPhaseUpdater::new),

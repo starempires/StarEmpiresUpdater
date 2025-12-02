@@ -136,37 +136,24 @@ public class Empire extends IdentifiableObject {
         return object.owner == this;
     }
 
-    public void addKnownEmpire(final Empire empire) {
-        knownEmpires.add(empire);
+    public boolean addKnownEmpire(final Empire empire) {
+        return knownEmpires.add(empire);
     }
 
-    public void addKnownEmpires(final Set<Empire> empires) {
-        empires.forEach(this::addKnownEmpire);
+    public boolean addKnownWorld(final World world) {
+        return knownWorlds.add(world);
     }
 
-    public void addKnownWorld(final World world) {
-        knownWorlds.add(world);
+    public boolean addKnownPortal(final Portal portal) {
+        return knownPortals.add(portal);
     }
 
-    public void addKnownPortal(final Portal portal) {
-        knownPortals.add(portal);
+    public boolean addKnownStorm(final Storm storm) {
+        return knownStorms.add(storm);
     }
 
-    public void addKnownPortal(final Portal portal, final boolean hasNavData) {
-        knownPortals.add(portal);
-        if (hasNavData) {
-            portalNavData.add(portal);
-        } else {
-            portalNavData.remove(portal);
-        }
-    }
-
-    public void addKnownStorm(final Storm storm) {
-        knownStorms.add(storm);
-    }
-
-    public void addKnownShipClass(final ShipClass shipClass) {
-        knownShipClasses.add(shipClass);
+    public boolean addKnownShipClass(final ShipClass shipClass) {
+        return knownShipClasses.add(shipClass);
     }
 
     public boolean hasNavData(final Portal portal) {
@@ -297,20 +284,24 @@ public class Empire extends IdentifiableObject {
         scanData.setLastTurnScanned(coordinate, lastTurnScanned);
     }
 
-    public void removeKnownWorld(final World world) {
-        knownWorlds.remove(world);
+    public boolean removeKnownWorld(final World world) {
+        return knownWorlds.remove(world);
     }
 
-    public void removeKnownPortal(final Portal portal) {
-        knownPortals.remove(portal);
+    public boolean removeKnownPortal(final Portal portal) {
+        return knownPortals.remove(portal);
     }
 
-    public void removeKnownEmpire(final Empire empire) {
-        knownEmpires.remove(empire);
+    public boolean removeKnownStorm(final Storm storm) {
+        return knownStorms.remove(storm);
     }
 
-    public void removeKnownShipClass(final ShipClass shipClass) {
-        knownShipClasses.remove(shipClass);
+    public boolean removeKnownEmpire(final Empire empire) {
+        return knownEmpires.remove(empire);
+    }
+
+    public boolean removeKnownShipClass(final ShipClass shipClass) {
+        return knownShipClasses.remove(shipClass);
     }
 
     public Coordinate toLocal(final Coordinate coordinate) {

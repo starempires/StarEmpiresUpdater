@@ -31,14 +31,18 @@ public class PoolResourceUnitsPhaseUpdater extends PhaseUpdater {
             if (!poolWorld.isOwnedBy(empire)) {
                 addNews(order, "You do not own world " + poolWorld);
             } else {
-                final List<World> exceptWorlds = Optional.ofNullable(order.getExceptedWorlds()).orElse(List.of());
-                exceptWorlds.forEach(world -> {
-                    if (!world.isOwnedBy(empire)) {
-                        addNews(order, "You do not own world " + world);
-                        order.getExceptedWorlds().remove(world);
-                    }
-                });
-
+                final List<World> exceptWorlds =
+                        Optional.ofNullable(order.getExceptedWorlds())
+                                .orElse(List.of())
+                                .stream()
+                                .filter(world -> {
+                                    if (!world.isOwnedBy(empire)) {
+                                        addNews(order, "You do not own world " + world);
+                                        return false;
+                                    }
+                                    return true;
+                                })
+                                .toList();
                 final AtomicInteger total = new AtomicInteger();
                 final List<World> ownedWorlds = Lists.newArrayList(turnData.getOwnedWorlds(empire));
                 ownedWorlds.removeAll(exceptWorlds);

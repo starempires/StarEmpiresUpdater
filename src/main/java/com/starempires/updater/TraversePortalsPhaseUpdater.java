@@ -19,7 +19,7 @@ public class TraversePortalsPhaseUpdater extends PhaseUpdater {
     }
 
     private void traversePortal(final Order order, final Portal entry, final Portal exit, final List<Ship> ships) {
-            final Empire empire = order.getEmpire();
+        final Empire empire = order.getEmpire();
         final Collection<Empire> entranceEmpires = turnData.getEmpiresPresent(entry);
         entranceEmpires.remove(empire);
 

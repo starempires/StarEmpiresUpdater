@@ -109,8 +109,7 @@ public class AddShipOrder extends Order {
                 .count(getInt(node, "count"))
                 .basename(getString(node, "basename"))
                 .names(getStringList(node, "names"))
-                .owner(getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire))
-                .gmOnly(true)
+                .owner(owner)
                 .build();
     }
 }

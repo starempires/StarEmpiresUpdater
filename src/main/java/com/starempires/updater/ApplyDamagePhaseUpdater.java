@@ -11,6 +11,7 @@ import com.starempires.objects.Ship;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
@@ -18,7 +19,9 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
         super(phase, turnData);
     }
 
-    public void update(final List<Ship> damagedShips, final Consumer<Ship> applyDamageType) {
+    public void update(final List<Ship> damagedShips,
+                       final Consumer<Ship> applyDamageType,
+                       final BiConsumer<Ship, Integer> inflictDamageType) {
         damagedShips.sort(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR);
         final Multimap<Ship, Empire> newsEmpires = HashMultimap.create();
         damagedShips.forEach(ship -> {
@@ -37,7 +40,7 @@ public abstract class ApplyDamagePhaseUpdater extends PhaseUpdater {
                     .stream()
                     .sorted(IdentifiableObject.IDENTIFIABLE_NAME_COMPARATOR)
                     .forEach(cargo -> {
-                           cargo.setDpRemaining(0);
+                           inflictDamageType.accept(cargo, cargo.getDpRemaining());
                            applyDamageType.accept(cargo);
                            destroyed.add(cargo);
                            addNews(empires, "Loaded %s cargo %s has been destroyed".formatted(cargo.getOwner(), cargo));

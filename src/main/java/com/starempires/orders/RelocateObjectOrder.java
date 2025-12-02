@@ -73,7 +73,7 @@ public class RelocateObjectOrder extends Order {
                 order.addError("Unknown %s: %s".formatted(typeText.toLowerCase(), idText));
             }
         } else {
-            order.addError("Invalid MOVEMAPOBJECT order: " + parameters);
+            order.addError("Invalid RELOCATEOBJECT order: " + parameters);
         }
 
         return order;

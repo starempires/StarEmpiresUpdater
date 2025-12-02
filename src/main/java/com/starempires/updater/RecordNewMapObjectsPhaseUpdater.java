@@ -65,7 +65,7 @@ public class RecordNewMapObjectsPhaseUpdater extends PhaseUpdater {
         newKnownEmpires.removeAll(existingKnownEmpires);
         newKnownEmpires.remove(empire);
         newKnownEmpires.stream().sorted().forEach(knownEmpire -> addNews(empire, "You are now in contact with empire " + knownEmpire));
-        empire.addKnownEmpires(newKnownEmpires);
+        newKnownEmpires.forEach(empire::addKnownEmpire);
     }
 
     @Override

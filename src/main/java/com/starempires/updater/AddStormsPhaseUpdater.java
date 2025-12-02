@@ -1,12 +1,14 @@
 package com.starempires.updater;
 
 import com.starempires.TurnData;
+import com.starempires.objects.Empire;
 import com.starempires.objects.Storm;
 import com.starempires.orders.AddStormOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 
 import java.util.List;
+import java.util.Set;
 
 public class AddStormsPhaseUpdater extends PhaseUpdater {
     public AddStormsPhaseUpdater(TurnData turnData) {
@@ -24,7 +26,9 @@ public class AddStormsPhaseUpdater extends PhaseUpdater {
                     .intensity(order.getIntensity())
                     .build();
             turnData.addStorm(storm);
-            addNews(order, "Added storm %s in sector %s".formatted(storm, storm.getCoordinate()));
+            final Set<Empire> empires = turnData.getEmpiresPresent(storm);
+            empires.add(order.getEmpire());
+            addNews(empires, "Storm %s has been added to sector %s".formatted(storm, storm.getCoordinate()));
         });
     }
 }

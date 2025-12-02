@@ -267,11 +267,6 @@ public class Coordinate implements Comparable<Coordinate> {
         return this;
     }
 
-    public Coordinate translateToNew(final @NonNull Coordinate translation) {
-        Coordinate newCoordinate = new Coordinate(this);
-        return newCoordinate.translate(translation);
-    }
-
     /**
      * Rotate this Coordinate by the given HexDirection
      *

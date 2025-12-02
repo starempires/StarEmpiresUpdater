@@ -1,12 +1,14 @@
 package com.starempires.updater;
 
 import com.starempires.TurnData;
+import com.starempires.objects.Empire;
 import com.starempires.objects.World;
 import com.starempires.orders.AddWorldOrder;
 import com.starempires.orders.Order;
 import com.starempires.orders.OrderType;
 
 import java.util.List;
+import java.util.Set;
 
 public class AddWorldsPhaseUpdater extends PhaseUpdater {
     public AddWorldsPhaseUpdater(TurnData turnData) {
@@ -31,7 +33,9 @@ public class AddWorldsPhaseUpdater extends PhaseUpdater {
                 world.getOwner().addKnownWorld(world);
                 message += " (owner %s)".formatted(world.getOwner());
             }
-            addNews(order, message);
+            final Set<Empire> empires = turnData.getEmpiresPresent(world);
+            empires.add(order.getEmpire());
+            addNews(empires, message);
         });
     }
 }

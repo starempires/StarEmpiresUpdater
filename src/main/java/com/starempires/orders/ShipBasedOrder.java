@@ -39,10 +39,10 @@ public abstract class ShipBasedOrder extends Order {
      * Get a list of Ships from a coordinate, a location, or a list of ships. Coordinate
      * or location can be followed by a list of ships to exclude.
      *
-     * @param empire
-     * @param matcher
-     * @param order
-     * @return
+     * @param empire The empire owning the ships
+     * @param matcher Matcher used to find matching coordinate or ship location
+     * @param order The order being parsed
+     * @return List of ships
      */
     protected static List<Ship> getLocationShips(final Empire empire, final Matcher matcher, final Order order) {
         final List<Ship> locationShips = Lists.newArrayList();

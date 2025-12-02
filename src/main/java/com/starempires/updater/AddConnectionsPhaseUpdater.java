@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AddConnectionsPhaseUpdater extends PhaseUpdater {
     public AddConnectionsPhaseUpdater(TurnData turnData) {
-        super(Phase.ADD_SHIPS, turnData);
+        super(Phase.ADD_CONNECTIONS, turnData);
     }
 
     @Override

@@ -54,7 +54,6 @@ public class AddPortalOrder extends Order {
         return builder
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
                 .name(getString(node, "name"))
-                .gmOnly(true)
                 .build();
     }
 }

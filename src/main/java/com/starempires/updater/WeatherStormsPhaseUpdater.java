@@ -12,29 +12,13 @@ import com.starempires.objects.Storm;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class WeatherStormsPhaseUpdater extends PhaseUpdater {
 
     private static final int STARBASE_PROTECTION_RANGE = 1;
-
-    static class ShieldComparator implements Comparator<Ship> {
-        private static final Random random = ThreadLocalRandom.current();
-
-        @Override
-        public int compare(final Ship ship1, final Ship ship2) {
-            int rv = ship1.getDpRemaining() - ship2.getDpRemaining();
-            if (rv == 0) {
-                rv = random.nextInt() - random.nextInt();
-            }
-            return rv;
-        }
-    }
 
     public WeatherStormsPhaseUpdater(final TurnData turnData) {
         super(Phase.WEATHER_STORMS, turnData);
