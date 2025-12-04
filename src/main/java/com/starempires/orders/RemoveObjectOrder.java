@@ -28,16 +28,16 @@ public class RemoveObjectOrder extends Order {
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private List<World> worlds;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private List<Portal> portals;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private List<Storm> storms;
 
     public static RemoveObjectOrder parse(final TurnData turnData, final Empire empire, final String parameters) {

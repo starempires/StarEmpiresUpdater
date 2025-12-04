@@ -26,6 +26,7 @@ public class TurnUpdater {
     private static final String ARG_SESSION_NAME = "session";
     private static final String ARG_TURN_NUMBER = "turn";
     private static final String ARG_SESSION_LOCATION = "sessionlocation";
+    private static final String ARG_ADMIN_ONLY = "adminonly";
 
     private final StarEmpiresDAO dao;
     private final String sessionName;
@@ -94,6 +95,10 @@ public class TurnUpdater {
             options.addOption(Option.builder("s").argName("session name").longOpt(ARG_SESSION_NAME).hasArg().desc("session name").required().get());
             options.addOption(Option.builder("t").argName("turn number").longOpt(ARG_TURN_NUMBER).hasArg().desc("turn number").required().get());
             options.addOption(Option.builder("sl").argName("sessions locations").longOpt(ARG_SESSION_LOCATION).hasArg().desc("sessions location").required().get());
+            options.addOption(Option.builder("a").argName("admin only").hasArg(false)
+                                       .longOpt(ARG_ADMIN_ONLY)
+                                       .desc("process administration phases only")
+                                       .get());
 
             final CommandLineParser parser = new DefaultParser();
             return parser.parse(options, args);
@@ -111,17 +116,26 @@ public class TurnUpdater {
         dao = new S3StarEmpiresDAO(sessionsLocation, null);
     }
 
-    public TurnData updateTurn() throws Exception {
+    public void updateTurn() throws Exception {
         final TurnData turnData = loadTurnData();
         final Empire gm = turnData.addGMEmpire();
-        loadReadyOrders(turnData);
-        processTurn(turnData);
+        loadReadyOrders(turnData, turnData.getAllEmpires());
+        processAllTurnPhases(turnData);
         turnData.setTurnNumber(turnData.getTurnNumber() + 1);
         saveNews(turnData);
-        // we don't actually need to serialize all of the GM's info in Empire form
+        // we don't actually need to serialize the GM's info in Empire form
         turnData.removeEmpire(gm);
         saveTurnData(turnData);
-        return turnData;
+    }
+
+    public void processAdminOnly() throws Exception {
+        final TurnData turnData = loadTurnData();
+        final Empire gm = turnData.addGMEmpire();
+        loadReadyOrders(turnData, List.of(gm));
+        processAdminPhases(turnData);
+        // we don't actually need to serialize the GM's info in Empire form
+        turnData.removeEmpire(gm);
+        saveTurnData(turnData);
     }
 
     public static void main(final String[] args) {
@@ -130,8 +144,14 @@ public class TurnUpdater {
             final String sessionsLocation = cmd.getOptionValue(ARG_SESSION_LOCATION);
             final String sessionName = cmd.getOptionValue(ARG_SESSION_NAME);
             final int turnNumber = Integer.parseInt(cmd.getOptionValue(ARG_TURN_NUMBER));
+            final boolean processAdminOnly = cmd.hasOption(ARG_ADMIN_ONLY);
             final TurnUpdater turnUpdater = new TurnUpdater(sessionsLocation, sessionName, turnNumber);
-            turnUpdater.updateTurn();
+            if (processAdminOnly) {
+                turnUpdater.processAdminOnly();
+            }
+            else {
+                turnUpdater.updateTurn();
+            }
         } catch (Exception exception) {
             log.error("Update failed", exception);
         }
@@ -144,8 +164,7 @@ public class TurnUpdater {
         return turnData;
     }
 
-    private void loadReadyOrders(final TurnData turnData) throws Exception {
-        final Collection<Empire> empires = turnData.getAllEmpires();
+    private void loadReadyOrders(final TurnData turnData, final Collection<Empire> empires) throws Exception {
         for (Empire empire: empires) {
             final List<Order> orders = dao.loadReadyOrders(sessionName, empire.getName(), turnNumber, turnData);
             turnData.addOrders(orders);
@@ -158,16 +177,26 @@ public class TurnUpdater {
         phase.postUpdate();
     }
 
-    private void processTurn(TurnData turnData) {
-        log.info("Running update for session {} turn {}", sessionName, turnNumber);
-        for (Phase phase : Phase.values()) {
+    private void processPhases(final List<Phase> phases, final TurnData turnData) {
+        for (Phase phase : phases) {
             final Function<TurnData, PhaseUpdater> factory = PHASE_REGISTRY.get(phase);
             if (factory != null) {
                 processPhase(factory.apply(turnData));
                 log.info("Processed phase {}", phase);
             }
         }
+    }
+
+    private void processAllTurnPhases(final TurnData turnData) {
+        log.info("Running update for session {} turn {}", sessionName, turnNumber);
+        processPhases(List.of(Phase.values()), turnData);
         log.info("Processed all phases for session {}", sessionName);
+    }
+
+    private void processAdminPhases(final TurnData turnData) {
+        log.info("Processing administration phases for session {} turn {}", sessionName, turnNumber);
+        processPhases(Phase.getPhasesByStage(Stage.ADMINISTRATION), turnData);
+        log.info("Processed administration phases for session {}", sessionName);
     }
 
     private void saveTurnData(final TurnData turnData) throws Exception {

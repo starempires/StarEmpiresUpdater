@@ -245,10 +245,6 @@ public class TurnData {
         return ObjectUtils.firstNonNull(orders.get(orderType), Collections.emptyList());
     }
 
-    public Set<Ship> getLiveShips(final MappableObject object) {
-        return getLiveShips(object.getCoordinate());
-    }
-
     public Set<Ship> getLiveShips(final Coordinate coordinate) {
         return getActiveEmpires().stream()
                 .flatMap(empire -> empire.getLiveShips(coordinate).stream())

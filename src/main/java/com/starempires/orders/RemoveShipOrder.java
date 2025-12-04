@@ -29,8 +29,8 @@ public class RemoveShipOrder extends Order {
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Empire owner;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
-    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     private List<Ship> ships;
 
     public static RemoveShipOrder parse(final TurnData turnData, final Empire empire, final String parameters) {

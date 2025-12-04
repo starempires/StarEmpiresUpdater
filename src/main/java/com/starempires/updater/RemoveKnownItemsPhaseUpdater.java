@@ -8,6 +8,7 @@ import com.starempires.orders.OrderType;
 import com.starempires.orders.RemoveKnownOrder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class RemoveKnownItemsPhaseUpdater extends PhaseUpdater {
@@ -34,19 +35,28 @@ public class RemoveKnownItemsPhaseUpdater extends PhaseUpdater {
         final List<Order> orders = turnData.getOrders(OrderType.REMOVEKNOWN);
         orders.forEach(o -> {
             final RemoveKnownOrder order = (RemoveKnownOrder) o;
-            final List<Empire> recipients = order.getRecipients();
-            recipients.forEach(recipient -> {
-                order.getWorlds().forEach(world ->
-                        removeKnowledge(order, recipient, recipient::removeKnownWorld, "world", world));
-                order.getPortals().forEach(portal ->
-                        removeKnowledge(order, recipient, recipient::removeKnownPortal, "portal", portal));
-                order.getStorms().forEach(storm ->
-                        removeKnowledge(order, recipient, recipient::removeKnownStorm, "storm", storm));
-                order.getShipClasses().forEach(shipClass ->
-                        removeKnowledge(order, recipient, recipient::removeKnownShipClass, "ship class", shipClass));
-                order.getContacts().forEach(contact ->
-                        removeKnowledge(order, recipient, recipient::removeKnownEmpire, "contact", contact));
-            });
+            Optional.ofNullable(order.getRecipients())
+                    .ifPresent(recipients -> recipients.forEach(recipient -> {
+                        Optional.ofNullable(order.getWorlds())
+                                .ifPresent(worlds -> worlds.forEach(world ->
+                                        removeKnowledge(order, recipient, recipient::removeKnownWorld, "world", world)));
+                        
+                        Optional.ofNullable(order.getPortals())
+                                .ifPresent(portals -> portals.forEach(portal ->
+                                        removeKnowledge(order, recipient, recipient::removeKnownPortal, "portal", portal)));
+                        
+                        Optional.ofNullable(order.getStorms())
+                                .ifPresent(storms -> storms.forEach(storm ->
+                                        removeKnowledge(order, recipient, recipient::removeKnownStorm, "storm", storm)));
+                        
+                        Optional.ofNullable(order.getShipClasses())
+                                .ifPresent(shipClasses -> shipClasses.forEach(shipClass ->
+                                        removeKnowledge(order, recipient, recipient::removeKnownShipClass, "ship class", shipClass)));
+                        
+                        Optional.ofNullable(order.getContacts())
+                                .ifPresent(contacts -> contacts.forEach(contact ->
+                                        removeKnowledge(order, recipient, recipient::removeKnownEmpire, "contact", contact)));
+                    }));
         });
     }
 }
