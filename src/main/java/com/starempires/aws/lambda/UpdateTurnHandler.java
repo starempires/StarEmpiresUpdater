@@ -20,14 +20,14 @@ public class UpdateTurnHandler extends BaseLambdaHandler {
             log.info("input: {}", input);
             final String sessionName = input.sessionName();
             final int turnNumber = input.turnNumber();
-            final boolean adminOnly = input.adminOnly();
+            final boolean processAdminOnly = input.processAdminOnly();
 
             Validate.notEmpty(sessionName, "Missing sessionName");
             Validate.isNotNegative(turnNumber, "Turn number cannot be negative");
 
             final TurnUpdater updater = new TurnUpdater(SESSIONS_LOCATION, sessionName, turnNumber);
             final String message;
-            if (adminOnly) {
+            if (processAdminOnly) {
                 updater.processAdminOnly();
                 message = "Processed administration phases for session %s".formatted(sessionName);
             }
