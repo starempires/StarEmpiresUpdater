@@ -1,4 +1,3 @@
-
 13th_Street_Station
 20_Minute_Loop
 A_Portal_Too_Far
@@ -296,7 +295,10 @@ Via_Media
 Via_Predicator
 Via_Sinister
 Vicious_Circle
+Void_Tunnel
+Vortexatron
 Warp_Unit_417
+Warp_Vortex
 Weedpatch_Highway
 What_The_Hell
 Whats_This_Thing

@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Getter
 public class RemoveKnownOrder extends KnownOrder {
-    // order: REMOVENOWN object-type object1 [object2 ...] TO empire1 [empire2...]
+    // order: REMOVEKNOWN object-type object1 [object2 ...] TO empire1 [empire2...]
     public static RemoveKnownOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         return KnownOrder.parse(
                 turnData,

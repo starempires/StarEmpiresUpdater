@@ -163,6 +163,7 @@ Callisto
 Calumny
 Camaron
 Campbell
+Caprica
 Carlowe
 Casino_Royale
 Castor
@@ -785,6 +786,7 @@ Rot13
 Rubaiyat
 Runnymede
 Rutan
+Rylos
 SH_10151
 Sagrada_Familia
 Sailus

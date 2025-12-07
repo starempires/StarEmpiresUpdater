@@ -140,16 +140,15 @@ public class Galaxy {
                 }
                 numNearbyWorlds--;
                 nearbyProduction -= production;
-                int id = worlds.size() + 1;
-                String name = getName(names);
-                Coordinate nearbyCoordinate = nearbyCoords.get(0);
+                final String name = getName(names);
+                final Coordinate nearbyCoordinate = nearbyCoords.getFirst();
                 final World.WorldBuilder builder = World.builder();
-                World world = builder.name(name).coordinate(nearbyCoordinate)
+                final World world = builder.name(name).coordinate(nearbyCoordinate)
                         .production(production).build();
                 worlds.add(world);
                 log.info("Added nearby world {}, distance {}, production {}", world, Coordinate.distance(coordinate, nearbyCoordinate), production);
                 unoccupied.remove(nearbyCoordinate);
-                nearbyCoords.remove(0);
+                nearbyCoords.removeFirst();
             }
         }
     }
@@ -211,7 +210,7 @@ public class Galaxy {
                 connected.remove(portal);
                 connected.forEach(portal::addConnection);
                 portals.add(portal);
-                log.info("Added portal " + portal);
+                log.info("Added portal {}", portal);
             });
         }
         else {
