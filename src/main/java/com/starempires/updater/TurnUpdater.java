@@ -68,7 +68,7 @@ public class TurnUpdater {
         Map.entry(Phase.WEATHER_STORMS, WeatherStormsPhaseUpdater::new),
         Map.entry(Phase.APPLY_STORM_DAMAGE, ApplyStormDamagePhaseUpdater::new),
         Map.entry(Phase.DETERMINE_OWNERSHIP_II, DetermineOwnershipIIPhaseUpdater::new),
-        Map.entry(Phase.RELOCATE_HOMEWORLDS, RelocateHomeworldsPhaseUpdater::new),
+        Map.entry(Phase.ESTABLISH_HOMEWORLDS, EstablishHomeworldsPhaseUpdater::new),
         Map.entry(Phase.ESTABLISH_PROHIBITIONS, EstablishProhibitionsPhaseUpdater::new),
         Map.entry(Phase.SALVAGE_DESIGNS, SalvageDesignsPhaseUpdater::new),
         Map.entry(Phase.CREATE_DESIGNS, DesignShipsPhaseUpdater::new),

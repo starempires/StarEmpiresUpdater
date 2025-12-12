@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
+public class EstablishHomeworldsPhaseUpdater extends PhaseUpdater {
 
     static final class HomeworldComparator implements Comparator<World> {
 
@@ -48,8 +48,8 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
         }
     }
 
-    public RelocateHomeworldsPhaseUpdater(final TurnData turnData) {
-        super(Phase.RELOCATE_HOMEWORLDS, turnData);
+    public EstablishHomeworldsPhaseUpdater(final TurnData turnData) {
+        super(Phase.ESTABLISH_HOMEWORLDS, turnData);
     }
 
     private void relocateHomeworld(final Empire empire) {
@@ -65,7 +65,7 @@ public class RelocateHomeworldsPhaseUpdater extends PhaseUpdater {
             homeworld.setProductionMultiplier(2.0); //
             final Collection<Empire> newsEmpires = turnData.getEmpiresPresent(homeworld);
             newsEmpires.remove(empire);
-            addNews(empire, "You have relocated your homeworld to " + homeworld);
+            addNews(empire, "You have established a new homeworld at " + homeworld);
             addNews(newsEmpires, "World %s is now the %s homeworld".formatted(homeworld, empire.getName()));
         }
     }
