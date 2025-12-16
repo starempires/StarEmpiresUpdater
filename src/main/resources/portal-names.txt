@@ -143,6 +143,7 @@ Kiev_Canal
 Killjoy
 Kiril
 Knockturn_Alley
+Lambda_Core
 Lazarus
 Lazy_Imp_Hub
 Legion_Gate
@@ -297,6 +298,7 @@ Via_Sinister
 Vicious_Circle
 Void_Tunnel
 Vortexatron
+Warp_Asylum
 Warp_Unit_417
 Warp_Vortex
 Weedpatch_Highway

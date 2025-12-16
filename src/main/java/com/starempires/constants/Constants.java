@@ -12,11 +12,6 @@ public class Constants {
     public static final int DEFAULT_REPAIR_DP_PER_RU = 2;
     public static final int DEFAULT_SELF_DESTRUCT_TONNAGE_INTERVAL = 5;
 
-    /* tokens used for parsing orders */
-    public static final String TOKEN_PORTAL = "portal";
-    public static final String TOKEN_SHIP = "ship";
-    public static final String TOKEN_CLASS = "class";
-
     /* miscellaneous constants */
     public static final String FORMAT_SERIAL_NUMBER = "%05x";
     public static final String SUFFIX_S = "s";
@@ -39,6 +34,7 @@ public class Constants {
     public static final String CONFIG_MIN_NEBULA_TO_HOMEWORLD_DISTANCE = "minNebulaToHomeworldDistance";
     public static final String CONFIG_MAX_STORM_INTENSITY = "maxStormIntensity";
     public static final String CONFIG_RADIUS = "radius";
+    public static final String CONFIG_LOCALIZE_FRAMES_OF_REFERENCE = "localizeFramesOfReference";
 
     public static final int DEFAULT_HOMEWORLD_PRODUCTION = 12;
     public static final int DEFAULT_HOMEWORLD_NEARBY_PRODUCTION = 10;

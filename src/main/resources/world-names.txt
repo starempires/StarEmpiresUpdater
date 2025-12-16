@@ -701,6 +701,7 @@ Pink_Moon
 Pinkos_Grave
 Pionk
 Pirate_Haven
+Piso_Mojado
 Pittance
 Plains_Of_Abraham
 Planet_10
@@ -902,6 +903,7 @@ Terra_II
 Terra_Incognita
 Terylene_Top
 Tessaract_Three
+Texarcanum
 Thalassa
 Thantap
 The_Archology
@@ -916,7 +918,7 @@ The_Village
 The_Wolfling_World
 Thesaurus
 Thiessen
-Thirty_Ought_Six
+Thirty_Aught_Six
 This_World_Sucks
 Thorbis
 Thoth_Amon
@@ -962,7 +964,7 @@ Unseen_University
 Urgh
 Urthurs_Stronghold
 Urupa
-Vallvidrera_Superior
+Valvideria_Superior
 VanNess
 Van_Deussen
 Vangaurdia

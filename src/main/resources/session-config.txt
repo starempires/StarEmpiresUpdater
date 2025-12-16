@@ -13,3 +13,4 @@ minPortalToHomeworldDistance = 2
 minNebulaToHomeworldDistance = 2
 maxStormIntensity = 10
 radius = 4
+localizeFramesOfReference = true

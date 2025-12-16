@@ -151,13 +151,19 @@ public class SessionCreator {
             if (empireInfo.length != 5) {
                 throw new RuntimeException("Invalid empire data: " + data);
             }
-            final FrameOfReference frame = FrameOfReference.builder()
+            final FrameOfReference frame;
+            if (galaxyProperties.getBoolean(Constants.CONFIG_LOCALIZE_FRAMES_OF_REFERENCE, true)) {
+                frame = FrameOfReference.builder()
                         .obliqueOffset(-edge.getOblique())
                         .yOffset(-edge.getY())
                         .horizontalMirror(random.nextInt(2) == 1)
                         .verticalMirror(random.nextInt(2) == 1)
                         .rotation(HexDirection.from(random.nextInt(HexDirection.values().length)))
                         .build();
+            }
+            else {
+                frame = FrameOfReference.DEFAULT_FRAME_OF_REFERENCE;
+            }
             final String empireName = empireInfo[0];
             final String abbreviation = empireInfo[1];
             final EmpireType empireType = EmpireType.valueOf(empireInfo[2]);

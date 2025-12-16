@@ -2,8 +2,10 @@ Abyssal_Surge
 Aether_Rift
 Arcwave_Convergence
 Aurora_Deluge
+Bermuda_Hypertriangle
 Celestial_Barricade
 Celestial_Vortex
+Core_Dump
 Cosmic_Gale
 Dustbowl
 Eclipse_Torrent
@@ -15,6 +17,7 @@ Hyperion_Gust
 Icarus_Descent
 Inferno_Drift
 Ionic_Disturbance
+Lost_Carrier
 Nebula_Torrent
 Neptunes_Breath
 Oblivion_Roar

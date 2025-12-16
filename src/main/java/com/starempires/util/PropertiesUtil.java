@@ -4,14 +4,13 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 @Log4j2
 public class PropertiesUtil extends HashMap<String, String> {
 
-    public PropertiesUtil(final @NonNull List<String> data) throws IOException {
+    public PropertiesUtil(final @NonNull List<String> data) {
         data.forEach(line -> {
             final String[] parts = line.toLowerCase().split("=");
             if (parts.length == 2) {
