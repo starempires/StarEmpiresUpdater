@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AddPortalOrderTest extends BaseTest {
@@ -31,5 +32,17 @@ class AddPortalOrderTest extends BaseTest {
         assertEquals(OrderType.ADDPORTAL, order.getOrderType());
         assertEquals(ONE_COORDINATE, order.getCoordinate());
         assertEquals(name, order.getName());
+    }
+
+    @Test
+    void testAddPortalCollapsed() {
+        final String name = "portal1";
+        final AddPortalOrder order = AddPortalOrder.parse(turnData, gm, ONE_COORDINATE + " " + name + " collapsed");
+        assertTrue(order.isReady());
+        assertEquals(OrderType.ADDPORTAL, order.getOrderType());
+        assertEquals(ONE_COORDINATE, order.getCoordinate());
+        assertEquals(name, order.getName());
+        assertTrue(order.isCollapsed());
+        assertNotNull(turnData.getPortal(name));
     }
 }

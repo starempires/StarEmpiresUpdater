@@ -75,7 +75,7 @@ public class ModifyWorldOrder extends WorldBasedOrder {
 
     public static ModifyWorldOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = ModifyWorldOrder.builder();
-        Order.parseReady(node, turnData, OrderType.MODIFYWORLD, builder);
+        WorldBasedOrder.parseReady(node, turnData, OrderType.MODIFYWORLD, builder);
         return builder
                 .owner(getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire))
                 .production(getInt(node, "production"))

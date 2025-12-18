@@ -41,6 +41,10 @@ public abstract class KnownOrder extends EmpireBasedOrder {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
+    List<Portal> navData;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectCollectionDeserializer.class)
     List<Storm> storms;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -62,6 +66,7 @@ public abstract class KnownOrder extends EmpireBasedOrder {
                 .gmOnly(orderType.isGmOnly())
                 .worlds(Lists.newArrayList())
                 .portals(Lists.newArrayList())
+                .navData(Lists.newArrayList())
                 .storms(Lists.newArrayList())
                 .shipClasses(Lists.newArrayList())
                 .contacts(Lists.newArrayList())
@@ -106,6 +111,14 @@ public abstract class KnownOrder extends EmpireBasedOrder {
                             order.portals.add(portal);
                         }
                     }
+                    case "navdata" -> {
+                        final Portal portal = turnData.getPortal(objectName);
+                        if (portal == null) {
+                            order.addError("Unknown portal: " + objectName);
+                        } else {
+                            order.navData.add(portal);
+                        }
+                    }
                     case "storm" -> {
                         final Storm storm = turnData.getStorm(objectName);
                         if (storm == null) {
@@ -133,7 +146,7 @@ public abstract class KnownOrder extends EmpireBasedOrder {
                 }
             });
 
-            if (order.worlds.size() + order.portals.size() + order.storms.size()
+            if (order.worlds.size() + order.portals.size() + order.navData.size() + order.storms.size()
                     + order.shipClasses.size() + order.contacts.size() == 0) {
                 order.addError("No valid objects found");
             }
@@ -153,6 +166,7 @@ public abstract class KnownOrder extends EmpireBasedOrder {
         EmpireBasedOrder.parseReady(node, turnData, orderType, builder);
         builder.worlds(getTurnDataListFromJsonNode(node.get("worlds"), turnData::getWorld))
                .portals(getTurnDataListFromJsonNode(node.get("portals"), turnData::getPortal))
+               .navData(getTurnDataListFromJsonNode(node.get("navData"), turnData::getPortal))
                .storms(getTurnDataListFromJsonNode(node.get("storms"), turnData::getStorm))
                .shipClasses(getTurnDataListFromJsonNode(node.get("shipClasses"), turnData::getShipClass))
                .contacts(getTurnDataListFromJsonNode(node.get("contacts"), turnData::getEmpire));

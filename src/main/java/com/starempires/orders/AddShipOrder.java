@@ -84,7 +84,7 @@ public class AddShipOrder extends Order {
                 order.basename = nameText.substring(0, nameText.length() - 1);
             }
             else {
-               List<String> names = List.of(nameText.split(SPACE_REGEX));
+               final List<String> names = List.of(nameText.split(SPACE_REGEX));
                if (names.size() != count) {
                    order.addError("Number of names %d does not match count %d".formatted(names.size(), count));
                    return order;
@@ -92,6 +92,17 @@ public class AddShipOrder extends Order {
                order.names.addAll(names);
             }
             order.setReady(true);
+            final int startingNumber = owner.getLargestBasenameNumber(order.getBasename());
+            for (int i = 0; i < order.getCount(); ++i) {
+                final String name;
+                if (order.getBasename() != null) {
+                    name = order.getBasename() + (startingNumber + i + 1);
+                }
+                else {
+                    name = order.getNames().getFirst();
+                }
+                owner.buildShip(order.getShipClass(), order.getCoordinate(), name, turnData.getTurnNumber());
+            }
         } else {
             order.addError("Invalid ADDSHIP order: " + parameters);
         }

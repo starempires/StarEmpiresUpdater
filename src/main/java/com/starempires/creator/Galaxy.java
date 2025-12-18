@@ -157,18 +157,18 @@ public class Galaxy {
         for (Map.Entry<Empire, EmpireCreation> entry: empireCreations.entrySet()) {
             final Empire empire = entry.getKey();
             final EmpireCreation ec = entry.getValue();
-            final Coordinate coordinate = ec.getCenter();
-            final String name = ec.getHomeworldName();
+            final Coordinate origin = ec.origin();
+            final String name = ec.homeworldName();
 
             final World.WorldBuilder builder = World.builder();
-            final World world = builder.name(name).coordinate(coordinate)
+            final World world = builder.name(name).coordinate(origin)
                     .owner(empire)
                     .production(homeworldProduction)
                     .stockpile(homeworldProduction)
                     .homeworld(true).build();
-            homeworlds.put(coordinate, world);
+            homeworlds.put(origin, world);
             worlds.add(world);
-            unoccupied.remove(coordinate);
+            unoccupied.remove(origin);
             log.info("Added {} homeworld {} ", empire, world);
         }
         log.info("Added {} homeworlds", empireCreations.size());

@@ -23,6 +23,7 @@ public class AddPortalsPhaseUpdater extends PhaseUpdater {
             final Portal portal = Portal.builder()
                     .coordinate(order.getCoordinate())
                     .name(order.getName())
+                    .collapsed(order.isCollapsed())
                     .build();
             turnData.addPortal(portal);
             final Set<Empire> empires = turnData.getEmpiresPresent(portal);

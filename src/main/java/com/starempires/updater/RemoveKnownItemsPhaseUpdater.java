@@ -44,7 +44,11 @@ public class RemoveKnownItemsPhaseUpdater extends PhaseUpdater {
                         Optional.ofNullable(order.getPortals())
                                 .ifPresent(portals -> portals.forEach(portal ->
                                         removeKnowledge(order, recipient, recipient::removeKnownPortal, "portal", portal)));
-                        
+
+                        Optional.ofNullable(order.getNavData())
+                                .ifPresent(portals -> portals.forEach(portal ->
+                                        removeKnowledge(order, recipient, recipient::removeNavData, "nav data", portal)));
+
                         Optional.ofNullable(order.getStorms())
                                 .ifPresent(storms -> storms.forEach(storm ->
                                         removeKnowledge(order, recipient, recipient::removeKnownStorm, "storm", storm)));

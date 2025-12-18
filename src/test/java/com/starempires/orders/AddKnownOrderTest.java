@@ -49,6 +49,22 @@ class AddKnownOrderTest extends BaseTest {
     }
 
     @Test
+    void parseAddKnownNavData() {
+        final AddKnownOrder order = AddKnownOrder.parse(turnData, gm, "navdata portal TO empire1");
+        assertTrue(order.isReady());
+        assertEquals(List.of(empire1), order.getRecipients());
+        assertEquals(List.of(portal), order.getNavData());
+    }
+
+    @Test
+    void parseAddKnownNavDataUnknownPortal() {
+        final AddKnownOrder order = AddKnownOrder.parse(turnData, gm, "navdata unknown TO empire1");
+        assertFalse(order.isReady());
+        assertEquals(List.of(empire1), order.getRecipients());
+        assertTrue(order.getNavData().isEmpty());
+    }
+
+    @Test
     void parseAddKnownStorm() {
         final AddKnownOrder order = AddKnownOrder.parse(turnData, gm, "storm storm TO empire1");
         assertTrue(order.isReady());

@@ -27,6 +27,10 @@ public class PortalSnapshot extends IdentifiableObjectSnapshot {
             return null;
         }
 
+        if (empire.isGM()) {
+            return forGM(portal);
+        }
+
         boolean collapsed = false;
         boolean navDataKnown = false;
         final Set<String> entrances = Sets.newHashSet();

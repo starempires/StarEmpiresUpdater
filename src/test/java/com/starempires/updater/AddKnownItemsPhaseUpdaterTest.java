@@ -27,6 +27,7 @@ class AddKnownItemsPhaseUpdaterTest extends BaseTest {
                 .parameters("world world to empire2")
                 .worlds(List.of(world))
                 .portals(List.of(portal))
+                .navData(List.of(portal))
                 .storms(List.of(storm))
                 .shipClasses(List.of(frigateClass))
                 .contacts(List.of(empire1))
@@ -36,6 +37,7 @@ class AddKnownItemsPhaseUpdaterTest extends BaseTest {
         updater.update();
         assertTrue(empire2.isKnownWorld(world));
         assertTrue(empire2.isKnownPortal(portal));
+        assertTrue(empire2.hasNavData(portal));
         assertTrue(empire2.isKnownStorm(storm));
         assertTrue(empire2.isKnownShipClass(frigateClass));
         assertTrue(empire2.isKnownEmpire(empire1));

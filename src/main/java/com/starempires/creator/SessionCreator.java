@@ -171,7 +171,7 @@ public class SessionCreator {
             final String starbaseName = empireInfo[4];
             final Empire empire = Empire.builder().name(empireName).abbreviation(abbreviation).empireType(empireType)
                     .frameOfReference(frame).build();
-            final EmpireCreation ecd = EmpireCreation.builder().homeworldName(homeworldName).starbaseName(starbaseName).center(edge).build();
+            final EmpireCreation ecd = new EmpireCreation(homeworldName, starbaseName, edge);
             empireCreations.put(empire, ecd);
             i++;
             log.info("Created empire {} with FOR {}", empire, frame);
@@ -196,7 +196,7 @@ public class SessionCreator {
         galaxy.getHomeworlds().values().forEach(homeworld -> {
             final Empire empire = homeworld.getOwner();
             final EmpireCreation ec = empireCreations.get(empire);
-            final Ship starbase = empire.buildShip(starbaseShipClass, homeworld, ec.getStarbaseName(), 0);
+            final Ship starbase = empire.buildShip(starbaseShipClass, homeworld, ec.starbaseName(), 0);
             log.info("Generated {} starbase {}", empire, starbase);
         });
 

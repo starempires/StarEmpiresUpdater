@@ -22,7 +22,7 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
             final Empire owner = order.getOwner();
             final int startingNumber = owner.getLargestBasenameNumber(order.getBasename());
             for (int i = 0; i < order.getCount(); ++i) {
-                String name;
+                final String name;
                 if (order.getBasename() != null) {
                     name = order.getBasename() + (startingNumber + i + 1);
                 }
@@ -33,7 +33,7 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
                 final String message = "Added %s %s %s in sector %s".formatted(owner, ship.getShipClass(), ship, ship.getCoordinate());
                 addNews(order, message);
                 addNews(ship.getOwner(), message);
-            };
+            }
         });
     }
 }

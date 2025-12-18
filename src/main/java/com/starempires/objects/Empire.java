@@ -160,12 +160,12 @@ public class Empire extends IdentifiableObject {
         return portalNavData.contains(portal);
     }
 
-    public void addNavData(final Portal portal) {
-        portalNavData.add(portal);
+    public boolean addNavData(final Portal portal) {
+        return portalNavData.add(portal);
     }
 
-    public void removeNavData(final Portal portal) {
-        portalNavData.remove(portal);
+    public boolean removeNavData(final Portal portal) {
+        return portalNavData.remove(portal);
     }
 
     public boolean isKnownEmpire(final Empire empire) {

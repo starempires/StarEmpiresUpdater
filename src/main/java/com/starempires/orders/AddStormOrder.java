@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.Storm;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -45,6 +46,11 @@ public class AddStormOrder extends Order {
             order.intensity = Integer.parseInt(matcher.group(INTENSITY_GROUP));
             order.coordinate = Coordinate.parse(coordText);
             order.setReady(true);
+            turnData.addStorm(Storm.builder()
+                    .name(order.name)
+                    .coordinate(order.coordinate)
+                    .intensity(order.intensity)
+                    .build());
         } else {
             order.addError("Invalid ADDSTORM order: " + parameters);
         }

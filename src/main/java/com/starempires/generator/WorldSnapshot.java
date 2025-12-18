@@ -24,6 +24,9 @@ public class WorldSnapshot extends OwnableObjectSnapshot {
         if (world == null) {
             return null;
         }
+        if (empire.isGM()) {
+            return forGM(world);
+        }
         int stockpile = 0;
         Prohibition prohibition = null;
         boolean homeworld = false;

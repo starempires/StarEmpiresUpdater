@@ -53,6 +53,7 @@ class AddShipOrderTest extends BaseTest {
         assertEquals(1, order.getCount());
         assertEquals(empire1, order.getOwner());
         assertEquals(fighterClass, order.getShipClass());
+        assertEquals(fighterClass, empire1.getShip("f1").getShipClass());
     }
 
     @Test

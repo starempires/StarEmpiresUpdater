@@ -44,7 +44,11 @@ public class AddKnownItemsPhaseUpdater extends PhaseUpdater {
                         Optional.ofNullable(order.getPortals())
                                 .ifPresent(portals -> portals.forEach(portal ->
                                         addKnowledge(order, recipient, recipient::addKnownPortal, "portal", portal)));
-                        
+
+                        Optional.ofNullable(order.getNavData())
+                                .ifPresent(portals -> portals.forEach(portal ->
+                                        addKnowledge(order, recipient, recipient::addNavData, "nav data", portal)));
+
                         Optional.ofNullable(order.getStorms())
                                 .ifPresent(storms -> storms.forEach(storm ->
                                         addKnowledge(order, recipient, recipient::addKnownStorm, "storm", storm)));

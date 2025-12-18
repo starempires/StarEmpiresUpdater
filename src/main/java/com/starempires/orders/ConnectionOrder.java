@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 @SuperBuilder
 @Getter
 public abstract class ConnectionOrder extends Order {
-    // order: ADDCONNECTION entry-portal exit-portal
     final static private String REGEX = ENTRY_CAPTURE_REGEX + SPACE_REGEX + EXIT_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
@@ -51,7 +50,7 @@ public abstract class ConnectionOrder extends Order {
             }
             final Portal exit = turnData.getPortal(exitText);
             if (exit == null) {
-                order.addError("Unknown exit portal: " + entryText);
+                order.addError("Unknown exit portal: " + exitText);
                 return order;
             }
             order.entry = entry;

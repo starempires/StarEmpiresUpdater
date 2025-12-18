@@ -41,6 +41,7 @@ public abstract class Order {
     final static protected String THROUGH_TOKEN = "through";
     final static protected String EXCEPT_TOKEN = "except";
     final static protected String ALL_TOKEN = "all";
+    final static protected String COLLAPSED_TOKEN = "collapsed";
 
     // object regexes
     final static protected String SPACE_REGEX = "\\s+";
@@ -52,10 +53,11 @@ public abstract class Order {
     final static protected String ID_LIST_REGEX = ID_REGEX + "(?:" + SPACE_REGEX + ID_REGEX + ")*";
     final static protected String COORDINATE_LIST_REGEX = COORDINATE_REGEX + "(?:" + SPACE_REGEX + COORDINATE_REGEX + ")*";
     final static protected String SHIP_LOCATION_LIST_REGEX = SHIP_LOCATION_REGEX + "(?:" + SPACE_REGEX + SHIP_LOCATION_REGEX + ")*";
-    final static protected String OBJECT_TYPE_REGEX = "world|portal|storm|shipclass|contact";
+    final static protected String OBJECT_TYPE_REGEX = "world|portal|storm|shipclass|contact|navdata";
     final static protected String TOGGLE_MODE_REGEX = "public|private";
     final static protected String DESIGN_PARAMETERS_REGEX = "[\\d\\s]+";
     final static protected String TARGET_ORDER_REGEX = "asc|desc";
+    final static protected String COLLAPSED_REGEX = COLLAPSED_TOKEN;
 
     // capture groups
     final static protected String SHIP_GROUP = "ship";
@@ -84,6 +86,7 @@ public abstract class Order {
     final static protected String RECIPIENT_LIST_GROUP = "recipientlist";
     final static protected String OBJECT_LIST_GROUP = "objectlist";
     final static protected String OWNER_GROUP = "owner";
+    final static protected String COLLAPSED_GROUP = "collapsed";
     final static protected String SHIP_NAMES_GROUP = "shipnames";
     final static protected String ENTRY_GROUP = "entry";
     final static protected String EXIT_GROUP = "exit";
@@ -99,6 +102,7 @@ public abstract class Order {
     final static protected String DESTINATION_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_GROUP, ID_REGEX);
     final static protected String ID_CAPTURE_REGEX = regexWithCaptureGroup(ID_GROUP, ID_REGEX);
     final static protected String OWNER_CAPTURE_REGEX = regexWithCaptureGroup(OWNER_GROUP, ID_REGEX);
+    final static protected String COLLAPSED_CAPTURE_REGEX = regexWithCaptureGroup(COLLAPSED_GROUP, COLLAPSED_REGEX);
     final static protected String DESTINATION_LOCATION_CAPTURE_REGEX = regexWithCaptureGroup(DESTINATION_LOCATION_GROUP, ID_REGEX);
 
     // named ID_LIST_REGEX capture groups
@@ -116,6 +120,7 @@ public abstract class Order {
     // optional capture regexes
     final static protected String OPTIONAL_TARGET_ORDER_CAPTURE_REGEX = "(?:" + regexWithCaptureGroup(TARGET_ORDER_GROUP, TARGET_ORDER_REGEX) + SPACE_REGEX + ")?";
     final static protected String OPTIONAL_OWNER_CAPTURE_REGEX = "(?:" + SPACE_REGEX + OWNER_CAPTURE_REGEX + ")?";
+    final static protected String OPTIONAL_COLLAPSED_CAPTURE_REGEX = "(?:" + SPACE_REGEX + COLLAPSED_CAPTURE_REGEX + ")?";
     final static protected String OPTIONAL_EXIT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXIT_CAPTURE_REGEX + ")?";
     final static protected String OPTIONAL_COORDINATE_EXCEPT_CAPTURE_REGEX = "(?:" + SPACE_REGEX + EXCEPT_TOKEN + SPACE_REGEX +
             regexWithCaptureGroup(COORDINATE_EXCEPT_LIST_GROUP, ID_LIST_REGEX) + ")?";

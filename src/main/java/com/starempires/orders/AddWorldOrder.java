@@ -8,6 +8,7 @@ import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
 import com.starempires.objects.IdentifiableObject;
+import com.starempires.objects.World;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -65,6 +66,13 @@ public class AddWorldOrder extends Order {
             }
             order.owner = owner;
             order.setReady(true);
+            turnData.addWorld(World.builder()
+                    .name(order.name)
+                    .coordinate(order.coordinate)
+                            .production(order.production)
+                            .stockpile(order.stockpile)
+                            .owner(owner)
+                    .build());
         } else {
             order.addError("Invalid ADDWORLD order: " + parameters);
         }
