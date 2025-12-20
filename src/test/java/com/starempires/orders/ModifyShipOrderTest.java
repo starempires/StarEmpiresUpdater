@@ -26,14 +26,14 @@ class ModifyShipOrderTest extends BaseTest {
 
     @Test
     void parseUnknownOwner() {
-        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "foo ship 3");
+        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "foo ship 3 public");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown owner")));
     }
 
     @Test
     void parseUnknownShip() {
-        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 foo 3");
+        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 foo 3 public");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("Unknown ship")));
     }
@@ -41,18 +41,19 @@ class ModifyShipOrderTest extends BaseTest {
     @Test
     void parseSuccess() {
         final Ship frigate = createShip(frigateClass, ZERO_COORDINATE, "frigate", empire1);
-        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 frigate 3");
+        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 frigate 3 public");
         assertTrue(order.isReady());
         assertEquals(empire1, order.getOwner());
         assertEquals(frigate, order.getShip());
         assertEquals(3, order.getDp());
+        assertTrue(order.isPublicMode());
         assertTrue(order.isGmOnly());
     }
 
     @Test
     void parseDPExceedsMax() {
         final Ship frigate = createShip(frigateClass, ZERO_COORDINATE, "frigate", empire1);
-        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 frigate 100");
+        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 frigate 100 public");
         assertFalse(order.isReady());
         assertTrue(order.getResults().stream().anyMatch(s -> s.contains("exceeds max")));
     }

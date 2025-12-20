@@ -21,7 +21,9 @@ public class ModifyShipsPhaseUpdater extends PhaseUpdater {
             final ModifyShipOrder order = (ModifyShipOrder) o;
             final Ship ship = order.getShip();
             ship.setDpRemaining(order.getDp());
-            final String message = "Ship %s now has %d DP remaining".formatted(ship, order.getDp());
+            ship.toggleTransponder(order.isPublicMode());
+            final String message = "Ship %s now has %d DP remaining and %s transponder".formatted(ship, order.getDp(),
+                                           order.isPublicMode() ? "public" : "private");
             addNews(order, message);
             addNews(ship.getOwner(), message);
         });

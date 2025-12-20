@@ -42,6 +42,8 @@ public abstract class Order {
     final static protected String EXCEPT_TOKEN = "except";
     final static protected String ALL_TOKEN = "all";
     final static protected String COLLAPSED_TOKEN = "collapsed";
+    final static protected String PUBLIC_TOKEN = "public";
+    final static protected String PRIVATE_TOKEN = "private";
 
     // object regexes
     final static protected String SPACE_REGEX = "\\s+";
@@ -54,7 +56,7 @@ public abstract class Order {
     final static protected String COORDINATE_LIST_REGEX = COORDINATE_REGEX + "(?:" + SPACE_REGEX + COORDINATE_REGEX + ")*";
     final static protected String SHIP_LOCATION_LIST_REGEX = SHIP_LOCATION_REGEX + "(?:" + SPACE_REGEX + SHIP_LOCATION_REGEX + ")*";
     final static protected String OBJECT_TYPE_REGEX = "world|portal|storm|shipclass|contact|navdata";
-    final static protected String TOGGLE_MODE_REGEX = "public|private";
+    final static protected String TOGGLE_MODE_REGEX = PRIVATE_TOKEN + "|" + PUBLIC_TOKEN;
     final static protected String DESIGN_PARAMETERS_REGEX = "[\\d\\s]+";
     final static protected String TARGET_ORDER_REGEX = "asc|desc";
     final static protected String COLLAPSED_REGEX = COLLAPSED_TOKEN;

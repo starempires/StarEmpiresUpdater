@@ -26,6 +26,7 @@ public class ToggleOrder extends ShipBasedOrder {
     final private static String REGEX = TOGGLE_MODE_CAPTURE_REGEX + SPACE_REGEX + OBJECT_LIST_CAPTURE_REGEX;
     final private static Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private boolean publicMode;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectCollectionSerializer.class)
@@ -41,7 +42,7 @@ public class ToggleOrder extends ShipBasedOrder {
                 .build();
         final Matcher matcher = PATTERN.matcher(parameters);
         if (matcher.matches()) {
-            order.publicMode = matcher.group(TOGGLE_MODE_GROUP).equalsIgnoreCase("public");
+            order.publicMode = matcher.group(TOGGLE_MODE_GROUP).equalsIgnoreCase(PUBLIC_TOKEN);
             final String[] shipNames = matcher.group(OBJECT_LIST_GROUP).split(" ");
             for (String shipName : shipNames) {
                 final ShipClass shipClass = turnData.getShipClass(shipName);

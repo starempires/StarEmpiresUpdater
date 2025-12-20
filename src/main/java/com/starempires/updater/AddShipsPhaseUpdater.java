@@ -31,6 +31,7 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
                 }
                 final Ship ship = owner.buildShip(order.getShipClass(), order.getCoordinate(), name, turnData.getTurnNumber());
                 ship.setDpRemaining(order.getDp());
+                ship.toggleTransponder(order.isPublicMode());
                 final String message = "Added %s %s %s in sector %s".formatted(owner, ship.getShipClass(), ship, ship.getCoordinate());
                 addNews(order, message);
                 addNews(ship.getOwner(), message);

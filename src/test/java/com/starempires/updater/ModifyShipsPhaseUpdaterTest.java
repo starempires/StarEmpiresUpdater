@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ModifyShipsPhaseUpdaterTest extends BaseTest {
 
@@ -26,11 +27,14 @@ class ModifyShipsPhaseUpdaterTest extends BaseTest {
                 .gmOnly(true)
                 .ship(frigate)
                 .dp(2)
+                .publicMode(true)
                 .owner(empire1)
                 .empire(gm)
                 .build();
         turnData.addOrder(order);
         updater.update();
         assertEquals(2, frigate.getDpRemaining());
+        assertTrue(frigate.isPublicTransponder());
+
     }
 }

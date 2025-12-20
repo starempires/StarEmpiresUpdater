@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddShipsPhaseUpdaterTest extends BaseTest {
 
@@ -33,6 +34,7 @@ public class AddShipsPhaseUpdaterTest extends BaseTest {
                 .shipClass(fighterClass)
                 .names(List.of(name))
                 .dp(1)
+                .publicMode(true)
                 .gmOnly(true)
                 .build();
         turnData.addOrder(order);
@@ -41,5 +43,6 @@ public class AddShipsPhaseUpdaterTest extends BaseTest {
         assertEquals(name, ship.getName());
         assertEquals(fighterClass, ship.getShipClass());
         assertEquals(1, ship.getDpRemaining());
+        assertTrue(ship.isPublicTransponder());
     }
 }

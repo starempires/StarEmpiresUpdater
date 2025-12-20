@@ -25,7 +25,9 @@ public class AddShipOrder extends Order {
 
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + OWNER_CAPTURE_REGEX + SPACE_REGEX +
             COUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX +
-            SPACE_REGEX + DP_CAPTURE_REGEX + SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
+            SPACE_REGEX + DP_CAPTURE_REGEX +
+            SPACE_REGEX + TOGGLE_MODE_CAPTURE_REGEX +
+            SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -46,6 +48,8 @@ public class AddShipOrder extends Order {
     private Empire owner;
     @JsonInclude(JsonInclude.Include.ALWAYS)
     private int dp;
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private boolean publicMode;
 
     public static AddShipOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final AddShipOrder order = AddShipOrder.builder()
@@ -82,6 +86,7 @@ public class AddShipOrder extends Order {
                 return order;
             }
             order.shipClass = shipClass;
+            order.publicMode = matcher.group(TOGGLE_MODE_GROUP).equalsIgnoreCase(PUBLIC_TOKEN);
             order.dp = Integer.parseInt(matcher.group(DP_GROUP));
             if (order.dp > shipClass.getDp()) {
                 order.addError("DP %d exceeds max DP %d for ship class %s".formatted(order.dp, shipClass.getDp(), shipClass));
@@ -128,6 +133,8 @@ public class AddShipOrder extends Order {
                 .count(getInt(node, "count"))
                 .basename(getString(node, "basename"))
                 .names(getStringList(node, "names"))
+                .dp(getInt(node, "dp"))
+                .publicMode(getBoolean(node, "publicMode"))
                 .owner(owner)
                 .build();
     }
