@@ -21,10 +21,11 @@ import java.util.regex.Pattern;
 @Getter
 public class AddShipOrder extends Order {
 
-    // order: ADDSHIP coordinate owner number design name*
+    // order: ADDSHIP coordinate owner number design dp name*
 
     final static private String REGEX = COORDINATE_CAPTURE_REGEX + SPACE_REGEX + OWNER_CAPTURE_REGEX + SPACE_REGEX +
-            COUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX + SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
+            COUNT_CAPTURE_REGEX + SPACE_REGEX + SHIP_CLASS_CAPTURE_REGEX +
+            SPACE_REGEX + DP_CAPTURE_REGEX + SPACE_REGEX + SHIP_NAMES_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -43,6 +44,8 @@ public class AddShipOrder extends Order {
     @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
     @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Empire owner;
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private int dp;
 
     public static AddShipOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
         final AddShipOrder order = AddShipOrder.builder()
@@ -79,6 +82,11 @@ public class AddShipOrder extends Order {
                 return order;
             }
             order.shipClass = shipClass;
+            order.dp = Integer.parseInt(matcher.group(DP_GROUP));
+            if (order.dp > shipClass.getDp()) {
+                order.addError("DP %d exceeds max DP %d for ship class %s".formatted(order.dp, shipClass.getDp(), shipClass));
+                return order;
+            }
 
             if (nameText.endsWith("*")) {
                 order.basename = nameText.substring(0, nameText.length() - 1);

@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
 @Getter
 public class ModifyShipOrder extends Order {
     // order: MODIFYSHIP owner ship dp
-    final static private String REGEX = OWNER_CAPTURE_REGEX + SPACE_REGEX + SHIP_CAPTURE_REGEX + SPACE_REGEX + DP_CAPTURE_REGEX;
+    final static private String REGEX = OWNER_CAPTURE_REGEX + SPACE_REGEX + SHIP_CAPTURE_REGEX +
+            SPACE_REGEX + DP_CAPTURE_REGEX;
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     @JsonInclude
@@ -62,6 +63,10 @@ public class ModifyShipOrder extends Order {
             order.owner = owner;
             order.ship = ship;
             order.dp = Integer.parseInt(matcher.group(DP_GROUP));
+            if (order.dp < 0 || order.dp > ship.getDp()) {
+                order.addError("DP %d exceeds max DP %d for ship class %s".formatted(order.dp, ship.getDp(), ship.getShipClass()));
+                return order;
+            }
             order.setReady(true);
         } else {
             order.addError("Invalid MODIFYSHIP order: " + parameters);

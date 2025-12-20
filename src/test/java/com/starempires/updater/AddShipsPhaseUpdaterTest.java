@@ -32,6 +32,7 @@ public class AddShipsPhaseUpdaterTest extends BaseTest {
                 .owner(empire1)
                 .shipClass(fighterClass)
                 .names(List.of(name))
+                .dp(1)
                 .gmOnly(true)
                 .build();
         turnData.addOrder(order);
@@ -39,5 +40,6 @@ public class AddShipsPhaseUpdaterTest extends BaseTest {
         final Ship ship = empire1.getShip(name);
         assertEquals(name, ship.getName());
         assertEquals(fighterClass, ship.getShipClass());
+        assertEquals(1, ship.getDpRemaining());
     }
 }

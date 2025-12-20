@@ -48,4 +48,12 @@ class ModifyShipOrderTest extends BaseTest {
         assertEquals(3, order.getDp());
         assertTrue(order.isGmOnly());
     }
+
+    @Test
+    void parseDPExceedsMax() {
+        final Ship frigate = createShip(frigateClass, ZERO_COORDINATE, "frigate", empire1);
+        final ModifyShipOrder order = ModifyShipOrder.parse(turnData, gm, "empire1 frigate 100");
+        assertFalse(order.isReady());
+        assertTrue(order.getResults().stream().anyMatch(s -> s.contains("exceeds max")));
+    }
 }

@@ -30,6 +30,7 @@ public class AddShipsPhaseUpdater extends PhaseUpdater {
                     name = order.getNames().getFirst();
                 }
                 final Ship ship = owner.buildShip(order.getShipClass(), order.getCoordinate(), name, turnData.getTurnNumber());
+                ship.setDpRemaining(order.getDp());
                 final String message = "Added %s %s %s in sector %s".formatted(owner, ship.getShipClass(), ship, ship.getCoordinate());
                 addNews(order, message);
                 addNews(ship.getOwner(), message);

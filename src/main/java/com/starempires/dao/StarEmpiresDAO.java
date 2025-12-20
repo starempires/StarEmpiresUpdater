@@ -376,7 +376,7 @@ public abstract class StarEmpiresDAO {
             if (StringUtils.isBlank(data)) {
                 throw new NoSuchFileException("File %s is empty".formatted(filename));
             }
-            log.info("Loaded ready orders " + filename);
+            log.info("Loaded ready orders {}", filename);
 
             final ObjectMapper mapper = MAPPER.copy();          // <— local, per-call
             final SimpleModule module = new SimpleModule();
