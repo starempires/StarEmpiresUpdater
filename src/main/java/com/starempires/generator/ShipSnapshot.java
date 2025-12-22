@@ -31,7 +31,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
     private final int emptyRacks;
     private final String carrier;
     // ship class info
-    private final HullType hull;
+    private final HullType hullType;
     private final DeviceType device;
     private final boolean starbase;
     private final int dp;
@@ -65,7 +65,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .opGuns(ship.getAvailableGuns())
                     .opEngines(ship.getAvailableEngines())
                     .opScan(ship.getAvailableScan())
-                    .hull(ship.getShipClass().getHullType())
+                    .hullType(ship.getShipClass().getHullType())
                     .device(ship.getShipClass().getDeviceType())
                     .starbase(ship.getShipClass().isStarbase())
                     .dp(ship.getShipClass().getDp())
@@ -85,7 +85,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                     .name(ship.getName())
                     .owner(ship.getOwner().getName())
                     .shipClass(ship.getShipClass().getName())
-                    .hull(ship.getShipClass().getHullType())
+                    .hullType(ship.getShipClass().getHullType())
                     .conditions(ship.getAbbreviatedConditions())
                     .tonnage(ship.getShipClass().getTonnage())
                     .starbase(ship.getShipClass().isStarbase());
@@ -112,6 +112,7 @@ public class ShipSnapshot extends OwnableObjectSnapshot {
                         .coordinate(empire.toLocal(coordinate))
                         .serialNumber(ship.getSerialNumber())
                         .name(ship.getName())
+                        .hullType(ship.getHullType())
                         .owner(ship.getOwner().getName())
                         .shipClass(ship.getShipClass().getName())
                         .tonnage(ship.getShipClass().getTonnage())

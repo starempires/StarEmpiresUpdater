@@ -510,4 +510,9 @@ public class Ship extends OwnableObject {
     public List<String> getAbbreviatedConditions() {
         return conditions.stream().map(ShipCondition::getAbbreviation).collect(Collectors.toList());
     }
+
+    @JsonIgnore
+    public HullType getHullType() {
+        return shipClass.getHullType();
+    }
 }

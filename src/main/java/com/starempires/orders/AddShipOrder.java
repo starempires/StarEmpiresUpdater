@@ -126,7 +126,6 @@ public class AddShipOrder extends Order {
     public static AddShipOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = AddShipOrder.builder();
         Order.parseReady(node, turnData, OrderType.ADDSHIP, builder);
-        final Empire owner = getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire);
         return builder
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
                 .shipClass(getTurnDataItemFromJsonNode(node.get("shipClass"), turnData::getShipClass))
@@ -135,7 +134,7 @@ public class AddShipOrder extends Order {
                 .names(getStringList(node, "names"))
                 .dp(getInt(node, "dp"))
                 .publicMode(getBoolean(node, "publicMode"))
-                .owner(owner)
+                .owner(getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire))
                 .build();
     }
 }

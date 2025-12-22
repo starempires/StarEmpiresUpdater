@@ -1,10 +1,14 @@
 package com.starempires.orders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import com.starempires.TurnData;
 import com.starempires.objects.Coordinate;
 import com.starempires.objects.Empire;
+import com.starempires.objects.IdentifiableObject;
 import com.starempires.objects.Ship;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -24,6 +28,9 @@ public class RelocateShipOrder extends ShipBasedOrder {
     final static private Pattern PATTERN = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
 
     private Coordinate coordinate;
+    @JsonInclude
+    @JsonSerialize(using = IdentifiableObject.IdentifiableObjectSerializer.class)
+    @JsonDeserialize(using = IdentifiableObject.DeferredIdentifiableObjectDeserializer.class)
     private Empire owner;
 
     public static RelocateShipOrder parse(final TurnData turnData, final Empire empire, final String parameters) {
@@ -69,10 +76,11 @@ public class RelocateShipOrder extends ShipBasedOrder {
     public static RelocateShipOrder parseReady(final JsonNode node, final TurnData turnData) {
         final var builder = RelocateShipOrder.builder();
         Order.parseReady(node, turnData, OrderType.RELOCATESHIP, builder);
-        final Empire empire = turnData.getEmpire(node.get("empire").asText());
+        final Empire owner = getTurnDataItemFromJsonNode(node.get("owner"), turnData::getEmpire);
         return builder
-                .ships(getTurnDataListFromJsonNode(node.get("ships"), empire::getShip))
+                .ships(getTurnDataListFromJsonNode(node.get("ships"), owner::getShip))
                 .coordinate(getCoordinateFromJsonNode(node.get("coordinate")))
+                .owner(owner)
                 .build();
     }
 }
