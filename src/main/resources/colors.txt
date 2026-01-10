@@ -17,7 +17,7 @@ prohibition:#ff0000
 scanned:#969696
 stale:#444444
 staleworld:#AF325F
-storm:#ff0000
+storm:#FF3B30
 text:#000000
 unidentified:#000000
 unknown:#000000

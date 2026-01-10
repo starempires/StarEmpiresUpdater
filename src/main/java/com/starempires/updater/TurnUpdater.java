@@ -197,6 +197,7 @@ public class TurnUpdater {
         log.info("Processing administration phases for session {} turn {}", sessionName, turnNumber);
         final List<Phase> phases = Phase.getPhasesByStage(Stage.ADMINISTRATION);
         // rescan sectors after admin phases to ensure empires know about object updates
+        phases.add(Phase.ESTABLISH_PROHIBITIONS);
         phases.add(Phase.COLLECT_SCAN_DATA);
         phases.add(Phase.RECORD_NEW_MAP_OBJECTS);
         processPhases(phases, turnData);

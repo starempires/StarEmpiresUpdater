@@ -71,7 +71,6 @@ public class PortalSnapshot extends IdentifiableObjectSnapshot {
         }
 
         final boolean collapsed = portal.isCollapsed();
-        boolean navDataKnown = false;
         final Set<String> entrances = Sets.newHashSet();
         final Set<String> exits = Sets.newHashSet();
 
